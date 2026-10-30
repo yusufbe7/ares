@@ -37,7 +37,7 @@ func add_slot(pos: Vector3, facing: Vector3, quality: float, kind: String) -> Sl
 
 func slot_count() -> int:
 	var n := 0
-	for s in slots:
+	for s: Slot in slots:
 		if s.alive:
 			n += 1
 	return n
@@ -60,13 +60,13 @@ func add_building(center: Vector3, size: Vector3, rotation_y: float) -> Array:
 		var steps: int = maxi(1, int(float(f["len"]) / 3.0))
 		for i in range(steps):
 			var t: float = (float(i) + 0.5) / float(steps) - 0.5
-			var along := Vector3(-normal.z, 0, normal.x) * float(f["len"]) * t
+			var along: Vector3 = Vector3(-normal.z, 0, normal.x) * float(f["len"]) * t
 			var pos: Vector3 = center + basis * (f["o"] as Vector3) + normal * 0.9 + along
 			made.append(add_slot(pos, normal, 0.82, "wall"))
-	for cx in [-1.0, 1.0]:
-		for cz in [-1.0, 1.0]:
+	for cx: float in [-1.0, 1.0]:
+		for cz: float in [-1.0, 1.0]:
 			var corner: Vector3 = center + basis * Vector3(cx * (hx + 1.0), 0, cz * (hz + 1.0))
-			var dir := (corner - center).normalized()
+			var dir: Vector3 = (corner - center).normalized()
 			made.append(add_slot(corner, dir, 0.9, "corner"))
 	return made
 
@@ -116,7 +116,7 @@ func add_wreck(pos: Vector3) -> void:
 ## that is no longer there.
 func invalidate_near(pos: Vector3, radius: float) -> void:
 	var r2 := radius * radius
-	for s in slots:
+	for s: Slot in slots:
 		if s.alive and s.position.distance_squared_to(pos) < r2:
 			s.alive = false
 			s.occupant = 0
@@ -138,7 +138,7 @@ func best_slot(from: Vector3, threat_dir: Vector3, max_distance: float, seeker_i
 	var best: Slot = null
 	var best_score := -INF
 	var threat := threat_dir.normalized()
-	for s in _candidates(from, max_distance):
+	for s: Slot in _candidates(from, max_distance):
 		if not s.alive:
 			continue
 		if s.occupant != 0 and s.occupant != seeker_id:
@@ -166,7 +166,7 @@ func release(slot: Slot, seeker_id: int) -> void:
 ## How much of a hit this position stops, used by the damage model.
 func protection_at(pos: Vector3, from_dir: Vector3) -> float:
 	var best := 0.0
-	for s in _candidates(pos, 3.0):
+	for s: Slot in _candidates(pos, 3.0):
 		if not s.alive:
 			continue
 		if s.position.distance_to(pos) > 2.0:

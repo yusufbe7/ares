@@ -20,6 +20,8 @@ var roads: Array = []            # [{horizontal, offset, width}]
 var hard_points: Array = []      # bunkers and other prepared positions
 var nav_obstacles: Array = []    # [{pos, radius}] props that block movement
 var bridge_points: Array = []    # [{pos, half, dir}] the crossings over the river
+var _tracks_mm: MultiMesh = null
+var _track_next: int = 0
 var objectives: Array = []       # per team: the thing a "destroy" match targets
 var stats: BattleStats = null
 var squads: Array = []           # Squad, index 0..4 for keys 1..5
@@ -293,7 +295,7 @@ func _place_objectives() -> void:
 			director.add_point("A", "Chorraha", terrain.ground_point(-half, 0.0), 0)
 			director.add_point("B", "Markaz", terrain.ground_point(0.0, 0.0), -1)
 			director.add_point("C", "Sharqiy ferma", terrain.ground_point(half, 0.0), 1)
-			for p in director.points:
+			for p: ObjectivePoint in director.points:
 				_add_point_marker(p)
 
 func _add_point_marker(p: ObjectivePoint) -> void:
@@ -379,7 +381,7 @@ func _spawn_armies() -> void:
 func _auto_group_player_units() -> void:
 	# Pre-sorted groups, so the player starts with something to command rather
 	# than a single blob: 1 infantry, 2 armour, 3 guns, 4 recon, 5 reserve.
-	for u in units_of_team(player_team):
+	for u: BattleUnit in units_of_team(player_team):
 		match str(u.data.get("role", "line")):
 			"line", "suppression": squads[0].add(u)
 			"armor", "transport": squads[1].add(u)
@@ -434,7 +436,7 @@ func spawn_support_vehicle(team: int, uid: String) -> BattleUnit:
 func _nearest_unowned_point(from: Vector3, team: int):
 	var best = null
 	var best_d := INF
-	for p in director.points:
+	for p: ObjectivePoint in director.points:
 		if p.owner_team == team:
 			continue
 		var d: float = from.distance_to(p.position)
@@ -461,6 +463,48 @@ func _setup_ai() -> void:
 # Queries used by units
 # ---------------------------------------------------------------------------
 
+## Vehicles leave ruts behind them. On snow or mud it is the clearest record
+## of where an attack came from, so it is worth a draw call. One multimesh
+## holds them all and the oldest mark is overwritten once it is full.
+const MAX_TRACKS := 420
+
+func _ensure_track_layer() -> void:
+	if _tracks_mm != null:
+		return
+	_tracks_mm = MultiMesh.new()
+	_tracks_mm.transform_format = MultiMesh.TRANSFORM_3D
+	var quad := PlaneMesh.new()
+	quad.size = Vector2(3.6, 4.4)
+	_tracks_mm.mesh = quad
+	_tracks_mm.instance_count = MAX_TRACKS
+	_tracks_mm.visible_instance_count = 0
+	var node := MultiMeshInstance3D.new()
+	node.multimesh = _tracks_mm
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	# Dark ruts on snow, a softer scuff on bare ground.
+	if snow > 0.4:
+		mat.albedo_color = Color(0.52, 0.55, 0.60, 0.72)
+	else:
+		mat.albedo_color = Color(0.26, 0.22, 0.17, 0.42)
+	node.material_override = mat
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(node)
+
+func leave_track(pos: Vector3, yaw: float) -> void:
+	if Settings.graphics_quality == 0:
+		return
+	_ensure_track_layer()
+	if terrain.is_in_water(pos):
+		return
+	var ground := terrain.ground_point(pos.x, pos.z) + Vector3(0, 0.06, 0)
+	_tracks_mm.set_instance_transform(_track_next, Transform3D(Basis(Vector3.UP, yaw), ground))
+	_track_next = (_track_next + 1) % MAX_TRACKS
+	_tracks_mm.visible_instance_count = maxi(_tracks_mm.visible_instance_count, _track_next)
+	if _track_next == 0:
+		_tracks_mm.visible_instance_count = MAX_TRACKS
+
 func team_name(team: int) -> String:
 	var teams: Array = cfg.get("teams", [])
 	if teams.size() > team:
@@ -472,14 +516,14 @@ func team_color(team: int) -> Color:
 
 func units_of_team(team: int) -> Array:
 	var out: Array = []
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.team == team and u.is_alive():
 			out.append(u)
 	return out
 
 func enemies_of(team: int) -> Array:
 	var out: Array = []
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.team != team and u.is_alive():
 			out.append(u)
 	return out
@@ -524,7 +568,7 @@ func has_line_of_sight(from_unit: BattleUnit, to_unit: BattleUnit) -> bool:
 func threat_direction(team: int, pos: Vector3) -> Vector3:
 	var sum := Vector3.ZERO
 	var n := 0
-	for u in enemies_of(team):
+	for u: BattleUnit in enemies_of(team):
 		var d: float = pos.distance_to(u.global_position)
 		if d < 120.0:
 			sum += (u.global_position - pos).normalized()
@@ -552,6 +596,8 @@ func is_revealed(pos: Vector3) -> bool:
 func spawn_tracer(from: Vector3, to: Vector3, team: int) -> void:
 	if Settings.graphics_quality == 0:
 		return
+	if _rng.randf() < 0.3:
+		spawn_muzzle_smoke(from, (to - from).normalized(), 0.35)
 	var line := MeshInstance3D.new()
 	var im := ImmediateMesh.new()
 	im.surface_begin(Mesh.PRIMITIVE_LINES)
@@ -571,12 +617,43 @@ func spawn_tracer(from: Vector3, to: Vector3, team: int) -> void:
 		if is_instance_valid(line):
 			line.queue_free())
 
+## The white cloud a gun throws when it fires. It is the single clearest sign
+## of where the shooting is coming from when the camera is this far out, so it
+## matters more than the round itself.
+func spawn_muzzle_smoke(at: Vector3, direction: Vector3, scale: float = 1.0) -> void:
+	if Settings.graphics_quality == 0:
+		return
+	var puff := MeshInstance3D.new()
+	var qm := QuadMesh.new()
+	qm.size = Vector2(2.2, 2.2) * scale
+	puff.mesh = qm
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = Color(0.92, 0.92, 0.90, 0.75)
+	puff.material_override = mat
+	puff.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(puff)
+	puff.global_position = at + direction.normalized() * 0.8
+
+	# It blooms forward and thins out, which is what reads from above.
+	var grow := create_tween()
+	grow.set_parallel(true)
+	grow.tween_property(puff, "scale", Vector3.ONE * (3.4 * scale), 0.9)
+	grow.tween_property(puff, "global_position",
+		puff.global_position + direction.normalized() * 3.5 * scale + Vector3(0, 1.2, 0), 0.9)
+	grow.tween_property(mat, "albedo_color", Color(0.92, 0.92, 0.90, 0.0), 0.9)
+	grow.chain().tween_callback(puff.queue_free)
+
 func spawn_shell(from: Vector3, to: Vector3, team: int, damage: float, at_value: float) -> void:
+	spawn_muzzle_smoke(from, (to - from).normalized(), 1.6)
 	var shell := Projectile.new()
 	add_child(shell)
 	shell.launch(self, from, to, team, damage, at_value, 120.0, 3.0)
 
 func spawn_rocket(from: Vector3, target: BattleUnit, team: int, damage: float) -> void:
+	spawn_muzzle_smoke(from, (target.global_position - from).normalized(), 1.3)
 	var rocket := Projectile.new()
 	add_child(rocket)
 	rocket.launch_guided(self, from, target, team, damage, 0.95, 45.0)
@@ -598,9 +675,9 @@ func call_artillery_strike(from: Vector3, target: Vector3, team: int, source) ->
 	marker.position = terrain.ground_point(target.x, target.z) + Vector3(0, 0.25, 0)
 	add_child(marker)
 	# Everyone nearby runs, both sides — artillery does not read uniforms.
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.is_alive() and u.global_position.distance_to(target) < 20.0:
-			var away := (u.global_position - target).normalized() * 30.0
+			var away: Vector3 = (u.global_position - target).normalized() * 30.0
 			u.order_move(terrain.clamp_to_map(u.global_position + away))
 			u.take_suppression(0.5)
 	var delay := get_tree().create_timer(4.0)
@@ -644,7 +721,7 @@ func call_air_strike(target: Vector3, team: int) -> void:
 
 	GameState.notify("Aviatsiya yo'lda.", "good")
 	# Mark the run-in so everyone on the ground can clear the line.
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.is_alive() and u.global_position.distance_to(target) < 26.0:
 			u.take_suppression(0.4)
 	for i in range(6):
@@ -727,14 +804,14 @@ func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make
 	if make_crater:
 		terrain.add_crater(pos, radius * 0.9, radius * 0.25)
 		cover.add_crater(pos, radius * 0.9)
-	for u in units:
+	for u: BattleUnit in units:
 		if not is_instance_valid(u) or not u.is_alive():
 			continue
 		var d: float = u.global_position.distance_to(pos)
 		if d > radius * 2.0:
 			continue
 		var falloff: float = clampf(1.0 - d / (radius * 2.0), 0.0, 1.0)
-		var dir := (u.global_position - pos).normalized()
+		var dir: Vector3 = (u.global_position - pos).normalized()
 		var protection: float = cover.protection_at(u.global_position, dir) * 0.6
 		if terrain.is_in_trench(u.global_position):
 			protection = maxf(protection, 0.8)
@@ -757,7 +834,7 @@ func _fell_trees_near(pos: Vector3, radius: float) -> void:
 		if p.distance_to(pos) > radius:
 			continue
 		t["felled"] = true
-		var dir := (p - pos).normalized()
+		var dir: Vector3 = (p - pos).normalized()
 		if dir.length() < 0.1:
 			dir = Vector3.FORWARD
 		var mm: MultiMesh = t["mm"]
@@ -817,7 +894,7 @@ func _place_mine(pos: Vector3, team: int, damage: float) -> void:
 func _check_mines() -> void:
 	for i in range(_mines.size() - 1, -1, -1):
 		var m: Dictionary = _mines[i]
-		for u in units:
+		for u: BattleUnit in units:
 			if not is_instance_valid(u) or not u.is_alive() or u.team == int(m["team"]) or u.is_air():
 				continue
 			if u.global_position.distance_to(m["pos"]) < 2.5:
@@ -869,26 +946,26 @@ func _tick_reveal(delta: float) -> void:
 func _update_point_markers() -> void:
 	if director.hold_zone != null:
 		_refresh_marker(director.hold_zone)
-	for p in director.points:
+	for p: ObjectivePoint in director.points:
 		_refresh_marker(p)
 
 func _refresh_marker(p: ObjectivePoint) -> void:
 	if p.marker == null or not is_instance_valid(p.marker):
 		return
 	var mat: StandardMaterial3D = p.marker.material_override
-	var c := p.color_for_owner(_team_colors)
+	var c: Color = p.color_for_owner(_team_colors)
 	c.a = 0.4 if p.contested else 0.22
 	mat.albedo_color = c
 
 ## Recon matters because enemies you have not seen are simply not drawn.
 func _update_fog_of_war() -> void:
 	var friendly := units_of_team(player_team)
-	for u in units:
+	for u: BattleUnit in units:
 		if not is_instance_valid(u) or u.team == player_team:
 			continue
-		var seen := is_revealed(u.global_position)
+		var seen: bool = is_revealed(u.global_position)
 		if not seen:
-			for f in friendly:
+			for f: BattleUnit in friendly:
 				var sight: float = float(f.data.get("vision", 50)) * vision_modifier()
 				if f.global_position.distance_to(u.global_position) < sight:
 					if has_line_of_sight(f, u):
@@ -899,7 +976,7 @@ func _update_fog_of_war() -> void:
 func on_point_captured(p: ObjectivePoint) -> void:
 	if stats != null:
 		stats.on_point_captured(p.owner_team)
-	var who := "Siz" if p.owner_team == player_team else "Dushman"
+	var who: String = "Siz" if p.owner_team == player_team else "Dushman"
 	GameState.notify("%s %s nuqtasini egalladi." % [who, p.id], "good" if p.owner_team == player_team else "warn")
 
 func on_unit_died(u: BattleUnit) -> void:

@@ -10,6 +10,8 @@ var _hull: MeshInstance3D
 var _passengers: Array = []
 var _barrel_len: float = 3.4
 var _crush_timer: float = 0.0
+var _last_track_at: Vector3 = Vector3.ZERO
+var _has_track_origin: bool = false
 
 func ground_offset() -> float:
 	return 1.0
@@ -95,8 +97,8 @@ func _build_technical(color: Color) -> void:
 
 	var dark := StandardMaterial3D.new()
 	dark.albedo_color = Color(0.1, 0.1, 0.1)
-	for x in [-1.05, 1.05]:
-		for z in [-1.5, 1.5]:
+	for x: float in [-1.05, 1.05]:
+		for z: float in [-1.5, 1.5]:
 			var wheel := MeshInstance3D.new()
 			var wm := CylinderMesh.new()
 			wm.top_radius = 0.48
@@ -146,11 +148,24 @@ func _think(delta: float) -> void:
 			var away := (global_position - attack_target.global_position).normalized()
 			order_move(battle.terrain.clamp_to_map(global_position + away * 18.0))
 	_move_step(delta)
+	_lay_tracks()
 	_aim_turret(delta)
 	_crush_timer -= delta
 	if _crush_timer <= 0.0:
 		_crush_timer = 0.4
 		_crush_things()
+
+## A mark every few metres, rather than one per frame: enough to read as a
+## continuous rut without filling the buffer in one crossing.
+func _lay_tracks() -> void:
+	if not _has_track_origin:
+		_last_track_at = global_position
+		_has_track_origin = true
+		return
+	if global_position.distance_to(_last_track_at) < 3.2:
+		return
+	_last_track_at = global_position
+	battle.leave_track(global_position, rotation.y)
 
 func _aim_turret(delta: float) -> void:
 	if turret == null:

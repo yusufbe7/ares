@@ -73,7 +73,7 @@ func add_point(id: String, display: String, pos: Vector3, owner_team: int = -1) 
 
 func held_by(team: int) -> int:
 	var n := 0
-	for p in points:
+	for p: ObjectivePoint in points:
 		if p.owner_team == team:
 			n += 1
 	return n
@@ -82,7 +82,7 @@ func tick(delta: float, units: Array) -> void:
 	if finished:
 		return
 	elapsed += delta
-	for p in points:
+	for p: ObjectivePoint in points:
 		if p.update(delta, units):
 			EventBus.objective_captured.emit(p.id, p.owner_team)
 			battle.on_point_captured(p)
