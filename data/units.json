@@ -1,0 +1,530 @@
+{
+ "units": [
+  {
+   "id": "inf_rifle",
+   "name": {
+    "uz": "Miltiqchi otryad",
+    "en": "Rifle squad",
+    "ru": "Стрелковое отделение"
+   },
+   "class": "infantry",
+   "men": 1,
+   "cost": {
+    "money": 60,
+    "manpower": 5
+   },
+   "upkeep": {
+    "money": 2,
+    "ammo": 1,
+    "food": 1
+   },
+   "hp": 100,
+   "speed": 4.2,
+   "vision": 55,
+   "damage": 11,
+   "range": 48,
+   "rpm": 90,
+   "accuracy": 0.62,
+   "armor": 0,
+   "at": 0.1,
+   "role": "line",
+   "faction": "army",
+   "look": "regular"
+  },
+  {
+   "id": "inf_at",
+   "name": {
+    "uz": "Tankka qarshi guruh",
+    "en": "AT team",
+    "ru": "Противотанковая группа"
+   },
+   "class": "infantry",
+   "men": 1,
+   "cost": {
+    "money": 90,
+    "manpower": 3
+   },
+   "upkeep": {
+    "money": 3,
+    "ammo": 2,
+    "food": 1
+   },
+   "hp": 90,
+   "speed": 3.9,
+   "vision": 52,
+   "damage": 9,
+   "range": 42,
+   "rpm": 70,
+   "accuracy": 0.55,
+   "armor": 0,
+   "at": 0.95,
+   "role": "anti_tank",
+   "faction": "army",
+   "look": "regular"
+  },
+  {
+   "id": "inf_recon",
+   "name": {
+    "uz": "Razvedka guruhi",
+    "en": "Recon team",
+    "ru": "Разведгруппа"
+   },
+   "class": "infantry",
+   "men": 1,
+   "cost": {
+    "money": 80,
+    "manpower": 3
+   },
+   "upkeep": {
+    "money": 2,
+    "ammo": 1,
+    "food": 1
+   },
+   "hp": 80,
+   "speed": 5.4,
+   "vision": 95,
+   "damage": 8,
+   "range": 44,
+   "rpm": 80,
+   "accuracy": 0.58,
+   "armor": 0,
+   "at": 0.05,
+   "role": "recon",
+   "faction": "both",
+   "look": "regular"
+  },
+  {
+   "id": "inf_mg",
+   "name": {
+    "uz": "Pulemyotchilar",
+    "en": "MG team",
+    "ru": "Пулемётный расчёт"
+   },
+   "class": "infantry",
+   "men": 1,
+   "cost": {
+    "money": 75,
+    "manpower": 3
+   },
+   "upkeep": {
+    "money": 2,
+    "ammo": 3,
+    "food": 1
+   },
+   "hp": 90,
+   "speed": 3.4,
+   "vision": 58,
+   "damage": 8,
+   "range": 62,
+   "rpm": 220,
+   "accuracy": 0.38,
+   "armor": 0,
+   "at": 0.05,
+   "role": "suppression",
+   "faction": "both",
+   "look": "regular"
+  },
+  {
+   "id": "veh_apc",
+   "name": {
+    "uz": "Zirhli transport",
+    "en": "APC",
+    "ru": "БТР"
+   },
+   "class": "vehicle",
+   "men": 2,
+   "cost": {
+    "money": 220,
+    "manpower": 2,
+    "steel": 30
+   },
+   "upkeep": {
+    "money": 6,
+    "fuel": 4,
+    "ammo": 2
+   },
+   "hp": 320,
+   "speed": 9.5,
+   "vision": 65,
+   "damage": 16,
+   "range": 58,
+   "rpm": 260,
+   "accuracy": 0.42,
+   "armor": 2,
+   "at": 0.3,
+   "role": "transport",
+   "capacity": 5,
+   "faction": "army"
+  },
+  {
+   "id": "veh_tank",
+   "name": {
+    "uz": "Asosiy tank",
+    "en": "Main battle tank",
+    "ru": "Основной танк"
+   },
+   "class": "vehicle",
+   "men": 3,
+   "cost": {
+    "money": 520,
+    "manpower": 3,
+    "steel": 90
+   },
+   "upkeep": {
+    "money": 14,
+    "fuel": 9,
+    "ammo": 5
+   },
+   "hp": 760,
+   "speed": 7.4,
+   "vision": 70,
+   "damage": 150,
+   "range": 78,
+   "rpm": 8,
+   "accuracy": 0.8,
+   "armor": 6,
+   "at": 1.0,
+   "role": "armor",
+   "armor_sides": {
+    "front": 6,
+    "side": 3,
+    "rear": 1.5
+   },
+   "faction": "both"
+  },
+  {
+   "id": "veh_spg",
+   "name": {
+    "uz": "O'ziyurar artilleriya",
+    "en": "Self-propelled gun",
+    "ru": "САУ"
+   },
+   "class": "vehicle",
+   "men": 4,
+   "cost": {
+    "money": 480,
+    "manpower": 4,
+    "steel": 70
+   },
+   "upkeep": {
+    "money": 12,
+    "fuel": 6,
+    "ammo": 9
+   },
+   "hp": 280,
+   "speed": 6.0,
+   "vision": 45,
+   "damage": 180,
+   "range": 300,
+   "rpm": 4,
+   "accuracy": 0.3,
+   "armor": 1,
+   "at": 0.6,
+   "role": "artillery",
+   "indirect": true,
+   "faction": "both"
+  },
+  {
+   "id": "veh_aa",
+   "name": {
+    "uz": "Zenit qurilmasi",
+    "en": "AA vehicle",
+    "ru": "ЗСУ"
+   },
+   "class": "vehicle",
+   "men": 3,
+   "cost": {
+    "money": 300,
+    "manpower": 3,
+    "steel": 45
+   },
+   "upkeep": {
+    "money": 8,
+    "fuel": 5,
+    "ammo": 4
+   },
+   "hp": 260,
+   "speed": 8.0,
+   "vision": 90,
+   "damage": 30,
+   "range": 120,
+   "rpm": 400,
+   "accuracy": 0.45,
+   "armor": 1,
+   "at": 0.2,
+   "role": "anti_air",
+   "faction": "army"
+  },
+  {
+   "id": "air_heli",
+   "name": {
+    "uz": "Hujum vertolyoti",
+    "en": "Attack helicopter",
+    "ru": "Ударный вертолёт"
+   },
+   "class": "aircraft",
+   "men": 2,
+   "cost": {
+    "money": 900,
+    "manpower": 2,
+    "steel": 60
+   },
+   "upkeep": {
+    "money": 26,
+    "fuel": 18,
+    "ammo": 8
+   },
+   "hp": 340,
+   "speed": 22.0,
+   "vision": 140,
+   "damage": 90,
+   "range": 110,
+   "rpm": 20,
+   "accuracy": 0.62,
+   "armor": 1,
+   "at": 0.9,
+   "role": "gunship",
+   "altitude": 22.0,
+   "faction": "army"
+  },
+  {
+   "id": "air_drone",
+   "name": {
+    "uz": "Razvedka droni",
+    "en": "Recon drone",
+    "ru": "Разведдрон"
+   },
+   "class": "aircraft",
+   "men": 0,
+   "cost": {
+    "money": 180,
+    "manpower": 0,
+    "steel": 10
+   },
+   "upkeep": {
+    "money": 4,
+    "fuel": 2
+   },
+   "hp": 40,
+   "speed": 17.0,
+   "vision": 210,
+   "damage": 0,
+   "range": 0,
+   "rpm": 0,
+   "accuracy": 0,
+   "armor": 0,
+   "at": 0,
+   "role": "recon",
+   "altitude": 38.0,
+   "faction": "both"
+  },
+  {
+   "id": "air_fpv",
+   "name": {
+    "uz": "FPV dron",
+    "en": "FPV drone",
+    "ru": "FPV-дрон"
+   },
+   "class": "aircraft",
+   "men": 0,
+   "cost": {
+    "money": 60,
+    "manpower": 0,
+    "steel": 4
+   },
+   "upkeep": {
+    "money": 1
+   },
+   "hp": 20,
+   "speed": 26.0,
+   "vision": 80,
+   "damage": 220,
+   "range": 6,
+   "rpm": 0,
+   "accuracy": 0.9,
+   "armor": 0,
+   "at": 0.85,
+   "role": "kamikaze",
+   "altitude": 14.0,
+   "faction": "both"
+  },
+  {
+   "id": "inf_insurgent",
+   "name": {
+    "uz": "Isyonchi",
+    "en": "Insurgent",
+    "ru": "Боевик"
+   },
+   "class": "infantry",
+   "faction": "insurgent",
+   "look": "irregular",
+   "men": 1,
+   "cost": {
+    "money": 40,
+    "manpower": 1
+   },
+   "upkeep": {
+    "money": 1,
+    "ammo": 1,
+    "food": 1
+   },
+   "hp": 90,
+   "speed": 4.6,
+   "vision": 52,
+   "damage": 10,
+   "range": 42,
+   "rpm": 85,
+   "accuracy": 0.52,
+   "armor": 0,
+   "at": 0.1,
+   "role": "line"
+  },
+  {
+   "id": "inf_rpg",
+   "name": {
+    "uz": "RPG otuvchi",
+    "en": "RPG gunner",
+    "ru": "Гранатомётчик"
+   },
+   "class": "infantry",
+   "faction": "insurgent",
+   "look": "irregular",
+   "men": 1,
+   "cost": {
+    "money": 70,
+    "manpower": 1
+   },
+   "upkeep": {
+    "money": 2,
+    "ammo": 2,
+    "food": 1
+   },
+   "hp": 85,
+   "speed": 4.2,
+   "vision": 48,
+   "damage": 8,
+   "range": 38,
+   "rpm": 60,
+   "accuracy": 0.48,
+   "armor": 0,
+   "at": 0.9,
+   "role": "anti_tank"
+  },
+  {
+   "id": "veh_technical",
+   "name": {
+    "uz": "Texnika (pikap)",
+    "en": "Technical",
+    "ru": "Пикап с пулемётом"
+   },
+   "class": "vehicle",
+   "faction": "insurgent",
+   "men": 2,
+   "cost": {
+    "money": 120,
+    "manpower": 2,
+    "steel": 12
+   },
+   "upkeep": {
+    "money": 3,
+    "fuel": 3,
+    "ammo": 2
+   },
+   "hp": 150,
+   "speed": 12.5,
+   "vision": 62,
+   "damage": 14,
+   "range": 55,
+   "rpm": 300,
+   "accuracy": 0.36,
+   "armor": 0,
+   "at": 0.15,
+   "role": "transport",
+   "capacity": 4
+  }
+ ],
+ "fortifications": [
+  {
+   "id": "trench",
+   "name": {
+    "uz": "Xandaq",
+    "en": "Trench",
+    "ru": "Траншея"
+   },
+   "cost_per_m": 1,
+   "cover": 0.78
+  },
+  {
+   "id": "wire",
+   "name": {
+    "uz": "Simto'siq",
+    "en": "Barbed wire",
+    "ru": "Проволока"
+   },
+   "cost": 4,
+   "cover": 0.0,
+   "slow": 0.45
+  },
+  {
+   "id": "sandbag",
+   "name": {
+    "uz": "Qum qoplari",
+    "en": "Sandbags",
+    "ru": "Мешки с песком"
+   },
+   "cost": 6,
+   "cover": 0.62
+  },
+  {
+   "id": "camo_net",
+   "name": {
+    "uz": "Niqob to'r",
+    "en": "Camo net",
+    "ru": "Маскировочная сеть"
+   },
+   "cost": 15,
+   "cover": 0.2,
+   "stealth": 0.5
+  },
+  {
+   "id": "mines",
+   "name": {
+    "uz": "Minalar",
+    "en": "Mines",
+    "ru": "Мины"
+   },
+   "cost": 6,
+   "damage": 260
+  }
+ ],
+ "factions": [
+  {
+   "id": "army",
+   "name": {
+    "uz": "Armiya",
+    "en": "Army",
+    "ru": "Армия"
+   },
+   "color": "4a5d3a",
+   "desc": {
+    "uz": "Muntazam qo'shin: zirh, artilleriya, aviatsiya.",
+    "en": "Regular force: armour, guns, air support.",
+    "ru": "Регулярные войска."
+   }
+  },
+  {
+   "id": "insurgent",
+   "name": {
+    "uz": "Isyonchilar",
+    "en": "Insurgents",
+    "ru": "Боевики"
+   },
+   "color": "6b5436",
+   "desc": {
+    "uz": "Tez, arzon, pikaplar va RPG. Zirh kam.",
+    "en": "Fast, cheap, technicals and RPGs. Little armour.",
+    "ru": "Быстрые, дешёвые, пикапы и РПГ."
+   }
+  }
+ ]
+}
