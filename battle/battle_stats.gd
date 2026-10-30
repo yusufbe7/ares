@@ -25,6 +25,8 @@ var vehicles_lost: Array = [0, 0]
 var aircraft_lost: Array = [0, 0]
 var damage_dealt: Array = [0.0, 0.0]
 var points_captured: Array = [0, 0]
+var bled_out: Array = [0, 0]
+var rescued: Array = [0, 0]
 var records: Dictionary = {}        # "team:unit_id" -> TypeRecord
 var elapsed: float = 0.0
 
@@ -70,6 +72,16 @@ func on_kill(victim_team: int, victim_unit: String, victim_class: String, men: i
 		if killer_unit != "":
 			record(killer_team, killer_unit).kills += 1
 
+## Men nobody reached in time. Worth separating from men killed outright,
+## because it is the number that says whether the rescues were working.
+func on_bled_out(team: int) -> void:
+	if team >= 0 and team <= 1:
+		bled_out[team] += 1
+
+func on_rescued(team: int) -> void:
+	if team >= 0 and team <= 1:
+		rescued[team] += 1
+
 func on_point_captured(team: int) -> void:
 	if team >= 0 and team <= 1:
 		points_captured[team] += 1
@@ -109,6 +121,7 @@ func to_dict() -> Dictionary:
 		"team_names": team_names, "kills": kills, "losses": losses,
 		"men_lost": men_lost, "vehicles_lost": vehicles_lost,
 		"aircraft_lost": aircraft_lost, "damage": damage_dealt,
-		"points": points_captured, "elapsed": elapsed,
+		"points": points_captured, "bled_out": bled_out, "rescued": rescued,
+		"elapsed": elapsed,
 		"best_unit": best, "records": rows,
 	}

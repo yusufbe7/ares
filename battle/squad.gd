@@ -45,7 +45,7 @@ func center() -> Vector3:
 ## Spreads the group out around the destination instead of stacking everyone on
 ## one point, with vehicles behind the infantry line.
 func order_move(target: Vector3, terrain: BattleTerrain) -> void:
-	var list := alive_units()
+	var list := fighting_units()
 	if list.is_empty():
 		return
 	var forward := (target - center())
@@ -70,24 +70,32 @@ func order_move(target: Vector3, terrain: BattleTerrain) -> void:
 			dest.y = terrain.height_at(dest.x, dest.z)
 		u.order_move(dest)
 
-func order_attack(target: BattleUnit) -> void:
+## Everyone in the group who can still act on an order.
+func fighting_units() -> Array:
+	var out: Array = []
 	for u in alive_units():
+		if u.is_fighting():
+			out.append(u)
+	return out
+
+func order_attack(target: BattleUnit) -> void:
+	for u in fighting_units():
 		u.order_attack(target)
 
 func order_attack_building(building) -> void:
-	for u in alive_units():
+	for u in fighting_units():
 		u.order_attack_building(building)
 
 func order_capture(point) -> void:
-	for u in alive_units():
+	for u in fighting_units():
 		u.order_capture(point)
 
 func order_hold() -> void:
-	for u in alive_units():
+	for u in fighting_units():
 		u.order_hold()
 
 func order_stance(stance: int) -> void:
-	for u in alive_units():
+	for u in fighting_units():
 		u.order_stance(stance)
 
 ## A readable name for the HUD, taken from what is actually in the group.

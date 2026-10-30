@@ -89,6 +89,10 @@ func _build_visual() -> void:
 			_body_mesh.material_override.albedo_color.lightened(0.15)
 
 func _think(delta: float) -> void:
+	# Carrying a man off the field takes precedence over the firefight.
+	if rescuing != null:
+		_do_rescue(delta)
+		return
 	_cover_timer -= delta
 	_bob += delta * (8.0 if has_move_target else 1.5)
 	if _body_mesh != null:
@@ -107,6 +111,62 @@ func _think(delta: float) -> void:
 			stance = Stance.CROUCH
 	_move_step(delta)
 	_update_stance()
+
+## Go to him, pick him up, carry him back. If he dies on the way, or somebody
+## else got there first, drop the job and rejoin the fight.
+const DRAG_SPEED_FACTOR := 0.45
+const PICKUP_RANGE := 2.6
+
+func _do_rescue(delta: float) -> void:
+	var casualty: BattleUnit = rescuing
+	if not is_instance_valid(casualty) or not casualty.wounded:
+		_abandon_rescue()
+		return
+	if casualty.rescuer != self:
+		_abandon_rescue()
+		return
+
+	var to_him: float = global_position.distance_to(casualty.global_position)
+	if not casualty.being_dragged:
+		# Still on the way: keep walking to him, re-issuing as he is static.
+		if to_him > PICKUP_RANGE:
+			if not has_move_target or _cover_timer <= 0.0:
+				_cover_timer = 1.0
+				order_move(casualty.global_position)
+				rescuing = casualty
+				activity = Activity.RESCUING
+			_move_step(delta)
+			_cover_timer -= delta
+			return
+		casualty.being_dragged = true
+		stance = Stance.CROUCH
+
+	# Dragging: head for our own edge, with him in tow just behind.
+	var safety: Vector3 = battle.safe_point_for(team)
+	var to_safety := safety - global_position
+	to_safety.y = 0.0
+	if to_safety.length() < 30.0:
+		casualty.being_dragged = false
+		casualty.recover()
+		rescuing = null
+		activity = Activity.IDLE
+		return
+	var dir := to_safety.normalized()
+	_facing = _facing.lerp(dir, clampf(delta * 3.0, 0.0, 1.0)).normalized()
+	global_position += dir * effective_speed() * DRAG_SPEED_FACTOR * delta
+	_stick_to_ground()
+	look_at_direction(_facing)
+	casualty.global_position = global_position - dir * 1.4
+	casualty.global_position.y = battle.terrain.height_at(
+		casualty.global_position.x, casualty.global_position.z) + 0.2
+
+func _abandon_rescue() -> void:
+	if rescuing != null and is_instance_valid(rescuing):
+		rescuing.being_dragged = false
+		if rescuing.rescuer == self:
+			rescuing.rescuer = null
+	rescuing = null
+	activity = Activity.IDLE
 
 func _seek_cover() -> void:
 	var threat_dir := Vector3.FORWARD
@@ -140,6 +200,14 @@ func _update_stance() -> void:
 			Stance.CROUCH: target_scale = 0.72
 			Stance.PRONE: target_scale = 0.45
 		_body_mesh.scale.y = lerpf(_body_mesh.scale.y, target_scale, 0.15)
+
+## Down, flat, and out of the fight until somebody comes.
+func _on_wounded_visual() -> void:
+	if _body_mesh != null:
+		_body_mesh.rotation.x = PI * 0.5
+		_body_mesh.scale.y = 1.0
+		_body_mesh.position.y = -0.4
+	set_selected(false)
 
 func fire_at(target: BattleUnit, distance: float) -> void:
 	# An AT team shoots a rocket, which flies and can miss the way a rocket does.

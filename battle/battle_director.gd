@@ -205,7 +205,7 @@ func _check_end(delta: float, units: Array) -> void:
 		return        # a sandbox never declares a winner
 	var alive := [0, 0]
 	for u in units:
-		if u.is_alive():
+		if u.is_fighting():
 			alive[u.team] += u.men_count()
 
 	# A side with nothing left on the field and nothing left to send loses in

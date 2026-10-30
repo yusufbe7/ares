@@ -15,7 +15,7 @@ var marker: Node3D = null
 func update(delta: float, units: Array) -> bool:
 	var count := [0, 0]
 	for u in units:
-		if not u.is_alive() or u.is_air():
+		if not u.is_fighting() or u.is_air():
 			continue
 		if u.global_position.distance_to(position) <= radius:
 			count[u.team] += u.men_count()

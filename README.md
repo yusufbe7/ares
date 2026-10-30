@@ -122,6 +122,20 @@ ball = himoya − masofa + dushmanga qarash − band bo'lsa jarima
 yotadi, aniqligi pasayadi. Bosim kuchli bo'lsa pana ortidan boshini
 ko'tarmaydi.
 
+**Yarador va qutqaruv.** Piyoda askar ko'pincha darhol o'lmaydi — yiqiladi va
+qon yo'qota boshlaydi. Panada bo'lgani yiqilish ehtimolini oshiradi. Yaqindagi
+hamkasb o'z ishini tashlab, uning oldiga boradi va sudrab o'z chetiga olib
+chiqadi. Olib chiqilsa askar yarim kuch bilan safga qaytadi, ulgurilmasa
+nobud bo'ladi.
+
+Bu bepul emas: sudrayotgan askar sekin yuradi va o'sha vaqt davomida otmaydi
+— bitta yarador uchun ikkita miltiq saf dan chiqadi. Sudrovchi o'ldirilsa,
+yarador o'sha joyda qoladi va boshqasi kelishi mumkin. Dushman yiqilgan
+askarni o'qqa tutmaydi, shuning uchun qaytib borish mantiqqa ega bo'ladi.
+
+Pastdagi panelda **YARADOR** soni ko'rinadi, natija ekranida esa qutqarilgan
+va ulgurilmagan askarlar alohida hisoblanadi.
+
 **Zirh.** Tankning oldi qalin, yoni o'rtacha, orqasi zaif — yon tomondan
 aylanib o'tish haqiqiy javob. Pikapni esa oddiy miltiq ham teshadi.
 

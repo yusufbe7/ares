@@ -110,6 +110,8 @@ func _stats_table(col: VBoxContainer, stats: Dictionary) -> void:
 		{"label": "Yo'qotilgan texnika", "key": "vehicles_lost"},
 		{"label": "Yo'qotilgan aviatsiya", "key": "aircraft_lost"},
 		{"label": "Egallangan nuqtalar", "key": "points"},
+		{"label": "Qutqarilgan yarador", "key": "rescued"},
+		{"label": "Qon yo'qotib o'lgan", "key": "bled_out"},
 	]
 	for row in rows:
 		grid.add_child(UIKit.label(str(row["label"]), 13, UIKit.MUTED))
