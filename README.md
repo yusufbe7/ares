@@ -148,6 +148,15 @@ daraxtni yiqitadi — yiqilgan tana pana bo'ladi.
 
 **Razvedka.** Ko'rilmagan dushman umuman chizilmaydi. Dron zonani ochadi.
 
+**Snaryad izlari.** Har bir snaryad va raketa ortidan tutun donalari qoladi va
+asta yo'qoladi. Artilleriya otganda osmonda egri yoylar chiziladi — kamera
+shu balandlikda bo'lganda zarba qayerdan qayerga ketayotgani shundan ko'rinadi.
+
+**Askarlarning ismi bor.** Har bir piyodada unvon va familiya bor (masalan
+`SGT Vance`). Pastki chapdagi lentada kim yarador bo'lgani, kim qutqarilgani
+va kim halok bo'lgani ismi bilan yozilib boradi. Bitta askar tanlansa,
+panelda uning ismi chiqadi.
+
 ---
 
 ## Bot

@@ -5,14 +5,14 @@ extends Node3D
 
 var camera: Camera3D
 var target_position: Vector3 = Vector3.ZERO
-var zoom: float = 60.0
+var zoom: float = 115.0
 var yaw: float = 0.0
-var pitch: float = -52.0
+var pitch: float = -56.0
 var terrain: BattleTerrain = null
 var edge_scroll: bool = true
 
 const MIN_ZOOM := 18.0
-const MAX_ZOOM := 220.0
+const MAX_ZOOM := 340.0
 
 func _ready() -> void:
 	camera = Camera3D.new()

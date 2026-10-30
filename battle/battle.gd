@@ -23,6 +23,9 @@ var wounded_units: Array = []    # men down and waiting for somebody to come
 var bridge_points: Array = []    # [{pos, half, dir}] the crossings over the river
 var _tracks_mm: MultiMesh = null
 var _track_next: int = 0
+var _trail_mm: MultiMesh = null
+var _trail_next: int = 0
+var _trail_age: Array = []
 var objectives: Array = []       # per team: the thing a "destroy" match targets
 var stats: BattleStats = null
 var squads: Array = []           # Squad, index 0..4 for keys 1..5
@@ -494,6 +497,65 @@ func _ensure_track_layer() -> void:
 	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(node)
 
+## Shell and rocket trails: a bead of smoke every few metres, each fading on
+## its own clock. A barrage then draws its own arcs across the sky, which is
+## what makes indirect fire readable from this far out.
+const MAX_TRAIL_PUFFS := 700
+const TRAIL_LIFE := 5.0
+
+func _ensure_trail_layer() -> void:
+	if _trail_mm != null:
+		return
+	_trail_mm = MultiMesh.new()
+	_trail_mm.transform_format = MultiMesh.TRANSFORM_3D
+	_trail_mm.use_colors = true
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.5, 1.5)
+	_trail_mm.mesh = quad
+	_trail_mm.instance_count = MAX_TRAIL_PUFFS
+	_trail_mm.visible_instance_count = 0
+	_trail_age.resize(MAX_TRAIL_PUFFS)
+	_trail_age.fill(0.0)
+	var node := MultiMeshInstance3D.new()
+	node.multimesh = _trail_mm
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	mat.vertex_color_use_as_albedo = true
+	mat.albedo_color = Color(0.95, 0.95, 0.93, 0.85)
+	node.material_override = mat
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(node)
+
+func leave_trail_puff(pos: Vector3, scale: float = 1.0) -> void:
+	if Settings.graphics_quality == 0:
+		return
+	_ensure_trail_layer()
+	var basis := Basis().scaled(Vector3.ONE * scale)
+	_trail_mm.set_instance_transform(_trail_next, Transform3D(basis, pos))
+	_trail_mm.set_instance_color(_trail_next, Color(1, 1, 1, 0.85))
+	_trail_age[_trail_next] = TRAIL_LIFE
+	_trail_next = (_trail_next + 1) % MAX_TRAIL_PUFFS
+	_trail_mm.visible_instance_count = MAX_TRAIL_PUFFS
+
+func _fade_trails(delta: float) -> void:
+	if _trail_mm == null:
+		return
+	for i in range(MAX_TRAIL_PUFFS):
+		var life: float = _trail_age[i]
+		if life <= 0.0:
+			continue
+		life -= delta
+		_trail_age[i] = life
+		var t: float = clampf(life / TRAIL_LIFE, 0.0, 1.0)
+		# The bead swells and thins as it drifts, the way smoke does.
+		var xf := _trail_mm.get_instance_transform(i)
+		xf.basis = Basis().scaled(Vector3.ONE * (1.0 + (1.0 - t) * 1.8))
+		xf.origin.y += delta * 0.8
+		_trail_mm.set_instance_transform(i, xf)
+		_trail_mm.set_instance_color(i, Color(1, 1, 1, 0.85 * t))
+
 func leave_track(pos: Vector3, yaw: float) -> void:
 	if Settings.graphics_quality == 0:
 		return
@@ -652,6 +714,7 @@ func spawn_shell(from: Vector3, to: Vector3, team: int, damage: float, at_value:
 	spawn_muzzle_smoke(from, (to - from).normalized(), 1.6)
 	var shell := Projectile.new()
 	add_child(shell)
+	shell.trail_scale = 1.0
 	shell.launch(self, from, to, team, damage, at_value, 120.0, 3.0)
 
 func spawn_rocket(from: Vector3, target: BattleUnit, team: int, damage: float) -> void:
@@ -916,6 +979,7 @@ func _physics_process(delta: float) -> void:
 		ai.tick(delta)
 	director.tick(delta, units)
 	_check_mines()
+	_fade_trails(delta)
 	_rescue_timer -= delta
 	if _rescue_timer <= 0.0:
 		_rescue_timer = 1.5

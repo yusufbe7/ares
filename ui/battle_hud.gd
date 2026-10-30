@@ -19,6 +19,7 @@ var _top_label: Label
 var _objective_label: Label
 var _objective_bar: ProgressBar
 var _selection_box: VBoxContainer
+var _feed_box: VBoxContainer
 var _group_bar: HBoxContainer
 var _selection_rect: Control
 var _sandbox_panel: PanelContainer
@@ -31,12 +32,14 @@ func setup(b: Battle, c: BattleControls) -> void:
 	layer = 10
 	_build()
 	EventBus.selection_changed.connect(_on_selection)
+	EventBus.combat_log.connect(_on_combat_log)
 	controls.selection_box_changed.connect(_on_box)
 
 func _build() -> void:
 	_build_top()
 	_build_objective()
 	_build_bottom_bar()
+	_build_feed()
 	_build_selection_panel()
 	_build_group_bar()
 
@@ -130,6 +133,32 @@ func _build_bottom_bar() -> void:
 	_nuke_label = UIKit.label(Settings.key_name("bf_nuke"), 13, UIKit.BAD)
 	nuke_row.add_child(_nuke_label)
 	bar.add_child(_nuke_pill)
+
+## A short feed of what is happening to the player's own soldiers, by name.
+func _build_feed() -> void:
+	var panel := UIKit.make_panel(UIKit.PANEL)
+	panel.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	panel.offset_left = 12
+	panel.offset_top = -270
+	panel.offset_right = 400
+	panel.offset_bottom = -176
+	add_child(panel)
+	_feed_box = UIKit.vbox(1)
+	panel.add_child(_feed_box)
+
+func _on_combat_log(text: String, kind: String) -> void:
+	if _feed_box == null:
+		return
+	var l := UIKit.label(text, 11, UIKit.color_for_kind(kind))
+	_feed_box.add_child(l)
+	while _feed_box.get_child_count() > 5:
+		var oldest := _feed_box.get_child(0)
+		_feed_box.remove_child(oldest)
+		oldest.queue_free()
+	var t := get_tree().create_timer(9.0)
+	t.timeout.connect(func():
+		if is_instance_valid(l):
+			l.queue_free())
 
 func _build_selection_panel() -> void:
 	var panel := UIKit.make_panel(UIKit.PANEL)
@@ -263,7 +292,10 @@ func _on_selection(units: Array) -> void:
 		hp_max += u.max_hp
 		if u.suppression > 0.4:
 			suppressed += 1
-	_selection_box.add_child(UIKit.label("Tanlangan: %d" % units.size(), 15, UIKit.ACCENT))
+	if units.size() == 1:
+		_selection_box.add_child(UIKit.label(units[0].soldier_name, 15, UIKit.ACCENT))
+	else:
+		_selection_box.add_child(UIKit.label("Tanlangan: %d" % units.size(), 15, UIKit.ACCENT))
 	var line := ""
 	for uid in counts.keys():
 		line += "%s x%d   " % [DB.local_name(DB.unit(str(uid)).get("name", {}), str(uid)), int(counts[uid])]

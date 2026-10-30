@@ -14,3 +14,5 @@ signal unit_died(unit: Node)
 signal selection_changed(units: Array)
 signal supply_changed(team: int, supply: float)
 signal support_changed(team: int, kind: String, ready: bool)
+## One line per thing that happens to a named soldier, for the feed.
+signal combat_log(text: String, kind: String)
