@@ -39,7 +39,7 @@ o'ynaladi.
 
 | Xarita | Nimasi bor |
 |---|---|
-| **Village** | Loy va tosh uylar, omborlar, pichan g'aramlari, **daryo va tosh ko'prik**, temir yo'l, simyog'ochlar |
+| **Village** | Loy va tosh uylar, omborlar, pichan g'aramlari, **tosh quduqlar**, **o'tish joyi bor past devorlar**, **minorali cherkov**, daryo va tosh ko'prik, temir yo'l, simyog'ochlar |
 | **Forest** | Qalin o'rmon, yiqilgan tanalar, tor daryo — ko'rish masofasi qisqa |
 | **Desert** | Keng ochiq maydon, qumtepalar, **palmalar qatori bilan sug'orish kanali**, uzoq masofa |
 | **City** | Yo'l to'ri bo'ylab ko'p qavatli kvartallar, yongan texnika |
@@ -172,6 +172,16 @@ joylashadi.
 **Snaryad izlari.** Har bir snaryad va raketa ortidan tutun donalari qoladi va
 asta yo'qoladi. Artilleriya otganda osmonda egri yoylar chiziladi — kamera
 shu balandlikda bo'lganda zarba qayerdan qayerga ketayotgani shundan ko'rinadi.
+
+**Radio aloqasi.** Askarlar jang davomida gapiradi: harakatga chiqqanda,
+o't ostida qolganda, qotib qolganda, yarador bo'lganda. Tank yoki aviatsiya
+chaqirilsa shtab javob beradi, nuqta egallansa xabar beriladi. Har bir gap
+pastki chapdagi lentada ismi bilan chiqadi. Bir xil gap qayta-qayta
+takrorlanmasligi uchun har turining o'z kutish vaqti bor.
+
+**Texnika ham pana.** Zirhli mashina orqasida turgan askarni korpus himoya
+qiladi — pana nuqtalari emas, jonli hisob, chunki texnika yurganda pana ham
+u bilan ketadi. Faqat korpus haqiqatan o'q yo'lida bo'lsa ishlaydi.
 
 **Unvon oshadi.** Askar dushmanni yo'q qilgani sari unvoni ko'tariladi:
 PVT → PFC → CPL → SGT → 1LT. Har safar lentada ismi bilan e'lon qilinadi.

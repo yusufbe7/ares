@@ -227,6 +227,7 @@ func _handle_key(event: InputEventKey) -> void:
 	elif Input.is_action_just_pressed("bf_call_tank"):
 		if battle.director.pay(team, 120.0):
 			battle.spawn_support_vehicle(team, "veh_tank")
+			Radio.say("SHTAB", Radio.Call.ARMOUR_CALLED, 0.0)
 			GameState.notify("Tank chaqirildi.", "good")
 		else:
 			GameState.notify("Ta'minot yetarli emas (120 kerak).", "bad")

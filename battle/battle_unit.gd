@@ -113,6 +113,11 @@ func credit_kill() -> void:
 	soldier_name = "%s %s" % [RANKS[rank_index], _surname]
 	_log("unvoni oshirildi", "good")
 
+## A callout, when this is one of our own.
+func _say(call: int, cooldown: float = 6.0) -> void:
+	if battle != null and team == battle.player_team:
+		Radio.say(soldier_name, call, cooldown)
+
 ## Only the player's own men are worth a line in the feed.
 func _log(text: String, kind: String) -> void:
 	if battle != null and team == battle.player_team:
@@ -212,6 +217,7 @@ func order_move(pos: Vector3, keep_formation_offset: Vector3 = Vector3.ZERO) -> 
 	target_building = null
 	forced_target = null
 	activity = Activity.MOVING
+	_say(Radio.Call.ADVANCE, 8.0)
 	_recompute_path()
 
 func order_attack(target: BattleUnit) -> void:
@@ -423,6 +429,7 @@ func fire_at(target: BattleUnit, distance: float) -> void:
 	if _rng.randf() > acc:
 		return
 	var protection: float = battle.cover.protection_at(target.global_position, from_dir)
+	protection = maxf(protection, battle.vehicle_cover_at(target.global_position, from_dir))
 	if battle.terrain.is_in_trench(target.global_position):
 		protection = maxf(protection, 0.75)
 	if target.is_garrisoned():
@@ -471,11 +478,16 @@ func muzzle_position() -> Vector3:
 	return global_position + Vector3(0, 1.4, 0) + _facing * 0.8
 
 func take_suppression(amount: float) -> void:
+	var before := suppression
 	suppression = clampf(suppression + amount, 0.0, 1.0)
 	if suppression > 0.45 and stance == Stance.STAND:
 		stance = Stance.CROUCH
+		if before <= 0.45:
+			_say(Radio.Call.UNDER_FIRE, 7.0)
 	if suppression > 0.8:
 		stance = Stance.PRONE
+		if before <= 0.8:
+			_say(Radio.Call.PINNED, 11.0)
 
 ## How much of an incoming hit the armour stops. Infantry has none; vehicles
 ## override this with real facings.
@@ -529,6 +541,7 @@ func _become_wounded() -> void:
 		battle.cover.release(_cover_slot, get_instance_id())
 		_cover_slot = null
 	_on_wounded_visual()
+	_say(Radio.Call.MAN_DOWN, 4.0)
 	_log("yarador, qutqaruvchi kerak", "warn")
 	battle.on_unit_wounded(self)
 

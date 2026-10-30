@@ -77,6 +77,7 @@ func start(config: Dictionary, local_team: int = 0) -> void:
 
 	terrain = BattleTerrain.new()
 	add_child(terrain)
+	Radio.reset()
 	var map_cfg: Dictionary = DB.battle_map(str(cfg.get("map", "village")))
 	terrain.build(map_cfg, _rng.seed, season, weather)
 
@@ -573,6 +574,26 @@ func leave_track(pos: Vector3, yaw: float) -> void:
 	if _track_next == 0:
 		_tracks_mm.visible_instance_count = MAX_TRACKS
 
+## A vehicle body stops rounds for whoever is behind it. Checked live rather
+## than published as slots, because the cover moves when the vehicle does.
+func vehicle_cover_at(pos: Vector3, from_dir: Vector3) -> float:
+	var incoming := from_dir.normalized()
+	var best := 0.0
+	for u in units:
+		if not is_instance_valid(u) or u.unit_class() != "vehicle" or not u.is_alive():
+			continue
+		var offset: Vector3 = u.global_position - pos
+		offset.y = 0.0
+		var d := offset.length()
+		if d > 6.0 or d < 0.2:
+			continue
+		# Only counts if the hull is actually between the man and the shooter.
+		var align: float = offset.normalized().dot(-incoming)
+		if align <= 0.35:
+			continue
+		best = maxf(best, 0.72 * align * clampf(1.0 - d / 6.0, 0.25, 1.0))
+	return best
+
 func team_name(team: int) -> String:
 	var teams: Array = cfg.get("teams", [])
 	if teams.size() > team:
@@ -788,6 +809,7 @@ func call_air_strike(target: Vector3, team: int) -> void:
 		terrain.clamp_to_map(target + dir * terrain.map_size * 0.5) + Vector3(0, 70.0, 0), 4.0)
 	run.tween_callback(plane.queue_free)
 
+	Radio.say("SHTAB", Radio.Call.AIR_CALLED, 0.0)
 	GameState.notify("Aviatsiya yo'lda.", "good")
 	# Mark the run-in so everyone on the ground can clear the line.
 	for u: BattleUnit in units:
@@ -1077,6 +1099,8 @@ func _update_fog_of_war() -> void:
 func on_point_captured(p: ObjectivePoint) -> void:
 	if stats != null:
 		stats.on_point_captured(p.owner_team)
+	if p.owner_team == player_team:
+		Radio.say("SHTAB", Radio.Call.OBJECTIVE_TAKEN, 0.0)
 	var who: String = "Siz" if p.owner_team == player_team else "Dushman"
 	GameState.notify("%s %s nuqtasini egalladi." % [who, p.id], "good" if p.owner_team == player_team else "warn")
 

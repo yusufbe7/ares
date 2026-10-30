@@ -21,7 +21,9 @@
     "hay": 26,
     "bushes": 260,
     "poles": 18,
-    "rail": 1
+    "rail": 1,
+    "wells": 5,
+    "field_walls": 14
    },
    "desc": {
     "uz": "Uylar, devorlar, tor ko'chalar.",
@@ -33,7 +35,8 @@
     "depth": 6.5,
     "bends": 2,
     "bridges": 2
-   }
+   },
+   "landmark": true
   },
   {
    "id": "forest",
@@ -55,7 +58,9 @@
     "hay": 6,
     "bushes": 420,
     "poles": 6,
-    "rail": 0
+    "rail": 0,
+    "wells": 2,
+    "field_walls": 6
    },
    "desc": {
     "uz": "Qalin daraxtlar, pistirma, qisqa masofa.",
@@ -90,7 +95,9 @@
     "bushes": 90,
     "poles": 12,
     "rail": 1,
-    "palms": 120
+    "palms": 120,
+    "wells": 3,
+    "field_walls": 18
    },
    "desc": {
     "uz": "Keng ochiq maydon, uzoq masofa.",
