@@ -1,13 +1,13 @@
-extends SceneTree
+extends Node
 ## Runs real battles headless and prints what happened. Use it to sanity-check
 ## balance across maps, seasons and victory conditions without opening the
 ## editor:
-##   godot --headless --path . -s res://tests/sim_battle.gd
+##   godot --headless --path . res://tests/sim_battle.tscn
 
 const SECONDS := 90.0
 const HZ := 30.0
 
-func _initialize() -> void:
+func _ready() -> void:
 	print("=== headless battle simulation ===")
 	var cases := [
 		{"map": "village", "season": "winter", "weather": "snow", "mode": "capture"},
@@ -19,7 +19,7 @@ func _initialize() -> void:
 	]
 	for case in cases:
 		_run(case)
-	quit(0)
+	get_tree().quit(0)
 
 func _run(case: Dictionary) -> void:
 	var force := {"infantry": 20, "tanks": 3, "transports": 2, "artillery": 1, "aircraft": 1}
@@ -32,7 +32,7 @@ func _run(case: Dictionary) -> void:
 	cfg["teams"][0]["ai"] = true
 
 	var battle := Battle.new()
-	get_root().add_child(battle)
+	add_child(battle)
 	battle.start(cfg, 0)
 	print("\n--- %s / %s / %s / %s" % [case["map"], case["season"], case["weather"], case["mode"]])
 	print("  units %d   cover slots %d   buildings %d   trees %d"

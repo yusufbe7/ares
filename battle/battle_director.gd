@@ -190,7 +190,7 @@ func on_unit_died(u: BattleUnit) -> void:
 	EventBus.tickets_changed.emit(u.team, tickets[u.team])
 
 ## A command post went down: in destroy mode that ends the battle outright.
-func on_objective_destroyed(target: ObjectiveTarget) -> void:
+func on_objective_destroyed(target) -> void:
 	if finished:
 		return
 	if mode == "destroy":

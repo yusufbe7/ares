@@ -17,7 +17,7 @@ func ground_offset() -> float:
 	return 1.0
 
 func _build_visual() -> void:
-	var color := battle.team_color(team) if battle != null else Color.GRAY
+	var color: Color = battle.team_color(team) if battle != null else Color.GRAY
 	if unit_id == "veh_technical":
 		_build_technical(color)
 		return
@@ -139,7 +139,7 @@ func _think(delta: float) -> void:
 		var wall = target_building          # order_move clears this; hold a reference
 		var to_wall: float = global_position.distance_to(wall.global_position)
 		if to_wall > _range * 0.8:
-			var toward := (wall.global_position - global_position).normalized()
+			var toward: Vector3 = (wall.global_position - global_position).normalized()
 			order_move(battle.terrain.clamp_to_map(global_position + toward * (to_wall - _range * 0.7)))
 			target_building = wall
 	# Keep the standoff: armour fights at its own range, not in the street.
@@ -249,7 +249,7 @@ func unload() -> void:
 	# Put them down on the sheltered side, so the hull is between the section
 	# and whoever is shooting.
 	var away := Vector3(sin(rotation.y), 0, cos(rotation.y))
-	var threat := battle.threat_direction(team, global_position)
+	var threat: Vector3 = battle.threat_direction(team, global_position)
 	if threat.length() > 0.1:
 		away = -threat.normalized()
 	var side := Vector3(-away.z, 0, away.x)

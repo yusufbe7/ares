@@ -175,10 +175,7 @@ func _on_combat_log(text: String, kind: String) -> void:
 		var oldest := _feed_box.get_child(0)
 		_feed_box.remove_child(oldest)
 		oldest.queue_free()
-	var t := get_tree().create_timer(9.0)
-	t.timeout.connect(func():
-		if is_instance_valid(l):
-			l.queue_free())
+	get_tree().create_timer(9.0).timeout.connect(l.queue_free)
 
 func _build_selection_panel() -> void:
 	var panel := UIKit.make_panel(UIKit.PANEL)

@@ -60,10 +60,7 @@ func _on_notice(text: String, kind: String) -> void:
 		var oldest := _toast_box.get_child(0)
 		_toast_box.remove_child(oldest)
 		oldest.queue_free()
-	var t := get_tree().create_timer(4.5)
-	t.timeout.connect(func():
-		if is_instance_valid(p):
-			p.queue_free())
+	get_tree().create_timer(4.5).timeout.connect(p.queue_free)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_back") and current_id != "setup":
