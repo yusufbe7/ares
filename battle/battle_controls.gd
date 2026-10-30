@@ -156,8 +156,18 @@ func _issue_order(screen_pos: Vector2) -> void:
 		return
 	var house = _building_at(ground)
 	if house != null:
+		# Infantry moves in and fights from the windows; anything that cannot
+		# hold a building puts rounds into it instead.
+		var entered := false
 		for u in selected:
-			u.order_attack_building(house)
+			if u.unit_class() == "infantry" and house.has_method("can_garrison") \
+					and house.can_garrison(battle.player_team):
+				u.order_garrison(house)
+				entered = true
+			else:
+				u.order_attack_building(house)
+		if entered:
+			GameState.notify("Binoni egallashga yuborildi.", "info")
 		return
 	for p: ObjectivePoint in battle.director.points:
 		if ground.distance_to(p.position) < p.radius:

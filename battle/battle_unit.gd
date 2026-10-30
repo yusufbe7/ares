@@ -57,6 +57,8 @@ var bleed_time: float = 0.0
 var rescuer: BattleUnit = null          # who is coming for me
 var rescuing: BattleUnit = null         # who I am carrying
 var being_dragged: bool = false
+var garrisoned_in = null                # the building this man is fighting from
+var garrison_slot: int = 0
 
 const BLEED_OUT_SECONDS := 55.0
 const WOUND_CHANCE := 0.5
@@ -127,6 +129,48 @@ func is_alive() -> bool:
 func is_fighting() -> bool:
 	return is_alive() and not wounded
 
+func is_garrisoned() -> bool:
+	return garrisoned_in != null and is_instance_valid(garrisoned_in)
+
+## Takes a position inside a building, at a window or on the roof.
+func enter_building(building) -> bool:
+	if building == null or not is_instance_valid(building):
+		return false
+	if unit_class() != "infantry" or wounded:
+		return false
+	if not building.add_to_garrison(self):
+		return false
+	garrisoned_in = building
+	garrison_slot = building.garrison.size() - 1
+	has_move_target = false
+	path.clear()
+	target_building = null
+	global_position = building.firing_point(garrison_slot)
+	stance = Stance.CROUCH
+	activity = Activity.ENGAGING
+	_log("binoga joylashdi", "good")
+	return true
+
+func leave_building(forced: bool = false) -> void:
+	if not is_garrisoned():
+		garrisoned_in = null
+		return
+	var b = garrisoned_in
+	garrisoned_in = null
+	b.remove_from_garrison(self)
+	# Step out to the near side rather than materialising inside a wall.
+	var out := (global_position - b.global_position)
+	out.y = 0.0
+	if out.length() < 0.1:
+		out = Vector3.FORWARD
+	var spot: Vector3 = b.global_position + out.normalized() * (maxf(b.dims.x, b.dims.z) * 0.5 + 2.0)
+	global_position = battle.terrain.clamp_to_map(spot)
+	_stick_to_ground()
+	if forced:
+		take_suppression(0.6)
+		stance = Stance.PRONE
+		_log("bino qulab, tashqariga chiqdi", "warn")
+
 func unit_class() -> String:
 	return str(data.get("class", "infantry"))
 
@@ -138,6 +182,9 @@ func is_air() -> bool:
 # ---------------------------------------------------------------------------
 
 func order_move(pos: Vector3, keep_formation_offset: Vector3 = Vector3.ZERO) -> void:
+	if is_garrisoned():
+		leave_building()
+	_garrison_goal = null
 	move_target = pos + keep_formation_offset
 	has_move_target = true
 	hold_position = false
@@ -163,6 +210,17 @@ func order_attack_building(building) -> void:
 		# Infantry does not level houses; it takes cover against them.
 		order_move(building.global_position + (global_position - building.global_position).normalized() * 6.0)
 		target_building = building
+
+## Walk to a building and take up positions inside it.
+var _garrison_goal = null
+
+func order_garrison(building) -> void:
+	if unit_class() != "infantry" or building == null:
+		return
+	if is_garrisoned():
+		leave_building()
+	order_move(building.global_position)
+	_garrison_goal = building
 
 func order_capture(point) -> void:
 	capture_point = point
@@ -209,6 +267,10 @@ func _physics_process(delta: float) -> void:
 	if _retarget_timer <= 0.0:
 		_retarget_timer = _rng.randf_range(0.4, 0.9)
 		_acquire_target()
+	if is_garrisoned():
+		global_position = garrisoned_in.firing_point(garrison_slot)
+		_shoot(delta)
+		return
 	_think(delta)
 	_shoot(delta)
 
@@ -266,6 +328,11 @@ func _move_step(delta: float) -> void:
 	look_at_direction(_facing)
 
 func _on_arrived() -> void:
+	if _garrison_goal != null:
+		var goal = _garrison_goal
+		_garrison_goal = null
+		if is_instance_valid(goal) and enter_building(goal):
+			return
 	if capture_point != null:
 		activity = Activity.CAPTURING
 	else:
@@ -338,6 +405,8 @@ func fire_at(target: BattleUnit, distance: float) -> void:
 	var protection: float = battle.cover.protection_at(target.global_position, from_dir)
 	if battle.terrain.is_in_trench(target.global_position):
 		protection = maxf(protection, 0.75)
+	if target.is_garrisoned():
+		protection = maxf(protection, DestructibleBuilding.GARRISON_PROTECTION)
 	var dmg: float = float(data.get("damage", 10)) * (1.0 - protection)
 	dmg *= target.armor_multiplier(from_dir, float(data.get("at", 0.0)))
 	target.take_damage(dmg, self)
@@ -478,6 +547,9 @@ func _finish_off() -> void:
 	being_dragged = false
 	activity = Activity.DEAD
 	hp = 0.0
+	if is_garrisoned():
+		garrisoned_in.remove_from_garrison(self)
+		garrisoned_in = null
 	if _cover_slot != null and battle != null:
 		battle.cover.release(_cover_slot, get_instance_id())
 		_cover_slot = null

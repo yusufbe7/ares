@@ -25,6 +25,12 @@ var burning: bool = false
 var cover: CoverSystem = null
 var terrain: BattleTerrain = null
 
+## Men inside the building: they shoot from the windows and the roof, and the
+## walls do the work that cover slots do outside.
+var garrison: Array = []
+var garrison_team: int = -1
+const GARRISON_PROTECTION := 0.86
+
 var _mesh_instance: MeshInstance3D
 var _body: StaticBody3D
 var _debris_live: int = 0
@@ -302,6 +308,8 @@ func _update_state(world_pos: Vector3, radius: float) -> void:
 			cover.add_wreck(global_position)
 	if intact_fraction < 0.5 and not burning:
 		_start_burning()
+	if is_passable() and not garrison.is_empty():
+		eject_garrison(25.0)
 
 func _start_burning() -> void:
 	burning = true
@@ -333,6 +341,61 @@ func _start_burning() -> void:
 ## True once the shell is open enough for infantry to walk through the rubble.
 func is_passable() -> bool:
 	return intact_fraction < 0.45
+
+# ---------------------------------------------------------------------------
+# Garrison
+# ---------------------------------------------------------------------------
+
+func capacity() -> int:
+	# Roughly one man per four metres of frontage, and a wreck holds nobody.
+	if is_passable():
+		return 0
+	return clampi(int((dims.x + dims.z) / 4.0), 2, 10)
+
+func can_garrison(team: int) -> bool:
+	if capacity() <= 0:
+		return false
+	if garrison_team >= 0 and garrison_team != team:
+		return false
+	return garrison.size() < capacity()
+
+## Window and rooftop positions, spread around the shell so a garrison covers
+## every approach instead of stacking on one wall.
+func firing_point(index: int) -> Vector3:
+	var slots := maxi(capacity(), 1)
+	var t: float = float(index % slots) / float(slots)
+	var ang := t * TAU
+	var hx := dims.x * 0.5 - 0.3
+	var hz := dims.z * 0.5 - 0.3
+	var local := Vector3(cos(ang) * hx, 1.2, sin(ang) * hz)
+	# Every third man goes up top, which is what gives the position its reach.
+	if index % 3 == 2:
+		local.y = dims.y + 0.6
+		local.x *= 0.6
+		local.z *= 0.6
+	return to_global(local)
+
+func add_to_garrison(u) -> bool:
+	if not can_garrison(u.team):
+		return false
+	garrison.append(u)
+	garrison_team = u.team
+	return true
+
+func remove_from_garrison(u) -> void:
+	garrison.erase(u)
+	if garrison.is_empty():
+		garrison_team = -1
+
+## Everyone still inside a collapsing building is thrown out of it, hurt.
+func eject_garrison(reason_damage: float) -> void:
+	for u in garrison.duplicate():
+		if is_instance_valid(u):
+			u.leave_building(true)
+			if reason_damage > 0.0:
+				u.take_damage(reason_damage, null)
+	garrison.clear()
+	garrison_team = -1
 
 ## Fragments that did not earn a rigid body still fall, drawn through a single
 ## multimesh. Once one settles it is baked into the rubble mesh and stops

@@ -148,6 +148,14 @@ daraxtni yiqitadi — yiqilgan tana pana bo'ladi.
 
 **Razvedka.** Ko'rilmagan dushman umuman chizilmaydi. Dron zonani ochadi.
 
+**Binoni garnizon qilish.** Piyoda askarlarni tanlab, butun binoga o'ng tugma
+bosilsa, ular ichkariga kirib, deraza va tomdan otadi. Devorlar ularni ~86%
+himoya qiladi — ochiq maydondagi har qanday panadan kuchliroq. O'rinlar bino
+atrofiga teng taqsimlanadi, har uchinchi askar tomga chiqadi, shuning uchun
+garnizon har tomonni nazorat qiladi. Bino yarmidan ko'pi buzilsa, ichidagilar
+zarar bilan tashqariga otiladi. Mudofaachi bot ham hududdagi binolarga
+joylashadi.
+
 **Snaryad izlari.** Har bir snaryad va raketa ortidan tutun donalari qoladi va
 asta yo'qoladi. Artilleriya otganda osmonda egri yoylar chiziladi — kamera
 shu balandlikda bo'lganda zarba qayerdan qayerga ketayotgani shundan ko'rinadi.
