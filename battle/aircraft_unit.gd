@@ -7,6 +7,11 @@ var _rotor: Node3D
 var _spin: float = 0.0
 var _orbit: float = 0.0
 
+## Gunships wait on a pad with the rotor turning over and lift off when there
+## is work, rather than appearing at altitude out of nothing.
+var grounded: bool = false
+var _spool: float = 0.0
+
 func _build_visual() -> void:
 	var color := battle.team_color(team) if battle != null else Color.GRAY
 	var role := str(data.get("role", "gunship"))
@@ -34,7 +39,33 @@ func _build_visual() -> void:
 		blade.rotation.y = TAU * float(i) / float(blade_count)
 		_rotor.add_child(blade)
 
+## Called right after spawning to stage a gunship on the ground.
+func stage_on_pad() -> void:
+	if str(data.get("role", "")) != "gunship":
+		return
+	grounded = true
+	_spool = 0.0
+	global_position.y = battle.terrain.height_at(global_position.x, global_position.z) + 1.2
+	battle.mark_landing_pad(global_position)
+
 func _think(delta: float) -> void:
+	# Idle on the pad until something is worth flying at.
+	if grounded:
+		_spin += delta * (6.0 + _spool * 26.0)
+		if _rotor != null:
+			_rotor.rotation.y = _spin
+		var wants_off: bool = (attack_target != null and attack_target.is_alive()) or has_move_target
+		if wants_off:
+			_spool = minf(1.0, _spool + delta * 0.35)
+			if _spool >= 1.0:
+				grounded = false
+				_say(Radio.Call.AIR_CALLED, 0.0)
+		else:
+			_spool = maxf(0.0, _spool - delta * 0.5)
+		global_position.y = lerpf(global_position.y,
+			battle.terrain.height_at(global_position.x, global_position.z) + 1.2 + _spool * 2.5,
+			0.1)
+		return
 	_spin += delta * 28.0
 	if _rotor != null:
 		_rotor.rotation.y = _spin

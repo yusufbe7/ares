@@ -386,7 +386,49 @@ func _spawn_armies() -> void:
 				var offset := Vector3(_rng.randf_range(-40, 40), 0, _rng.randf_range(-20, 20))
 				spawn_unit(i, str(uid), terrain.clamp_to_map(base + offset))
 				n += 1
+	_stage_aircraft()
+	_mount_transports()
 	_auto_group_player_units()
+
+## Gunships begin the battle on the ground behind their own line.
+func _stage_aircraft() -> void:
+	for team in range(2):
+		for u in units_of_team(team):
+			if u.is_air() and u.has_method("stage_on_pad"):
+				u.stage_on_pad()
+
+## A marked circle on the ground where a helicopter sits.
+func mark_landing_pad(at: Vector3) -> void:
+	var pad := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 9.0
+	cm.bottom_radius = 9.0
+	cm.height = 0.12
+	pad.mesh = cm
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.85, 0.82, 0.35, 0.30)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	pad.material_override = mat
+	pad.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(pad)
+	pad.global_position = terrain.ground_point(at.x, at.z) + Vector3(0, 0.1, 0)
+
+## Fills every transport with whatever infantry is standing near it.
+func _mount_transports() -> void:
+	for team in range(2):
+		var riders: Array = []
+		for u in units_of_team(team):
+			if u.unit_class() == "infantry":
+				riders.append(u)
+		for v in units_of_team(team):
+			if v.unit_class() != "vehicle" or str(v.data.get("role", "")) != "transport":
+				continue
+			var seats := int(v.data.get("capacity", 0))
+			while seats > 0 and not riders.is_empty():
+				var rider = riders.pop_back()
+				if v.load_passenger(rider):
+					seats -= 1
 
 func _auto_group_player_units() -> void:
 	# Pre-sorted groups, so the player starts with something to command rather

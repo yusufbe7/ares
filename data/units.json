@@ -441,6 +441,37 @@
    "at": 0.15,
    "role": "transport",
    "capacity": 4
+  },
+  {
+   "id": "veh_truck",
+   "name": {
+    "uz": "Harbiy yuk mashinasi",
+    "en": "Military truck",
+    "ru": "Военный грузовик"
+   },
+   "class": "vehicle",
+   "faction": "both",
+   "men": 2,
+   "cost": {
+    "money": 90,
+    "manpower": 2,
+    "steel": 10
+   },
+   "upkeep": {
+    "money": 2,
+    "fuel": 3
+   },
+   "hp": 130,
+   "speed": 13.0,
+   "vision": 55,
+   "damage": 0,
+   "range": 0,
+   "rpm": 0,
+   "accuracy": 0.0,
+   "armor": 0,
+   "at": 0.0,
+   "role": "transport",
+   "capacity": 8
   }
  ],
  "fortifications": [

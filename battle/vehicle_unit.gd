@@ -132,6 +132,7 @@ func _build_technical(color: Color) -> void:
 	turret.add_child(gun)
 
 func _think(delta: float) -> void:
+	_maybe_dismount()
 	# Ordered onto a building: drive into gun range of it and stay there.
 	if target_building != null and is_instance_valid(target_building) \
 			and not target_building.is_passable() and not has_move_target:
@@ -218,6 +219,22 @@ func muzzle_position() -> Vector3:
 	var dir := Vector3(sin(rotation.y + _turret_angle), 0, cos(rotation.y + _turret_angle))
 	return global_position + Vector3(0, 1.8, 0) + dir * (_barrel_len * 0.5 + 1.2)
 
+## A transport puts its men down when it has arrived, or sooner if the fight
+## has come to it — riding into contact is how a section dies all at once.
+const DISMOUNT_RANGE := 45.0
+
+func _maybe_dismount() -> void:
+	if _passengers.is_empty():
+		return
+	var arrived: bool = not has_move_target
+	var contact := false
+	for e in battle.enemies_of(team):
+		if e.is_fighting() and e.global_position.distance_to(global_position) < DISMOUNT_RANGE:
+			contact = true
+			break
+	if arrived or contact:
+		unload()
+
 ## APCs carry infantry: they get there alive, then get out.
 func load_passenger(u: BattleUnit) -> bool:
 	if _passengers.size() >= int(data.get("capacity", 0)):
@@ -227,11 +244,30 @@ func load_passenger(u: BattleUnit) -> bool:
 	return true
 
 func unload() -> void:
-	for u in _passengers:
-		if is_instance_valid(u) and u.is_alive():
-			u.visible = true
-			u.global_position = global_position + Vector3(randf_range(-4, 4), 0, randf_range(-4, 4))
+	if _passengers.is_empty():
+		return
+	# Put them down on the sheltered side, so the hull is between the section
+	# and whoever is shooting.
+	var away := Vector3(sin(rotation.y), 0, cos(rotation.y))
+	var threat := battle.threat_direction(team, global_position)
+	if threat.length() > 0.1:
+		away = -threat.normalized()
+	var side := Vector3(-away.z, 0, away.x)
+	for i in range(_passengers.size()):
+		var u = _passengers[i]
+		if not is_instance_valid(u) or not u.is_alive():
+			continue
+		u.visible = true
+		var offset: Vector3 = away * 3.4 + side * (float(i) - float(_passengers.size()) * 0.5) * 2.2
+		u.global_position = battle.terrain.clamp_to_map(global_position + offset)
+		u._stick_to_ground()
+		u.stance = BattleUnit.Stance.CROUCH
+		u.activity = BattleUnit.Activity.ENGAGING
 	_passengers.clear()
+	_say(Radio.Call.TAKING_COVER, 9.0)
+
+func passenger_count() -> int:
+	return _passengers.size()
 
 func _on_death_visual() -> void:
 	unload()
