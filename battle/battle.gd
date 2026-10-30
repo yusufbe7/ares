@@ -1218,6 +1218,7 @@ func on_battle_finished(res: Dictionary) -> void:
 		"victory_mode": victory_mode,
 		"reason": str(res.get("reason", "")),
 		"mission": str(cfg.get("mission", "")),
+		"world_country": str(cfg.get("world_country", "")),
 		"winner_team": winner_team,
 		"winner": str(teams[winner_team].get("nation", "")) if teams.size() > winner_team else "",
 		"attacker": str(teams[0].get("nation", "")) if teams.size() > 0 else "",

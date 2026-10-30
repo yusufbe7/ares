@@ -128,6 +128,10 @@ func _build() -> void:
 	var start := UIKit.button("BATTLE BOSHLASH", 18)
 	start.pressed.connect(_start)
 	col.add_child(start)
+	var world_btn := UIKit.button("GLOBAL XARITA", 15)
+	world_btn.tooltip_text = "Dunyo xaritasi: bloklar, hududlar va hujum yo'nalishlari."
+	world_btn.pressed.connect(func(): GameState.go("world", {}))
+	col.add_child(world_btn)
 	var options_btn := UIKit.button(Loc.t("menu.settings"), 13)
 	options_btn.pressed.connect(func(): GameState.go("settings", {}))
 	col.add_child(options_btn)
