@@ -94,7 +94,7 @@ func _rebuild_visual() -> void:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var any := false
-	for c: Chunk in chunks:
+	for c in chunks:
 		if not c.alive:
 			continue
 		any = true
@@ -168,7 +168,7 @@ func _rebuild_collision() -> void:
 func _wall_alive_fraction(wall_center: Vector3) -> float:
 	var total := 0
 	var alive := 0
-	for c: Chunk in chunks:
+	for c in chunks:
 		if c.is_roof:
 			continue
 		if c.local.distance_to(Vector3(wall_center.x, c.local.y, wall_center.z)) > dims.length() * 0.25:
@@ -191,7 +191,7 @@ func damage(world_pos: Vector3, radius: float, power: float) -> void:
 	var hit_any := false
 	var physics_budget := MAX_PHYSICS_DEBRIS
 	var affected: Array = []
-	for c: Chunk in chunks:
+	for c in chunks:
 		if not c.alive:
 			continue
 		if c.local.distance_to(local_hit) <= radius:
@@ -252,14 +252,14 @@ func _spawn_physics_debris(c: Chunk, from_local: Vector3, power: float) -> void:
 ## down in the same collapse as the hit that caused it.
 func _collapse_unsupported() -> void:
 	var columns: Dictionary = {}        # Vector2i(x,z) -> lowest alive wall level
-	for c: Chunk in chunks:
+	for c in chunks:
 		if c.alive and not c.is_roof:
 			var key := Vector2i(int(floor(c.local.x / CHUNK)), int(floor(c.local.z / CHUNK)))
 			var level := int(floor(c.local.y / CHUNK))
 			if not columns.has(key) or level < int(columns[key]):
 				columns[key] = level
 	var wall_fraction := _overall_wall_fraction()
-	for c: Chunk in chunks:
+	for c in chunks:
 		if not c.alive:
 			continue
 		if c.is_roof:
@@ -280,7 +280,7 @@ func _collapse_unsupported() -> void:
 func _overall_wall_fraction() -> float:
 	var total := 0
 	var alive := 0
-	for c: Chunk in chunks:
+	for c in chunks:
 		if c.is_roof:
 			continue
 		total += 1
@@ -292,7 +292,7 @@ func _overall_wall_fraction() -> float:
 
 func _update_state(world_pos: Vector3, radius: float) -> void:
 	var alive := 0
-	for c: Chunk in chunks:
+	for c in chunks:
 		if c.alive:
 			alive += 1
 	intact_fraction = float(alive) / maxf(float(chunks.size()), 1.0)
