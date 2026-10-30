@@ -500,8 +500,8 @@ func _nearest_unowned_point(from: Vector3, team: int):
 func _setup_ai() -> void:
 	var teams: Array = cfg.get("teams", [])
 	for i in range(mini(2, teams.size())):
-		if i == player_team:
-			continue
+		# A side gets a commander because its config says so, not because it is
+		# not the player's. That lets a headless run put both sides on AI.
 		if not bool(teams[i].get("ai", true)):
 			continue
 		var diff: Dictionary = DB.difficulty(difficulty)
