@@ -114,7 +114,7 @@ func _contest_hold_zone() -> void:
 				continue
 			var ang := _rng.randf_range(0.0, TAU)
 			var dist: float = radius * (_rng.randf_range(0.3, 1.0) if defending else 0.5)
-			var spot := zone.position + Vector3(cos(ang), 0, sin(ang)) * dist
+			var spot: Vector3 = zone.position + Vector3(cos(ang), 0, sin(ang)) * dist
 			if defending:
 				# Put part of the line into whatever is standing on the zone.
 				var house = _nearest_free_building(u.global_position, zone.position)
@@ -155,7 +155,7 @@ func _priority_points() -> Array:
 	return list
 
 func _center_of_mass() -> Vector3:
-	var list := battle.units_of_team(team)
+	var list: Array = battle.units_of_team(team)
 	if list.is_empty():
 		return Vector3.ZERO
 	var sum := Vector3.ZERO
@@ -167,7 +167,7 @@ func _center_of_mass() -> Vector3:
 	return sum / maxf(float(n), 1.0)
 
 func _use_support() -> void:
-	var dir := battle.director
+	var dir = battle.director
 	# Shell whatever the enemy has stacked up.
 	var cluster := _find_enemy_cluster()
 	var cluster_threshold: int = 6 - int(aggression * 4.0)
@@ -196,7 +196,7 @@ func _use_support() -> void:
 				break
 
 func _find_enemy_cluster() -> Dictionary:
-	var enemies := battle.enemies_of(team)
+	var enemies: Array = battle.enemies_of(team)
 	var best := {"pos": Vector3.ZERO, "count": 0}
 	for u: BattleUnit in enemies:
 		if not u.is_alive():

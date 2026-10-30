@@ -13,7 +13,7 @@ var grounded: bool = false
 var _spool: float = 0.0
 
 func _build_visual() -> void:
-	var color := battle.team_color(team) if battle != null else Color.GRAY
+	var color: Color = battle.team_color(team) if battle != null else Color.GRAY
 	var role := str(data.get("role", "gunship"))
 	var body := MeshInstance3D.new()
 	var bm := BoxMesh.new()

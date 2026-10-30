@@ -16,7 +16,7 @@ func ground_offset() -> float:
 	return 0.9
 
 func _build_visual() -> void:
-	var color := battle.team_color(team) if battle != null else Color.GRAY
+	var color: Color = battle.team_color(team) if battle != null else Color.GRAY
 	var irregular: bool = str(data.get("look", "regular")) == "irregular"
 
 	_body_mesh = MeshInstance3D.new()

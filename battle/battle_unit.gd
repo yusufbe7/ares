@@ -184,7 +184,7 @@ func leave_building(forced: bool = false) -> void:
 	garrisoned_in = null
 	b.remove_from_garrison(self)
 	# Step out to the near side rather than materialising inside a wall.
-	var out := (global_position - b.global_position)
+	var out: Vector3 = (global_position - b.global_position)
 	out.y = 0.0
 	if out.length() < 0.1:
 		out = Vector3.FORWARD
