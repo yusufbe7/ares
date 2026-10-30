@@ -36,7 +36,7 @@ func tick(delta: float) -> void:
 ## Keeps three standing groups: a line, an armoured fist and the guns.
 func _organise() -> void:
 	_groups = [[], [], []]
-	for u in battle.units_of_team(team):
+	for u: BattleUnit in battle.units_of_team(team):
 		if not u.is_alive():
 			continue
 		match u.unit_class():
@@ -76,7 +76,7 @@ func _assign_objectives() -> void:
 	var armour: Array = _groups[1]
 	if not armour.is_empty():
 		var spearhead = targets[0]
-		for u in armour:
+		for u: BattleUnit in armour:
 			if not u.has_move_target:
 				var offset := Vector3(_rng.randf_range(-14, 14), 0, _rng.randf_range(-14, 14))
 				u.order_move(battle.terrain.clamp_to_map(spearhead.position + offset))
@@ -87,7 +87,7 @@ func _push_command_post() -> void:
 	var own_post = battle.objective_for(team)
 	if enemy_post == null:
 		return
-	for u in _groups[1]:
+	for u: BattleUnit in _groups[1]:
 		if not u.has_move_target:
 			u.order_attack_building(enemy_post)
 	var defenders: int = maxi(1, int(float(_groups[0].size()) * (1.0 - aggression)))
@@ -109,7 +109,7 @@ func _contest_hold_zone() -> void:
 	var defending: bool = team == battle.director.hold_defender
 	var radius: float = zone.radius * (0.7 if defending else 1.0)
 	for group in _groups:
-		for u in group:
+		for u: BattleUnit in group:
 			if u.has_move_target:
 				continue
 			var ang := _rng.randf_range(0.0, TAU)
@@ -122,7 +122,7 @@ func _contest_hold_zone() -> void:
 
 func _priority_points() -> Array:
 	var list: Array = []
-	for p in battle.director.points:
+	for p: ObjectivePoint in battle.director.points:
 		list.append(p)
 	# Enemy-held and neutral points first, closest to our own mass.
 	var home := _center_of_mass()
@@ -167,7 +167,7 @@ func _use_support() -> void:
 		battle.spawn_support_vehicle(team, "air_drone")
 	# A cheap FPV drone against anything armoured that got close.
 	if dir.can_pay(team, 15.0) and _rng.randf() < 0.3 * support_mult:
-		for u in battle.enemies_of(team):
+		for u: BattleUnit in battle.enemies_of(team):
 			if u.is_alive() and u.unit_class() == "vehicle":
 				dir.pay(team, 15.0)
 				battle.spawn_support_vehicle(team, "air_fpv")
@@ -176,11 +176,11 @@ func _use_support() -> void:
 func _find_enemy_cluster() -> Dictionary:
 	var enemies := battle.enemies_of(team)
 	var best := {"pos": Vector3.ZERO, "count": 0}
-	for u in enemies:
+	for u: BattleUnit in enemies:
 		if not u.is_alive():
 			continue
 		var n := 0
-		for v in enemies:
+		for v: BattleUnit in enemies:
 			if v.is_alive() and v.global_position.distance_to(u.global_position) < 22.0:
 				n += 1
 		if n > int(best["count"]):

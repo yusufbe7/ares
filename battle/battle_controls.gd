@@ -72,8 +72,8 @@ func _click_select(screen_pos: Vector2, additive: bool) -> void:
 
 func _box_select(rect: Rect2, additive: bool) -> void:
 	var found: Array = []
-	for u in battle.units_of_team(battle.player_team):
-		var screen := rig.camera.unproject_position(u.global_position)
+	for u: BattleUnit in battle.units_of_team(battle.player_team):
+		var screen: Vector2 = rig.camera.unproject_position(u.global_position)
 		if rect.has_point(screen):
 			found.append(u)
 	if additive:
@@ -102,14 +102,14 @@ func _set_selection(list: Array) -> void:
 func _unit_at(screen_pos: Vector2, team_filter: int = -1) -> BattleUnit:
 	var best: BattleUnit = null
 	var best_d := 34.0
-	for u in battle.units:
+	for u: BattleUnit in battle.units:
 		if not is_instance_valid(u) or not u.is_alive() or not u.visible:
 			continue
 		if team_filter >= 0 and u.team != team_filter:
 			continue
 		if rig.camera.is_position_behind(u.global_position):
 			continue
-		var d := rig.camera.unproject_position(u.global_position).distance_to(screen_pos)
+		var d: float = rig.camera.unproject_position(u.global_position).distance_to(screen_pos)
 		if d < best_d:
 			best_d = d
 			best = u
@@ -159,7 +159,7 @@ func _issue_order(screen_pos: Vector2) -> void:
 		for u in selected:
 			u.order_attack_building(house)
 		return
-	for p in battle.director.points:
+	for p: ObjectivePoint in battle.director.points:
 		if ground.distance_to(p.position) < p.radius:
 			_group_of_selection().order_capture(p)
 			return

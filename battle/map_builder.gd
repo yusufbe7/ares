@@ -194,7 +194,7 @@ func _road_ribbon(points: PackedVector2Array, width: float, color: Color) -> voi
 			var v1 := _road_point(p0 - side)
 			var v2 := _road_point(p1 - side)
 			var v3 := _road_point(p1 + side)
-			for v in [v0, v1, v2, v0, v2, v3]:
+			for v: Vector3 in [v0, v1, v2, v0, v2, v3]:
 				st.set_uv(Vector2(v.x, v.z) * 0.06)
 				st.add_vertex(v)
 	st.generate_normals()
@@ -477,7 +477,7 @@ func _water_surface() -> void:
 		var p1 := Vector3(a.x - side.x, y, a.y - side.y)
 		var p2 := Vector3(b.x - side.x, y, b.y - side.y)
 		var p3 := Vector3(b.x + side.x, y, b.y + side.y)
-		for v in [p0, p1, p2, p0, p2, p3]:
+		for v: Vector3 in [p0, p1, p2, p0, p2, p3]:
 			st.set_uv(Vector2(v.x, v.z) * 0.02)
 			st.add_vertex(v)
 	st.generate_normals()
@@ -528,13 +528,13 @@ func _bridges(count: int) -> void:
 		_box(centre3 - Vector3(0, 0.45, 0), Vector3(deck_width, 0.9, span), stone,
 			world_yaw, false)
 		# Parapets, which double as cover for whoever holds the crossing.
-		for sign in [-1.0, 1.0]:
+		for edge: float in [-1.0, 1.0]:
 			var side_dir := Vector3(along.x, 0, along.y).normalized()
-			var wall_pos := centre3 + side_dir * sign * (deck_width * 0.5) + Vector3(0, 0.75, 0)
+			var wall_pos := centre3 + side_dir * edge * (deck_width * 0.5) + Vector3(0, 0.75, 0)
 			_box(wall_pos, Vector3(0.6, 1.5, span), stone, world_yaw, false)
-			cover.add_slot(wall_pos, side_dir * sign, 0.7, "parapet")
+			cover.add_slot(wall_pos, side_dir * edge, 0.7, "parapet")
 		# Piers under the deck, so the span does not float.
-		for t in [-0.28, 0.28]:
+		for t: float in [-0.28, 0.28]:
 			var pier := centre3 + Vector3(across.x, 0, across.y) * span * t
 			_box(Vector3(pier.x, terrain.water_level + 1.0, pier.z),
 				Vector3(deck_width * 0.8, (deck_y - terrain.water_level) * 1.2, 2.4),
@@ -625,7 +625,7 @@ func _railway() -> void:
 		var ground := terrain.ground_point(at.x, at.z)
 		sleeper_mm.set_instance_transform(i, Transform3D(
 			Basis(Vector3.UP, yaw), ground + Vector3(0, 0.12, 0)))
-	for rail_side in [-1.0, 1.0]:
+	for rail_side: float in [-1.0, 1.0]:
 		var rail := MeshInstance3D.new()
 		var bm := BoxMesh.new()
 		bm.size = Vector3(0.16, 0.18, length)

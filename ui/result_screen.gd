@@ -134,7 +134,7 @@ func _best_units(col: VBoxContainer, stats: Dictionary) -> void:
 	var best: Array = stats.get("best_unit", ["", ""])
 	var records: Array = stats.get("records", [])
 	for team in range(2):
-		var best_id := str(best[team]) if best.size() > team else ""
+		var best_id: String = str(best[team]) if best.size() > team else ""
 		if best_id == "":
 			col.add_child(UIKit.label("%s — hisobga olinadigan natija yo'q." % str(names[team]), 13, UIKit.MUTED))
 			continue

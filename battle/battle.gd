@@ -295,7 +295,7 @@ func _place_objectives() -> void:
 			director.add_point("A", "Chorraha", terrain.ground_point(-half, 0.0), 0)
 			director.add_point("B", "Markaz", terrain.ground_point(0.0, 0.0), -1)
 			director.add_point("C", "Sharqiy ferma", terrain.ground_point(half, 0.0), 1)
-			for p in director.points:
+			for p: ObjectivePoint in director.points:
 				_add_point_marker(p)
 
 func _add_point_marker(p: ObjectivePoint) -> void:
@@ -381,7 +381,7 @@ func _spawn_armies() -> void:
 func _auto_group_player_units() -> void:
 	# Pre-sorted groups, so the player starts with something to command rather
 	# than a single blob: 1 infantry, 2 armour, 3 guns, 4 recon, 5 reserve.
-	for u in units_of_team(player_team):
+	for u: BattleUnit in units_of_team(player_team):
 		match str(u.data.get("role", "line")):
 			"line", "suppression": squads[0].add(u)
 			"armor", "transport": squads[1].add(u)
@@ -436,7 +436,7 @@ func spawn_support_vehicle(team: int, uid: String) -> BattleUnit:
 func _nearest_unowned_point(from: Vector3, team: int):
 	var best = null
 	var best_d := INF
-	for p in director.points:
+	for p: ObjectivePoint in director.points:
 		if p.owner_team == team:
 			continue
 		var d: float = from.distance_to(p.position)
@@ -516,14 +516,14 @@ func team_color(team: int) -> Color:
 
 func units_of_team(team: int) -> Array:
 	var out: Array = []
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.team == team and u.is_alive():
 			out.append(u)
 	return out
 
 func enemies_of(team: int) -> Array:
 	var out: Array = []
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.team != team and u.is_alive():
 			out.append(u)
 	return out
@@ -568,7 +568,7 @@ func has_line_of_sight(from_unit: BattleUnit, to_unit: BattleUnit) -> bool:
 func threat_direction(team: int, pos: Vector3) -> Vector3:
 	var sum := Vector3.ZERO
 	var n := 0
-	for u in enemies_of(team):
+	for u: BattleUnit in enemies_of(team):
 		var d: float = pos.distance_to(u.global_position)
 		if d < 120.0:
 			sum += (u.global_position - pos).normalized()
@@ -675,9 +675,9 @@ func call_artillery_strike(from: Vector3, target: Vector3, team: int, source) ->
 	marker.position = terrain.ground_point(target.x, target.z) + Vector3(0, 0.25, 0)
 	add_child(marker)
 	# Everyone nearby runs, both sides — artillery does not read uniforms.
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.is_alive() and u.global_position.distance_to(target) < 20.0:
-			var away := (u.global_position - target).normalized() * 30.0
+			var away: Vector3 = (u.global_position - target).normalized() * 30.0
 			u.order_move(terrain.clamp_to_map(u.global_position + away))
 			u.take_suppression(0.5)
 	var delay := get_tree().create_timer(4.0)
@@ -721,7 +721,7 @@ func call_air_strike(target: Vector3, team: int) -> void:
 
 	GameState.notify("Aviatsiya yo'lda.", "good")
 	# Mark the run-in so everyone on the ground can clear the line.
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.is_alive() and u.global_position.distance_to(target) < 26.0:
 			u.take_suppression(0.4)
 	for i in range(6):
@@ -804,14 +804,14 @@ func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make
 	if make_crater:
 		terrain.add_crater(pos, radius * 0.9, radius * 0.25)
 		cover.add_crater(pos, radius * 0.9)
-	for u in units:
+	for u: BattleUnit in units:
 		if not is_instance_valid(u) or not u.is_alive():
 			continue
 		var d: float = u.global_position.distance_to(pos)
 		if d > radius * 2.0:
 			continue
 		var falloff: float = clampf(1.0 - d / (radius * 2.0), 0.0, 1.0)
-		var dir := (u.global_position - pos).normalized()
+		var dir: Vector3 = (u.global_position - pos).normalized()
 		var protection: float = cover.protection_at(u.global_position, dir) * 0.6
 		if terrain.is_in_trench(u.global_position):
 			protection = maxf(protection, 0.8)
@@ -834,7 +834,7 @@ func _fell_trees_near(pos: Vector3, radius: float) -> void:
 		if p.distance_to(pos) > radius:
 			continue
 		t["felled"] = true
-		var dir := (p - pos).normalized()
+		var dir: Vector3 = (p - pos).normalized()
 		if dir.length() < 0.1:
 			dir = Vector3.FORWARD
 		var mm: MultiMesh = t["mm"]
@@ -894,7 +894,7 @@ func _place_mine(pos: Vector3, team: int, damage: float) -> void:
 func _check_mines() -> void:
 	for i in range(_mines.size() - 1, -1, -1):
 		var m: Dictionary = _mines[i]
-		for u in units:
+		for u: BattleUnit in units:
 			if not is_instance_valid(u) or not u.is_alive() or u.team == int(m["team"]) or u.is_air():
 				continue
 			if u.global_position.distance_to(m["pos"]) < 2.5:
@@ -946,26 +946,26 @@ func _tick_reveal(delta: float) -> void:
 func _update_point_markers() -> void:
 	if director.hold_zone != null:
 		_refresh_marker(director.hold_zone)
-	for p in director.points:
+	for p: ObjectivePoint in director.points:
 		_refresh_marker(p)
 
 func _refresh_marker(p: ObjectivePoint) -> void:
 	if p.marker == null or not is_instance_valid(p.marker):
 		return
 	var mat: StandardMaterial3D = p.marker.material_override
-	var c := p.color_for_owner(_team_colors)
+	var c: Color = p.color_for_owner(_team_colors)
 	c.a = 0.4 if p.contested else 0.22
 	mat.albedo_color = c
 
 ## Recon matters because enemies you have not seen are simply not drawn.
 func _update_fog_of_war() -> void:
 	var friendly := units_of_team(player_team)
-	for u in units:
+	for u: BattleUnit in units:
 		if not is_instance_valid(u) or u.team == player_team:
 			continue
-		var seen := is_revealed(u.global_position)
+		var seen: bool = is_revealed(u.global_position)
 		if not seen:
-			for f in friendly:
+			for f: BattleUnit in friendly:
 				var sight: float = float(f.data.get("vision", 50)) * vision_modifier()
 				if f.global_position.distance_to(u.global_position) < sight:
 					if has_line_of_sight(f, u):
@@ -976,7 +976,7 @@ func _update_fog_of_war() -> void:
 func on_point_captured(p: ObjectivePoint) -> void:
 	if stats != null:
 		stats.on_point_captured(p.owner_team)
-	var who := "Siz" if p.owner_team == player_team else "Dushman"
+	var who: String = "Siz" if p.owner_team == player_team else "Dushman"
 	GameState.notify("%s %s nuqtasini egalladi." % [who, p.id], "good" if p.owner_team == player_team else "warn")
 
 func on_unit_died(u: BattleUnit) -> void:

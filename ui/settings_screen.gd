@@ -14,7 +14,7 @@ func open(_payload: Dictionary) -> void:
 
 	var margin := MarginContainer.new()
 	UIKit.fullscreen(margin)
-	for side in ["left", "right", "top", "bottom"]:
+	for side: String in ["left", "right", "top", "bottom"]:
 		margin.add_theme_constant_override("margin_" + side, 40)
 	layer.add_child(margin)
 
@@ -123,7 +123,7 @@ func _slider(text: String, lo: float, hi: float, value: float, on_change: Callab
 	return box
 
 func _action_label(action: String) -> String:
-	var pretty := action.replace("bf_", "Jang: ").replace("wm_", "Xarita: ").replace("_", " ")
+	var pretty: String = str(action).replace("bf_", "Jang: ").replace("_", " ")
 	return pretty.capitalize()
 
 func _begin_listen(action: String) -> void:

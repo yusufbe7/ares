@@ -24,7 +24,7 @@ func remove(u: BattleUnit) -> void:
 
 func alive_units() -> Array:
 	var out: Array = []
-	for u in units:
+	for u: BattleUnit in units:
 		if is_instance_valid(u) and u.is_alive():
 			out.append(u)
 	units = out
@@ -38,7 +38,7 @@ func center() -> Vector3:
 	if list.is_empty():
 		return Vector3.ZERO
 	var sum := Vector3.ZERO
-	for u in list:
+	for u: BattleUnit in list:
 		sum += u.global_position
 	return sum / float(list.size())
 
@@ -59,7 +59,7 @@ func order_move(target: Vector3, terrain: BattleTerrain) -> void:
 		var u: BattleUnit = list[i]
 		var row := i / per_row
 		var col := i % per_row
-		var spacing := 4.5 if u.unit_class() == "infantry" else 9.0
+		var spacing: float = 4.5 if u.unit_class() == "infantry" else 9.0
 		var offset: Vector3 = right * (float(col) - float(per_row - 1) * 0.5) * spacing
 		offset -= forward * float(row) * spacing
 		if u.unit_class() == "vehicle":
@@ -96,7 +96,7 @@ func auto_label() -> String:
 		return label
 	var counts: Dictionary = {}
 	for u in alive_units():
-		var role := str(u.data.get("role", "line"))
+		var role: String = str(u.data.get("role", "line"))
 		counts[role] = int(counts.get(role, 0)) + 1
 	var best := ""
 	var best_n := 0

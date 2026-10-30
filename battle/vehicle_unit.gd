@@ -97,8 +97,8 @@ func _build_technical(color: Color) -> void:
 
 	var dark := StandardMaterial3D.new()
 	dark.albedo_color = Color(0.1, 0.1, 0.1)
-	for x in [-1.05, 1.05]:
-		for z in [-1.5, 1.5]:
+	for x: float in [-1.05, 1.05]:
+		for z: float in [-1.5, 1.5]:
 			var wheel := MeshInstance3D.new()
 			var wm := CylinderMesh.new()
 			wm.top_radius = 0.48

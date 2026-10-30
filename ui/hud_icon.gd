@@ -30,7 +30,7 @@ func _draw() -> void:
 
 ## Two overlapping figures: a head and a rounded torso each.
 func _draw_men(s: float) -> void:
-	for offset in [Vector2(s * 0.30, 0.0), Vector2(s * 0.62, s * 0.05)]:
+	for offset: Vector2 in [Vector2(s * 0.30, 0.0), Vector2(s * 0.62, s * 0.05)]:
 		var c: Color = color if offset.x > s * 0.4 else color.darkened(0.25)
 		draw_circle(Vector2(offset.x, s * 0.30 + offset.y), s * 0.13, c)
 		var body := PackedVector2Array([
