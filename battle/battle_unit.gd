@@ -48,6 +48,10 @@ var last_attacker_unit: String = ""
 ## A soldier who goes down is not always dead. He bleeds, and somebody has to
 ## come and get him — which is what turns a firefight into a decision about
 ## whether that corner of the map is worth a second man.
+## Soldiers are individuals, not counters: each one carries a rank and a name,
+## and the feed reports what happens to him by it.
+var soldier_name: String = ""
+
 var wounded: bool = false
 var bleed_time: float = 0.0
 var rescuer: BattleUnit = null          # who is coming for me
@@ -68,9 +72,29 @@ func setup(ctx, p_team: int, p_unit_id: String, spawn_pos: Vector3) -> void:
 	_vision = float(data.get("vision", 50.0))
 	_range = float(data.get("range", 45.0))
 	_rng.seed = int(Time.get_ticks_usec()) + get_instance_id()
+	soldier_name = _make_name()
 	position = spawn_pos
 	_build_visual()
 	_build_marker()
+
+const RANKS := ["PVT", "PFC", "CPL", "SGT"]
+const SURNAMES := [
+	"Alden", "Brant", "Corwin", "Dahl", "Ebert", "Falk", "Garrow", "Hale",
+	"Ivers", "Joss", "Kerrin", "Lund", "Marek", "Novak", "Orden", "Pryce",
+	"Quill", "Radek", "Sorel", "Tamm", "Ulrich", "Vance", "Wexler", "Yarrow",
+]
+
+func _make_name() -> String:
+	if unit_class() != "infantry":
+		return DB.local_name(data.get("name", {}), unit_id)
+	var rank := RANKS[_rng.randi_range(0, RANKS.size() - 1)]
+	var surname := SURNAMES[_rng.randi_range(0, SURNAMES.size() - 1)]
+	return "%s %s" % [rank, surname]
+
+## Only the player's own men are worth a line in the feed.
+func _log(text: String, kind: String) -> void:
+	if battle != null and team == battle.player_team:
+		EventBus.combat_log.emit("%s — %s" % [soldier_name, text], kind)
 
 func _build_visual() -> void:
 	pass          # subclasses build their own body
@@ -416,6 +440,7 @@ func _become_wounded() -> void:
 		battle.cover.release(_cover_slot, get_instance_id())
 		_cover_slot = null
 	_on_wounded_visual()
+	_log("yarador, qutqaruvchi kerak", "warn")
 	battle.on_unit_wounded(self)
 
 func _on_wounded_visual() -> void:
@@ -434,6 +459,7 @@ func recover() -> void:
 	morale = 0.5
 	stance = Stance.CROUCH
 	activity = Activity.IDLE
+	_log("qutqarildi, safga qaytdi", "good")
 	if battle != null:
 		battle.on_unit_recovered(self)
 
@@ -465,6 +491,7 @@ func _finish_off() -> void:
 		rescuing.being_dragged = false
 		rescuing.rescuer = null
 		rescuing = null
+	_log("qon yo'qotib nobud bo'ldi" if was_wounded else "halok bo'ldi", "bad")
 	EventBus.unit_died.emit(self)
 	if battle != null:
 		battle.on_unit_died(self, was_wounded)

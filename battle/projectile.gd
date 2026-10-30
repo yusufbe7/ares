@@ -12,6 +12,9 @@ var blast_radius: float = 3.0
 var guided_target: BattleUnit = null
 var life: float = 8.0
 var _gravity: float = 0.0
+var trail_scale: float = 1.0
+var _last_puff_at: Vector3 = Vector3.ZERO
+var _has_puffed: bool = false
 
 func _build_body(color: Color, size: Vector3) -> void:
 	var mi := MeshInstance3D.new()
@@ -62,6 +65,7 @@ func _physics_process(delta: float) -> void:
 		# A rocket corrects, but slowly enough that a moving tank can break lock.
 		var want := (guided_target.global_position + Vector3(0, 1.0, 0) - global_position).normalized()
 		velocity = velocity.lerp(want * velocity.length(), clampf(delta * 2.2, 0.0, 1.0))
+	_drop_trail()
 	velocity.y -= _gravity * delta
 	var step := velocity * delta
 	var next := global_position + step
@@ -86,6 +90,17 @@ func _physics_process(delta: float) -> void:
 			_detonate(next)
 			return
 	global_position = next
+
+## A bead every few metres, which is what draws the arc.
+func _drop_trail() -> void:
+	if not _has_puffed:
+		_last_puff_at = global_position
+		_has_puffed = true
+		return
+	if global_position.distance_to(_last_puff_at) < 4.0:
+		return
+	_last_puff_at = global_position
+	battle.leave_trail_puff(global_position, trail_scale)
 
 func look_at_direction(dir: Vector3) -> void:
 	if dir.length() < 0.01:
