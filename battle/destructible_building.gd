@@ -248,6 +248,14 @@ func _spawn_physics_debris(c: Chunk, from_local: Vector3, power: float) -> void:
 	_debris_live += 1
 	get_tree().create_timer(6.0).timeout.connect(_retire_debris.bind(rb))
 
+## Debris is cleared on a timer. The live count has to come down whether or not
+## the body is still around by then, so this is a named method rather than a
+## lambda holding the node.
+func _retire_debris(body: Node) -> void:
+	_debris_live = maxi(0, _debris_live - 1)
+	if is_instance_valid(body):
+		body.queue_free()
+
 ## Support, the way a house actually loses it: a wall chunk stands as long as
 ## something in its own column is still under it, and the roof stays up only
 ## while enough wall is left to carry it. Anything that fails that test comes
