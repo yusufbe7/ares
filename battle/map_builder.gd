@@ -278,7 +278,7 @@ func _city_blocks(count: int) -> void:
 		var storeys := rng.randi_range(2, 6)
 		var size := Vector3(rng.randf_range(12, 20), float(storeys) * 3.2, rng.randf_range(12, 18))
 		var wall := _weathered(concrete[rng.randi_range(0, concrete.size() - 1)], 0.2)
-		var h := _make_building(p, size, wall, wall.darkened(0.25),
+		var h = _make_building(p, size, wall, wall.darkened(0.25),
 			snappedf(rng.randf_range(0, TAU), PI * 0.5))
 		# Tall blocks take a lot more punishment before they come apart.
 		h.set_meta("storeys", storeys)
