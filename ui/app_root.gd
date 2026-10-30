@@ -42,6 +42,7 @@ func show_screen(screen_id: String, payload: Dictionary) -> void:
 		"battle": node = preload("res://ui/battle_screen.gd").new()
 		"result": node = preload("res://ui/result_screen.gd").new()
 		"settings": node = preload("res://ui/settings_screen.gd").new()
+		"world": node = preload("res://ui/world_screen.gd").new()
 		_: node = preload("res://ui/setup_screen.gd").new()
 	current = node
 	add_child(node)

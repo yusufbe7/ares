@@ -168,4 +168,10 @@ func _find_record(records: Array, team: int, unit_id: String) -> Dictionary:
 	return {}
 
 func _continue() -> void:
+	# A battle fought over a country on the globe returns to the globe, which
+	# then moves the border.
+	if str(_result.get("world_country", "")) != "":
+		GameState.last_battle_result = _result
+		GameState.go("world", {})
+		return
 	GameState.go("setup", {})

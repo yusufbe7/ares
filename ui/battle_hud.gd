@@ -366,4 +366,7 @@ func _draw_selection_rect() -> void:
 	_selection_rect.draw_rect(_rect, Color(0.4, 0.9, 0.6, 0.8), false, 1.5)
 
 func _leave() -> void:
+	if str(battle.cfg.get("world_country", "")) != "":
+		GameState.go("world", {})
+		return
 	GameState.go("setup", {})

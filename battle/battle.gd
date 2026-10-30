@@ -500,8 +500,8 @@ func _nearest_unowned_point(from: Vector3, team: int):
 func _setup_ai() -> void:
 	var teams: Array = cfg.get("teams", [])
 	for i in range(mini(2, teams.size())):
-		if i == player_team:
-			continue
+		# A side gets a commander because its config says so, not because it is
+		# not the player's. That lets a headless run put both sides on AI.
 		if not bool(teams[i].get("ai", true)):
 			continue
 		var diff: Dictionary = DB.difficulty(difficulty)
@@ -1218,6 +1218,7 @@ func on_battle_finished(res: Dictionary) -> void:
 		"victory_mode": victory_mode,
 		"reason": str(res.get("reason", "")),
 		"mission": str(cfg.get("mission", "")),
+		"world_country": str(cfg.get("world_country", "")),
 		"winner_team": winner_team,
 		"winner": str(teams[winner_team].get("nation", "")) if teams.size() > winner_team else "",
 		"attacker": str(teams[0].get("nation", "")) if teams.size() > 0 else "",

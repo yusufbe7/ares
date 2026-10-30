@@ -1,0 +1,37 @@
+{
+  "_note": "Alt-history 2041 blocs. Country codes are ISO A3 as used in world_map.json.",
+  "factions": [
+    {"id": "atlantic", "name": {"uz": "Atlantika Pakti", "en": "Atlantic Pact", "ru": "Атлантический пакт"},
+     "color": "#3f7fd6", "accent": "#8fc4ff",
+     "members": ["USA","CAN","GBR","FRA","DEU","ITA","ESP","PRT","NLD","BEL","LUX","DNK","NOR","ISL",
+                 "POL","CZE","SVK","HUN","ROU","BGR","HRV","SVN","ALB","MNE","MKD","GRC","TUR",
+                 "EST","LVA","LTU","FIN","SWE","AUT","CHE","IRL"]},
+
+    {"id": "northern", "name": {"uz": "Shimoliy Federatsiya", "en": "Northern Federation", "ru": "Северная федерация"},
+     "color": "#c4423c", "accent": "#ff8a7a",
+     "members": ["RUS","BLR","KAZ","ARM","TJK","KGZ","SYR","IRN","PRK"]},
+
+    {"id": "pacific", "name": {"uz": "Tinch okeani Ligasi", "en": "Pacific League", "ru": "Тихоокеанская лига"},
+     "color": "#d8a62e", "accent": "#ffd97a",
+     "members": ["CHN","PAK","MMR","LAO","KHM","BGD","LKA","NPL","MNG"]},
+
+    {"id": "southern", "name": {"uz": "Janubiy Ittifoq", "en": "Southern Union", "ru": "Южный союз"},
+     "color": "#4fae7c", "accent": "#9ff0bf",
+     "members": ["IND","BRA","ZAF","ARG","IDN","NGA","EGY","SAU","AUS","NZL","JPN","KOR","VNM",
+                 "THA","PHL","MYS","MEX","CHL","COL","PER"]},
+
+    {"id": "unaligned", "name": {"uz": "Betaraf davlatlar", "en": "Unaligned", "ru": "Неприсоединившиеся"},
+     "color": "#6b7079", "accent": "#aab0ba", "members": []}
+  ],
+  "capitals": {
+    "USA": [-77.0, 38.9], "CAN": [-75.7, 45.4], "GBR": [-0.1, 51.5], "FRA": [2.3, 48.9],
+    "DEU": [13.4, 52.5], "ITA": [12.5, 41.9], "ESP": [-3.7, 40.4], "POL": [21.0, 52.2],
+    "TUR": [32.9, 39.9], "RUS": [37.6, 55.8], "BLR": [27.6, 53.9], "KAZ": [71.4, 51.2],
+    "IRN": [51.4, 35.7], "CHN": [116.4, 39.9], "PAK": [73.1, 33.7], "IND": [77.2, 28.6],
+    "BRA": [-47.9, -15.8], "ZAF": [28.2, -25.7], "ARG": [-58.4, -34.6], "IDN": [106.8, -6.2],
+    "NGA": [7.5, 9.1], "EGY": [31.2, 30.0], "SAU": [46.7, 24.7], "AUS": [149.1, -35.3],
+    "JPN": [139.7, 35.7], "KOR": [127.0, 37.6], "PRK": [125.8, 39.0], "MEX": [-99.1, 19.4],
+    "UKR": [30.5, 50.5], "UZB": [69.2, 41.3], "VNM": [105.8, 21.0], "THA": [100.5, 13.8]
+  },
+  "contested": ["UKR", "UZB", "TKM", "AZE", "GEO", "AFG", "IRQ", "LBY", "SDN", "ETH", "COD", "MLI"]
+}
