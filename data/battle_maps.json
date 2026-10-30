@@ -97,7 +97,8 @@
     "rail": 1,
     "palms": 120,
     "wells": 3,
-    "field_walls": 18
+    "field_walls": 18,
+    "industrial": 2
    },
    "desc": {
     "uz": "Keng ochiq maydon, uzoq masofa.",
@@ -133,7 +134,8 @@
     "hay": 0,
     "bushes": 70,
     "poles": 26,
-    "rail": 1
+    "rail": 1,
+    "industrial": 3
    },
    "desc": {
     "uz": "Ko'p qavatli binolar, kvartallar, tor o'tish joylari.",
@@ -197,7 +199,8 @@
     "hay": 0,
     "bushes": 60,
     "poles": 20,
-    "rail": 1
+    "rail": 1,
+    "industrial": 2
    },
    "desc": {
     "uz": "Angarlar, omborlar, bunkerlar, tekis maydon.",
