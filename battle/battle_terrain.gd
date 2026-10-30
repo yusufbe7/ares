@@ -195,8 +195,18 @@ func _generate_river(cfg: Dictionary, seed_value: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value + 5521
 	var half := map_size * 0.5
-	var bends := maxi(1, int(river.get("bends", 2)))
+	var bends := int(river.get("bends", 2))
 	var points := PackedVector2Array()
+	if bool(river.get("canal", false)) or bends <= 0:
+		# A canal is dug straight, corner to corner.
+		var ang := rng.randf_range(0.0, PI)
+		var reach := map_size * 0.8
+		var dir := Vector2(cos(ang), sin(ang))
+		var mid := Vector2(rng.randf_range(-60.0, 60.0), rng.randf_range(-60.0, 60.0))
+		points.append(mid - dir * reach)
+		points.append(mid + dir * reach)
+		carve_river(points, float(river.get("width", 12)), float(river.get("depth", 4.5)))
+		return
 	# A river runs corner to corner with a few bends, never straight.
 	var start := Vector2(-half - 20.0, rng.randf_range(-half * 0.5, half * 0.2))
 	var finish := Vector2(half + 20.0, rng.randf_range(-half * 0.2, half * 0.6))

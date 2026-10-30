@@ -51,6 +51,8 @@ var last_attacker_unit: String = ""
 ## Soldiers are individuals, not counters: each one carries a rank and a name,
 ## and the feed reports what happens to him by it.
 var soldier_name: String = ""
+var rank_index: int = 0
+var confirmed_kills: int = 0
 
 var wounded: bool = false
 var bleed_time: float = 0.0
@@ -79,19 +81,42 @@ func setup(ctx, p_team: int, p_unit_id: String, spawn_pos: Vector3) -> void:
 	_build_visual()
 	_build_marker()
 
-const RANKS := ["PVT", "PFC", "CPL", "SGT"]
+const RANKS := ["PVT", "PFC", "CPL", "SGT", "1LT"]
+## Kills needed to reach each rank above the one a man starts at.
+const PROMOTION_AT := [1, 3, 6, 10]
 const SURNAMES := [
 	"Alden", "Brant", "Corwin", "Dahl", "Ebert", "Falk", "Garrow", "Hale",
 	"Ivers", "Joss", "Kerrin", "Lund", "Marek", "Novak", "Orden", "Pryce",
 	"Quill", "Radek", "Sorel", "Tamm", "Ulrich", "Vance", "Wexler", "Yarrow",
 ]
 
+var _surname: String = ""
+
 func _make_name() -> String:
 	if unit_class() != "infantry":
 		return DB.local_name(data.get("name", {}), unit_id)
-	var rank := RANKS[_rng.randi_range(0, RANKS.size() - 1)]
-	var surname := SURNAMES[_rng.randi_range(0, SURNAMES.size() - 1)]
-	return "%s %s" % [rank, surname]
+	# Most men start at the bottom; a few come in already carrying a stripe.
+	rank_index = 0 if _rng.randf() < 0.7 else _rng.randi_range(1, 2)
+	_surname = SURNAMES[_rng.randi_range(0, SURNAMES.size() - 1)]
+	return "%s %s" % [RANKS[rank_index], _surname]
+
+## A kill that counts, and the promotion it may earn.
+func credit_kill() -> void:
+	if unit_class() != "infantry":
+		return
+	confirmed_kills += 1
+	if rank_index >= RANKS.size() - 1:
+		return
+	if confirmed_kills < PROMOTION_AT[rank_index]:
+		return
+	rank_index += 1
+	soldier_name = "%s %s" % [RANKS[rank_index], _surname]
+	_log("unvoni oshirildi", "good")
+
+## A callout, when this is one of our own.
+func _say(call: int, cooldown: float = 6.0) -> void:
+	if battle != null and team == battle.player_team:
+		Radio.say(soldier_name, call, cooldown)
 
 ## Only the player's own men are worth a line in the feed.
 func _log(text: String, kind: String) -> void:
@@ -192,6 +217,7 @@ func order_move(pos: Vector3, keep_formation_offset: Vector3 = Vector3.ZERO) -> 
 	target_building = null
 	forced_target = null
 	activity = Activity.MOVING
+	_say(Radio.Call.ADVANCE, 8.0)
 	_recompute_path()
 
 func order_attack(target: BattleUnit) -> void:
@@ -403,6 +429,7 @@ func fire_at(target: BattleUnit, distance: float) -> void:
 	if _rng.randf() > acc:
 		return
 	var protection: float = battle.cover.protection_at(target.global_position, from_dir)
+	protection = maxf(protection, battle.vehicle_cover_at(target.global_position, from_dir))
 	if battle.terrain.is_in_trench(target.global_position):
 		protection = maxf(protection, 0.75)
 	if target.is_garrisoned():
@@ -451,11 +478,16 @@ func muzzle_position() -> Vector3:
 	return global_position + Vector3(0, 1.4, 0) + _facing * 0.8
 
 func take_suppression(amount: float) -> void:
+	var before := suppression
 	suppression = clampf(suppression + amount, 0.0, 1.0)
 	if suppression > 0.45 and stance == Stance.STAND:
 		stance = Stance.CROUCH
+		if before <= 0.45:
+			_say(Radio.Call.UNDER_FIRE, 7.0)
 	if suppression > 0.8:
 		stance = Stance.PRONE
+		if before <= 0.8:
+			_say(Radio.Call.PINNED, 11.0)
 
 ## How much of an incoming hit the armour stops. Infantry has none; vehicles
 ## override this with real facings.
@@ -509,6 +541,7 @@ func _become_wounded() -> void:
 		battle.cover.release(_cover_slot, get_instance_id())
 		_cover_slot = null
 	_on_wounded_visual()
+	_say(Radio.Call.MAN_DOWN, 4.0)
 	_log("yarador, qutqaruvchi kerak", "warn")
 	battle.on_unit_wounded(self)
 

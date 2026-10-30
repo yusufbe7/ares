@@ -33,6 +33,8 @@ func build(ctx, map_cfg: Dictionary, p_season: String, p_weather: String, seed_v
 	# Water and its crossings come first: the roads and everything else are
 	# placed knowing where the river runs.
 	_water_surface()
+	if bool(map_cfg.get("river", {}).get("canal", false)):
+		_canal_banks()
 	_bridges(int(map_cfg.get("river", {}).get("bridges", 0)))
 	_roads(int(props.get("roads", 3)), map_id)
 	match map_id:
@@ -58,10 +60,18 @@ func build(ctx, map_cfg: Dictionary, p_season: String, p_weather: String, seed_v
 	if int(props.get("rail", 0)) > 0:
 		_railway()
 	_power_line(int(props.get("poles", 0)))
+	if int(props.get("palms", 0)) > 0:
+		_palm_rows(int(props["palms"]))
 	if int(props.get("logs", 0)) > 0:
 		_fallen_logs(int(props["logs"]))
 	if int(props.get("fences", 0)) > 0:
 		_fences(int(props["fences"]))
+	if int(props.get("wells", 0)) > 0:
+		_wells(int(props["wells"]))
+	if int(props.get("field_walls", 0)) > 0:
+		_field_walls(int(props["field_walls"]))
+	if bool(map_cfg.get("landmark", false)):
+		_church()
 	if leaves > 0.05:
 		_leaf_litter()
 
@@ -705,3 +715,170 @@ func _wires(tops: Array) -> void:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		battle.add_child(mi)
 		mi.position = a
+
+## Concrete lips either side of a canal, which is what makes it read as dug
+## rather than eroded.
+func _canal_banks() -> void:
+	var concrete := _weathered(Color(0.72, 0.68, 0.60), 0.3)
+	for seg in terrain.river_segments():
+		var a: Vector2 = seg["a"]
+		var b: Vector2 = seg["b"]
+		var dir := (b - a).normalized()
+		var side := Vector2(-dir.y, dir.x)
+		var length := a.distance_to(b)
+		var steps := maxi(1, int(length / 10.0))
+		for k in range(steps):
+			var t := (float(k) + 0.5) / float(steps)
+			var at := a.lerp(b, t)
+			for edge: float in [-1.0, 1.0]:
+				var p := at + side * edge * (float(seg["width"]) * 0.92)
+				var ground := terrain.ground_point(p.x, p.y)
+				var mi := _box(ground + Vector3(0, 0.5, 0), Vector3(2.2, 1.0, 10.4),
+					concrete, atan2(dir.x, dir.y), false)
+				mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				cover.add_slot(ground, Vector3(side.x, 0, side.y) * edge, 0.55, "canal_bank")
+
+## Palms planted in rows along the water, the way irrigated land is planted.
+func _palm_rows(count: int) -> void:
+	var segments: Array = terrain.river_segments()
+	if segments.is_empty():
+		return
+	var trunk := _weathered(Color(0.40, 0.32, 0.22), 0.2)
+	var frond := _weathered(Color(0.26, 0.42, 0.20), 0.2)
+	var planted := 0
+	for seg in segments:
+		var a: Vector2 = seg["a"]
+		var b: Vector2 = seg["b"]
+		var dir := (b - a).normalized()
+		var side := Vector2(-dir.y, dir.x)
+		var length := a.distance_to(b)
+		var spacing := 9.0
+		var steps := int(length / spacing)
+		for k in range(steps):
+			if planted >= count:
+				return
+			var t := float(k) / float(maxi(steps, 1))
+			var at := a.lerp(b, t)
+			for edge: float in [-1.0, 1.0]:
+				if planted >= count:
+					return
+				var off := float(seg["width"]) * 1.35 + rng.randf_range(0.0, 5.0)
+				var p := at + side * edge * off
+				var ground := terrain.ground_point(p.x, p.y)
+				if terrain.is_in_water(ground):
+					continue
+				_palm(ground, trunk, frond)
+				planted += 1
+
+func _palm(at: Vector3, trunk_color: Color, frond_color: Color) -> void:
+	var h := rng.randf_range(6.0, 9.5)
+	var stem := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.18
+	cm.bottom_radius = 0.30
+	cm.height = h
+	stem.mesh = cm
+	stem.material_override = _material(trunk_color)
+	battle.add_child(stem)
+	stem.position = at + Vector3(0, h * 0.5, 0)
+	stem.rotation.z = rng.randf_range(-0.12, 0.12)
+	for i in range(6):
+		var frond := MeshInstance3D.new()
+		var bm := BoxMesh.new()
+		bm.size = Vector3(0.35, 0.07, 3.4)
+		frond.mesh = bm
+		frond.material_override = _material(frond_color)
+		frond.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		battle.add_child(frond)
+		var ang := TAU * float(i) / 6.0 + rng.randf_range(-0.2, 0.2)
+		frond.position = at + Vector3(cos(ang) * 1.5, h - 0.2, sin(ang) * 1.5)
+		frond.rotation = Vector3(-0.45, ang, 0.0)
+	cover.add_tree(at)
+
+## A stone well: waist high, solid all round, and exactly the thing a couple of
+## riflemen end up fighting from in an open field.
+func _wells(count: int) -> void:
+	var stone := _weathered(Color(0.56, 0.53, 0.48), 0.5)
+	var roof := _weathered(Color(0.35, 0.26, 0.18), 0.7)
+	for i in range(count):
+		var at := terrain.random_point(rng, 40.0)
+		var ring := MeshInstance3D.new()
+		var cm := CylinderMesh.new()
+		cm.top_radius = 1.5
+		cm.bottom_radius = 1.6
+		cm.height = 1.3
+		ring.mesh = cm
+		ring.material_override = _material(stone)
+		battle.add_child(ring)
+		ring.position = at + Vector3(0, 0.65, 0)
+		# Two posts and a little roof, which is what makes it read as a well.
+		for side: float in [-1.0, 1.0]:
+			var post := MeshInstance3D.new()
+			var pm := BoxMesh.new()
+			pm.size = Vector3(0.18, 2.1, 0.18)
+			post.mesh = pm
+			post.material_override = _material(roof)
+			battle.add_child(post)
+			post.position = at + Vector3(side * 1.3, 1.6, 0)
+		var cap := MeshInstance3D.new()
+		var cbm := BoxMesh.new()
+		cbm.size = Vector3(3.4, 0.16, 1.8)
+		cap.mesh = cbm
+		cap.material_override = _material(roof)
+		cap.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		battle.add_child(cap)
+		cap.position = at + Vector3(0, 2.7, 0)
+		for k in range(4):
+			var ang := TAU * float(k) / 4.0
+			var dir := Vector3(cos(ang), 0, sin(ang))
+			cover.add_slot(at + dir * 2.0, dir, 0.68, "well")
+		battle.nav_obstacles.append({"pos": at, "radius": 1.8})
+
+## Low field walls with a gap in them: cover that can be fired through rather
+## than only hidden behind.
+func _field_walls(count: int) -> void:
+	var stone := _weathered(Color(0.78, 0.76, 0.70), 0.4)
+	for i in range(count):
+		var at := terrain.random_point(rng, 45.0)
+		var yaw := rng.randf_range(0, TAU)
+		var dir := Vector3(sin(yaw), 0, cos(yaw))
+		var span := rng.randf_range(10.0, 20.0)
+		var gap_at := rng.randf_range(0.3, 0.7)
+		var panels := maxi(3, int(span / 3.0))
+		for k in range(panels):
+			var t := (float(k) + 0.5) / float(panels)
+			if absf(t - gap_at) < 0.12:
+				continue            # the firing gap
+			var p := at + dir * (t - 0.5) * span
+			var ground := terrain.ground_point(p.x, p.z)
+			if terrain.is_in_water(ground):
+				continue
+			var mi := _box(ground + Vector3(0, 0.6, 0), Vector3(0.45, 1.2, span / float(panels)),
+				stone, yaw, false)
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			var face := Vector3(cos(yaw), 0, -sin(yaw))
+			cover.add_slot(ground + face * 0.8, face, 0.66, "field_wall")
+			cover.add_slot(ground - face * 0.8, -face, 0.66, "field_wall")
+
+## One landmark building per village: taller than the houses, with a tower, so
+## there is somewhere worth holding and something worth shelling.
+func _church() -> void:
+	var at := terrain.random_point(rng, 90.0)
+	var walls := _weathered(Color(0.90, 0.88, 0.84), 0.25)
+	var roof := _weathered(Color(0.50, 0.17, 0.14), 0.8)
+	var size := Vector3(13.0, 7.0, 20.0)
+	var yaw := rng.randf_range(0, TAU)
+	_make_building(at, size, walls, roof, yaw)
+	# The tower.
+	var tower_pos := at + Vector3(sin(yaw), 0, cos(yaw)) * (size.z * 0.5 - 2.0)
+	var tower := _box(terrain.ground_point(tower_pos.x, tower_pos.z) + Vector3(0, 7.5, 0),
+		Vector3(5.0, 15.0, 5.0), walls, yaw)
+	var spire := MeshInstance3D.new()
+	var pm := CylinderMesh.new()
+	pm.top_radius = 0.0
+	pm.bottom_radius = 3.4
+	pm.height = 6.0
+	spire.mesh = pm
+	spire.material_override = _material(roof)
+	battle.add_child(spire)
+	spire.position = terrain.ground_point(tower_pos.x, tower_pos.z) + Vector3(0, 18.0, 0)
