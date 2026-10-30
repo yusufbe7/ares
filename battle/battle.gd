@@ -743,10 +743,7 @@ func spawn_tracer(from: Vector3, to: Vector3, team: int) -> void:
 	line.material_override = mat
 	line.position = from
 	add_child(line)
-	var t := get_tree().create_timer(0.06)
-	t.timeout.connect(func():
-		if is_instance_valid(line):
-			line.queue_free())
+	get_tree().create_timer(0.06).timeout.connect(line.queue_free)
 
 ## The white cloud a gun throws when it fires. It is the single clearest sign
 ## of where the shooting is coming from when the camera is this far out, so it
@@ -812,16 +809,8 @@ func call_artillery_strike(from: Vector3, target: Vector3, team: int, source) ->
 			var away: Vector3 = (u.global_position - target).normalized() * 30.0
 			u.order_move(terrain.clamp_to_map(u.global_position + away))
 			u.take_suppression(0.5)
-	var delay := get_tree().create_timer(4.0)
-	delay.timeout.connect(func():
-		if is_instance_valid(marker):
-			marker.queue_free()
-		if not is_instance_valid(self):
-			return
-		for i in range(6):
-			var offset := Vector3(_rng.randf_range(-14, 14), 0, _rng.randf_range(-14, 14))
-			spawn_explosion(terrain.ground_point(target.x + offset.x, target.z + offset.z),
-				8.0, 110.0, team, true))
+	get_tree().create_timer(4.0).timeout.connect(marker.queue_free)
+	get_tree().create_timer(4.0).timeout.connect(_artillery_impact.bind(target, team))
 
 ## An aircraft runs in across the map and walks a stick of bombs through the
 ## target. It is the one piece of firepower the player can put anywhere, which
@@ -922,6 +911,16 @@ func _mushroom_cloud(at: Vector3) -> void:
 	add_child(smoke)
 	smoke.emitting = true
 
+## The shells land a few seconds after the circle appears, scattered around
+## the aim point rather than all on it.
+func _artillery_impact(target: Vector3, team: int) -> void:
+	if terrain == null:
+		return
+	for i in range(6):
+		var offset := Vector3(_rng.randf_range(-14, 14), 0, _rng.randf_range(-14, 14))
+		spawn_explosion(terrain.ground_point(target.x + offset.x, target.z + offset.z),
+			8.0, 110.0, team, true)
+
 func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make_crater: bool) -> void:
 	# Light, smoke and a hole in the ground.
 	var flash := OmniLight3D.new()
@@ -931,10 +930,7 @@ func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make
 	flash.position = pos + Vector3(0, 2, 0)
 	add_child(flash)
 	_spawn_fireball(pos, radius)
-	var t := get_tree().create_timer(0.25)
-	t.timeout.connect(func():
-		if is_instance_valid(flash):
-			flash.queue_free())
+	get_tree().create_timer(0.25).timeout.connect(flash.queue_free)
 	if make_crater:
 		terrain.add_crater(pos, radius * 0.9, radius * 0.25)
 		cover.add_crater(pos, radius * 0.9)

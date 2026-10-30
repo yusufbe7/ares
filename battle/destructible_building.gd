@@ -246,11 +246,7 @@ func _spawn_physics_debris(c: Chunk, from_local: Vector3, power: float) -> void:
 	rb.linear_velocity = push * power * _rng.randf_range(0.6, 1.3) + Vector3.UP * power * 0.4
 	rb.angular_velocity = Vector3(_rng.randf_range(-6, 6), _rng.randf_range(-6, 6), _rng.randf_range(-6, 6))
 	_debris_live += 1
-	var timer := get_tree().create_timer(6.0)
-	timer.timeout.connect(func():
-		if is_instance_valid(rb):
-			rb.queue_free()
-		_debris_live = maxi(0, _debris_live - 1))
+	get_tree().create_timer(6.0).timeout.connect(_retire_debris.bind(rb))
 
 ## Support, the way a house actually loses it: a wall chunk stands as long as
 ## something in its own column is still under it, and the roof stays up only
