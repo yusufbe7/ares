@@ -20,6 +20,8 @@ var roads: Array = []            # [{horizontal, offset, width}]
 var hard_points: Array = []      # bunkers and other prepared positions
 var nav_obstacles: Array = []    # [{pos, radius}] props that block movement
 var bridge_points: Array = []    # [{pos, half, dir}] the crossings over the river
+var _tracks_mm: MultiMesh = null
+var _track_next: int = 0
 var objectives: Array = []       # per team: the thing a "destroy" match targets
 var stats: BattleStats = null
 var squads: Array = []           # Squad, index 0..4 for keys 1..5
@@ -460,6 +462,48 @@ func _setup_ai() -> void:
 # ---------------------------------------------------------------------------
 # Queries used by units
 # ---------------------------------------------------------------------------
+
+## Vehicles leave ruts behind them. On snow or mud it is the clearest record
+## of where an attack came from, so it is worth a draw call. One multimesh
+## holds them all and the oldest mark is overwritten once it is full.
+const MAX_TRACKS := 420
+
+func _ensure_track_layer() -> void:
+	if _tracks_mm != null:
+		return
+	_tracks_mm = MultiMesh.new()
+	_tracks_mm.transform_format = MultiMesh.TRANSFORM_3D
+	var quad := PlaneMesh.new()
+	quad.size = Vector2(3.6, 4.4)
+	_tracks_mm.mesh = quad
+	_tracks_mm.instance_count = MAX_TRACKS
+	_tracks_mm.visible_instance_count = 0
+	var node := MultiMeshInstance3D.new()
+	node.multimesh = _tracks_mm
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	# Dark ruts on snow, a softer scuff on bare ground.
+	if snow > 0.4:
+		mat.albedo_color = Color(0.52, 0.55, 0.60, 0.72)
+	else:
+		mat.albedo_color = Color(0.26, 0.22, 0.17, 0.42)
+	node.material_override = mat
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(node)
+
+func leave_track(pos: Vector3, yaw: float) -> void:
+	if Settings.graphics_quality == 0:
+		return
+	_ensure_track_layer()
+	if terrain.is_in_water(pos):
+		return
+	var ground := terrain.ground_point(pos.x, pos.z) + Vector3(0, 0.06, 0)
+	_tracks_mm.set_instance_transform(_track_next, Transform3D(Basis(Vector3.UP, yaw), ground))
+	_track_next = (_track_next + 1) % MAX_TRACKS
+	_tracks_mm.visible_instance_count = maxi(_tracks_mm.visible_instance_count, _track_next)
+	if _track_next == 0:
+		_tracks_mm.visible_instance_count = MAX_TRACKS
 
 func team_name(team: int) -> String:
 	var teams: Array = cfg.get("teams", [])
