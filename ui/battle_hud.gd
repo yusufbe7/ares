@@ -7,6 +7,8 @@ var battle: Battle
 var controls: BattleControls
 
 var _men_label: Label
+var _wounded_label: Label
+var _wounded_pill: PanelContainer
 var _air_label: Label
 var _nuke_label: Label
 var _air_pill: PanelContainer
@@ -92,6 +94,13 @@ func _build_bottom_bar() -> void:
 	bar.offset_bottom = -10
 	add_child(bar)
 
+	_wounded_pill = UIKit.make_panel(UIKit.PANEL)
+	var wounded_row := UIKit.hbox(6)
+	_wounded_pill.add_child(wounded_row)
+	wounded_row.add_child(UIKit.label("YARADOR", 13, UIKit.MUTED))
+	_wounded_label = UIKit.label("0", 17, UIKit.WARN)
+	wounded_row.add_child(_wounded_label)
+
 	var men_pill := UIKit.make_panel(UIKit.PANEL)
 	var men_row := UIKit.hbox(6)
 	men_pill.add_child(men_row)
@@ -100,6 +109,7 @@ func _build_bottom_bar() -> void:
 	_men_label = UIKit.label("0", 17, UIKit.TEXT)
 	men_row.add_child(_men_label)
 	bar.add_child(men_pill)
+	bar.add_child(_wounded_pill)
 
 	_air_pill = UIKit.make_panel(UIKit.PANEL)
 	var air_row := UIKit.hbox(6)
@@ -186,6 +196,12 @@ func _process(_delta: float) -> void:
 		return
 	var d := battle.director
 	_men_label.text = str(d.men_alive(battle.player_team, battle.units))
+	var down := 0
+	for w in battle.wounded_units:
+		if is_instance_valid(w) and w.wounded and w.team == battle.player_team:
+			down += 1
+	_wounded_label.text = str(down)
+	_wounded_pill.visible = down > 0
 
 	var air_ready := d.air_strike_ready(battle.player_team)
 	_air_label.text = Settings.key_name("bf_air_strike") if air_ready \

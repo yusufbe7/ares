@@ -5,7 +5,7 @@ extends Node3D
 ## works out the route, the cover, when to shoot and when to keep its head down.
 
 enum Stance { STAND, CROUCH, PRONE }
-enum Activity { IDLE, MOVING, ENGAGING, SUPPRESSED, CAPTURING, DEAD, RETREATING }
+enum Activity { IDLE, MOVING, ENGAGING, SUPPRESSED, CAPTURING, DEAD, RETREATING, WOUNDED, RESCUING }
 
 var battle = null                 # the Battle node, set on spawn
 var team: int = 0
@@ -44,6 +44,18 @@ var _marker: MeshInstance3D = null
 ## Kill credit: whoever landed the last hit gets it in the after-action report.
 var last_attacker_team: int = -1
 var last_attacker_unit: String = ""
+
+## A soldier who goes down is not always dead. He bleeds, and somebody has to
+## come and get him — which is what turns a firefight into a decision about
+## whether that corner of the map is worth a second man.
+var wounded: bool = false
+var bleed_time: float = 0.0
+var rescuer: BattleUnit = null          # who is coming for me
+var rescuing: BattleUnit = null         # who I am carrying
+var being_dragged: bool = false
+
+const BLEED_OUT_SECONDS := 55.0
+const WOUND_CHANCE := 0.5
 
 func setup(ctx, p_team: int, p_unit_id: String, spawn_pos: Vector3) -> void:
 	battle = ctx
@@ -84,7 +96,12 @@ func set_selected(value: bool) -> void:
 		_marker.visible = value
 
 func is_alive() -> bool:
-	return activity != Activity.DEAD and hp > 0.0
+	return activity != Activity.DEAD and (hp > 0.0 or wounded)
+
+## A wounded man is on the field but out of the fight: he cannot shoot, cannot
+## walk, and does not hold ground.
+func is_fighting() -> bool:
+	return is_alive() and not wounded
 
 func unit_class() -> String:
 	return str(data.get("class", "infantry"))
@@ -158,6 +175,9 @@ func _recompute_path() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_alive() or battle == null:
 		return
+	if wounded:
+		_tick_wounded(delta)
+		return
 	_fire_cooldown = maxf(0.0, _fire_cooldown - delta)
 	_retarget_timer -= delta
 	_repath_timer -= delta
@@ -182,6 +202,8 @@ func _acquire_target() -> void:
 	for u in battle.enemies_of(team):
 		if not u.is_alive():
 			continue
+		if u.wounded:
+			continue          # men already down are not worth the ammunition
 		var d: float = global_position.distance_to(u.global_position)
 		if d > sight:
 			continue
@@ -350,6 +372,10 @@ func armor_multiplier(_from_dir: Vector3, _attacker_at: float) -> float:
 func take_damage(amount: float, source) -> void:
 	if not is_alive() or amount <= 0.0:
 		return
+	if wounded:
+		# Anything that finds a man already down finishes him.
+		_finish_off()
+		return
 	var applied: float = minf(amount, hp)
 	hp -= amount
 	morale = maxf(0.0, morale - amount / maxf(max_hp, 1.0) * 0.4)
@@ -365,14 +391,83 @@ func take_damage(amount: float, source) -> void:
 		die()
 
 func die() -> void:
+	# Infantry mostly goes down rather than dying outright, and better cover
+	# means a better chance of being recoverable.
+	if not wounded and unit_class() == "infantry" and battle != null:
+		var protection: float = battle.cover.protection_at(global_position, Vector3.FORWARD)
+		if _rng.randf() < WOUND_CHANCE + protection * 0.25:
+			_become_wounded()
+			return
+	_finish_off()
+
+func _become_wounded() -> void:
+	wounded = true
+	hp = 1.0
+	bleed_time = BLEED_OUT_SECONDS
+	activity = Activity.WOUNDED
+	stance = Stance.PRONE
+	attack_target = null
+	forced_target = null
+	target_building = null
+	capture_point = null
+	has_move_target = false
+	path.clear()
+	if _cover_slot != null and battle != null:
+		battle.cover.release(_cover_slot, get_instance_id())
+		_cover_slot = null
+	_on_wounded_visual()
+	battle.on_unit_wounded(self)
+
+func _on_wounded_visual() -> void:
+	pass
+
+## Carried off the field and patched up: back in the fight, but not at full
+## strength.
+func recover() -> void:
+	if not wounded:
+		return
+	wounded = false
+	being_dragged = false
+	rescuer = null
+	hp = max_hp * 0.45
+	suppression = 0.5
+	morale = 0.5
+	stance = Stance.CROUCH
+	activity = Activity.IDLE
+	if battle != null:
+		battle.on_unit_recovered(self)
+
+func _tick_wounded(delta: float) -> void:
+	if being_dragged:
+		return          # a man under tow is not bleeding out any faster
+	bleed_time -= delta
+	if bleed_time <= 0.0:
+		_finish_off()
+
+func _finish_off() -> void:
+	if activity == Activity.DEAD:
+		return
+	var was_wounded := wounded
+	wounded = false
+	being_dragged = false
 	activity = Activity.DEAD
 	hp = 0.0
 	if _cover_slot != null and battle != null:
 		battle.cover.release(_cover_slot, get_instance_id())
 		_cover_slot = null
+	if rescuer != null and is_instance_valid(rescuer):
+		rescuer.rescuing = null
+		rescuer.activity = Activity.IDLE
+		rescuer = null
+	if rescuing != null and is_instance_valid(rescuing):
+		# The man I was carrying is dropped where he lies; somebody else may
+		# still come for him.
+		rescuing.being_dragged = false
+		rescuing.rescuer = null
+		rescuing = null
 	EventBus.unit_died.emit(self)
 	if battle != null:
-		battle.on_unit_died(self)
+		battle.on_unit_died(self, was_wounded)
 	_on_death_visual()
 
 func _on_death_visual() -> void:

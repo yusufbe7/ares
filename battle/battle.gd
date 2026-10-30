@@ -19,6 +19,7 @@ var trees: Array = []            # [{pos, index, felled, mm, canopy}]
 var roads: Array = []            # [{horizontal, offset, width}]
 var hard_points: Array = []      # bunkers and other prepared positions
 var nav_obstacles: Array = []    # [{pos, radius}] props that block movement
+var wounded_units: Array = []    # men down and waiting for somebody to come
 var bridge_points: Array = []    # [{pos, half, dir}] the crossings over the river
 var _tracks_mm: MultiMesh = null
 var _track_next: int = 0
@@ -40,6 +41,7 @@ var _grid_step: float = 4.0
 var _revealed: Dictionary = {}    # Vector2i -> time left, per enemy visibility
 var _reveal_timer: float = 0.0
 var _fog_timer: float = 0.0
+var _rescue_timer: float = 0.0
 var _team_colors: Array = [Color(0.35, 0.62, 0.9), Color(0.85, 0.35, 0.3)]
 ## Difficulty shows up as how well the AI side shoots, not as free damage.
 var _team_accuracy: Array = [1.0, 1.0]
@@ -914,6 +916,10 @@ func _physics_process(delta: float) -> void:
 		ai.tick(delta)
 	director.tick(delta, units)
 	_check_mines()
+	_rescue_timer -= delta
+	if _rescue_timer <= 0.0:
+		_rescue_timer = 1.5
+		_assign_rescuers()
 	if stats != null:
 		stats.elapsed = director.elapsed
 	_follow_camera_with_weather()
@@ -979,13 +985,59 @@ func on_point_captured(p: ObjectivePoint) -> void:
 	var who: String = "Siz" if p.owner_team == player_team else "Dushman"
 	GameState.notify("%s %s nuqtasini egalladi." % [who, p.id], "good" if p.owner_team == player_team else "warn")
 
-func on_unit_died(u: BattleUnit) -> void:
+func on_unit_wounded(u: BattleUnit) -> void:
+	if not wounded_units.has(u):
+		wounded_units.append(u)
+	if u.team == player_team:
+		GameState.notify("Yarador: qutqaruvchi kerak.", "warn")
+
+func on_unit_recovered(u: BattleUnit) -> void:
+	wounded_units.erase(u)
+	if stats != null:
+		stats.on_rescued(u.team)
+	if u.team == player_team:
+		GameState.notify("Yarador qutqarildi va safga qaytdi.", "good")
+
+func on_unit_died(u: BattleUnit, was_wounded: bool = false) -> void:
+	wounded_units.erase(u)
 	director.on_unit_died(u)
 	if stats != null:
 		stats.on_kill(u.team, u.unit_id, u.unit_class(), u.men_count(),
 			u.last_attacker_team, u.last_attacker_unit)
+		if was_wounded:
+			stats.on_bled_out(u.team)
 	for s in squads:
 		s.remove(u)
+
+## Sends the nearest man who is not already busy. Carrying somebody off is a
+## real cost: that is one rifle out of the line for as long as it takes.
+func _assign_rescuers() -> void:
+	for w in wounded_units.duplicate():
+		if not is_instance_valid(w) or not w.wounded:
+			wounded_units.erase(w)
+			continue
+		if w.rescuer != null and is_instance_valid(w.rescuer) and w.rescuer.is_fighting():
+			continue
+		w.rescuer = null
+		var best: BattleUnit = null
+		var best_d := 70.0
+		for u in units_of_team(w.team):
+			if u == w or not u.is_fighting() or u.unit_class() != "infantry":
+				continue
+			if u.rescuing != null:
+				continue
+			var d: float = u.global_position.distance_to(w.global_position)
+			if d < best_d:
+				best_d = d
+				best = u
+		if best != null:
+			best.rescuing = w
+			w.rescuer = best
+			best.activity = BattleUnit.Activity.RESCUING
+
+## Somewhere a wounded man can be dragged to: back toward his own edge.
+func safe_point_for(team: int) -> Vector3:
+	return spawn_point_for(team)
 
 func on_battle_finished(res: Dictionary) -> void:
 	var teams: Array = cfg.get("teams", [])
