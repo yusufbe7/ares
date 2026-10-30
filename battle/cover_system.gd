@@ -37,7 +37,7 @@ func add_slot(pos: Vector3, facing: Vector3, quality: float, kind: String) -> Sl
 
 func slot_count() -> int:
 	var n := 0
-	for s: Slot in slots:
+	for s in slots:
 		if s.alive:
 			n += 1
 	return n
@@ -116,7 +116,7 @@ func add_wreck(pos: Vector3) -> void:
 ## that is no longer there.
 func invalidate_near(pos: Vector3, radius: float) -> void:
 	var r2 := radius * radius
-	for s: Slot in slots:
+	for s in slots:
 		if s.alive and s.position.distance_squared_to(pos) < r2:
 			s.alive = false
 			s.occupant = 0
@@ -138,7 +138,7 @@ func best_slot(from: Vector3, threat_dir: Vector3, max_distance: float, seeker_i
 	var best: Slot = null
 	var best_score := -INF
 	var threat := threat_dir.normalized()
-	for s: Slot in _candidates(from, max_distance):
+	for s in _candidates(from, max_distance):
 		if not s.alive:
 			continue
 		if s.occupant != 0 and s.occupant != seeker_id:
@@ -166,7 +166,7 @@ func release(slot: Slot, seeker_id: int) -> void:
 ## How much of a hit this position stops, used by the damage model.
 func protection_at(pos: Vector3, from_dir: Vector3) -> float:
 	var best := 0.0
-	for s: Slot in _candidates(pos, 3.0):
+	for s in _candidates(pos, 3.0):
 		if not s.alive:
 			continue
 		if s.position.distance_to(pos) > 2.0:
