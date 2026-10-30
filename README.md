@@ -179,6 +179,17 @@ chaqirilsa shtab javob beradi, nuqta egallansa xabar beriladi. Har bir gap
 pastki chapdagi lentada ismi bilan chiqadi. Bir xil gap qayta-qayta
 takrorlanmasligi uchun har turining o'z kutish vaqti bor.
 
+**Transport va desant.** Jang boshida piyodalar transportlarga chiqadi.
+Transport maqsadga yetganda yoki dushman 45 m ga yaqinlashganda askarlarni
+**tushiradi** — korpus dushman tomonida qoladi, ya'ni askarlar panada tushadi.
+Jang paytida ham piyodalarni tanlab, o'z transportingizga o'ng tugma bossangiz
+ular ichiga chiqadi. Zirhsiz yuk mashinasi ham bor: tez, 8 kishi sig'adi,
+lekin oddiy o'q ham teshadi.
+
+**Vertolyot maydondan ko'tariladi.** Hujum vertolyoti osmonda paydo bo'lmaydi
+— u o'z chetidagi belgilangan maydonchada turadi, vinti sekin aylanadi.
+Nishon paydo bo'lgandagina vint tezlashadi va vertolyot ko'tariladi.
+
 **Texnika ham pana.** Zirhli mashina orqasida turgan askarni korpus himoya
 qiladi — pana nuqtalari emas, jonli hisob, chunki texnika yurganda pana ham
 u bilan ketadi. Faqat korpus haqiqatan o'q yo'lida bo'lsa ishlaydi.

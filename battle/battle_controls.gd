@@ -149,6 +149,18 @@ func _issue_order(screen_pos: Vector2) -> void:
 		return
 	if selected.is_empty():
 		return
+	var friendly := _unit_at(screen_pos, battle.player_team)
+	if friendly != null and friendly.unit_class() == "vehicle" \
+			and str(friendly.data.get("role", "")) == "transport":
+		var boarded := 0
+		for u in selected:
+			if u.unit_class() == "infantry" and u.is_fighting() \
+					and u.global_position.distance_to(friendly.global_position) < 30.0:
+				if friendly.load_passenger(u):
+					boarded += 1
+		if boarded > 0:
+			GameState.notify("%d askar transportga chiqdi." % boarded, "good")
+			return
 	var enemy := _unit_at(screen_pos, 1 - battle.player_team)
 	if enemy != null:
 		for u in selected:
