@@ -20,6 +20,11 @@ func _initialize() -> void:
 	_test_spend_authority()
 	_test_battle_bridge()
 	_test_cover_system()
+	_test_maps_and_seasons()
+	_test_battle_setup()
+	_test_campaign()
+	_test_battle_stats()
+	_test_victory_modes()
 	_test_seasons()
 	_test_serialization()
 	print("---")
@@ -49,7 +54,7 @@ func _test_data() -> void:
 	check(DB.units.has("inf_rifle"), "units.json has inf_rifle")
 	check(DB.units.has("veh_tank"), "units.json has veh_tank")
 	check(DB.buildings.has("factory"), "buildings.json has factory")
-	check(DB.battle_maps.size() == 3, "three battle maps are defined")
+	check(DB.battle_maps.size() == 6, "six battle maps are defined")
 	check(DB.unit("veh_tank").get("armor_sides", {}).has("rear"), "tank has a rear armour facing")
 
 func _test_map_grid() -> void:
@@ -287,6 +292,7 @@ func _test_battle_bridge() -> void:
 	check(cfg.get("teams", []).size() == 2, "the battle config has two sides")
 	check(not cfg["teams"][0].get("roster", {}).is_empty(), "the attacker brings units")
 	check(DB.battle_maps.has(str(cfg.get("map", ""))), "the battle map id is real")
+	check(DB.victory_modes.has(str(cfg.get("victory_mode", ""))), "the province picked a real victory mode")
 	var result := BattleBridge.auto_resolve(w, battle)
 	check(result.has("winner"), "auto resolution picks a winner")
 	var owner_before := w.province(target).owner_id
@@ -322,12 +328,216 @@ func _test_cover_system() -> void:
 	cover.free()
 	trench_cover.free()
 
+## A stand-in for Battle, so the director can be tested without a scene tree.
+class FakeBattle extends RefCounted:
+	var finished_with: Dictionary = {}
+	var posts: Array = [null, null]
+	var victory_mode: String = "capture"
+
+	func on_battle_finished(res: Dictionary) -> void:
+		finished_with = res
+
+	func on_point_captured(_p) -> void:
+		pass
+
+	func objective_for(team: int):
+		return posts[team]
+
+class FakePost extends RefCounted:
+	var team: int = 0
+	var health: float = 1.0
+
+	func health_fraction() -> float:
+		return health
+
+func _test_maps_and_seasons() -> void:
+	print("- maps, seasons and modes")
+	for id in ["village", "forest", "desert", "city", "mountain", "military_base"]:
+		var m: Dictionary = DB.battle_map(id)
+		check(str(m.get("id", "")) == id, "map %s exists" % id)
+		check(not m.get("props", {}).is_empty(), "map %s declares its props" % id)
+		check(float(m.get("size", 0)) > 100.0, "map %s has a real size" % id)
+	check(DB.battle_map("mountain").get("relief", 1.0) > DB.battle_map("city").get("relief", 1.0),
+		"mountains are more broken ground than a city")
+	check(float(DB.battle_map("forest").get("vision_mod", 1.0)) < 1.0, "the forest shortens sight")
+	check(float(DB.battle_map("desert").get("vision_mod", 1.0)) > 1.0, "the desert lengthens it")
+
+	check(DB.season_ids().size() == 4, "four seasons are defined")
+	for sid in ["spring", "summer", "autumn", "winter"]:
+		var season: Dictionary = DB.season(sid)
+		check(season.has("ground") and season.has("canopy") and season.has("sky_top"),
+			"season %s carries a full palette" % sid)
+		check(not season.get("weather_bias", {}).is_empty(), "season %s has weather odds" % sid)
+	check(float(DB.season("winter").get("snow", 0.0)) > 0.5, "winter is a snow season")
+	check(float(DB.season("summer").get("snow", 1.0)) == 0.0, "summer is not")
+	check(float(DB.season("autumn").get("leaves", 0.0)) > 0.5, "autumn drops leaves")
+	# The same map in two seasons must come out looking different.
+	var spring_ground := DB.season_color("spring", "ground", Color.BLACK)
+	var winter_ground := DB.season_color("winter", "ground", Color.BLACK)
+	check(spring_ground != winter_ground, "the ground is repainted per season")
+
+	check(DB.victory_modes.size() == 4, "four victory conditions are defined")
+	for vid in ["elimination", "capture", "hold", "destroy"]:
+		check(DB.victory_modes.has(vid), "victory mode %s exists" % vid)
+	check(DB.difficulties.size() == 3, "three bot skill levels are defined")
+	check(float(DB.difficulty("hard").get("aggression", 0.0))
+		> float(DB.difficulty("easy").get("aggression", 1.0)), "hard bots push harder")
+	check(float(DB.difficulty("hard").get("reaction", 9.0))
+		< float(DB.difficulty("easy").get("reaction", 0.0)), "hard bots decide faster")
+
+func _test_battle_setup() -> void:
+	print("- battle setup")
+	var force := {"infantry": 30, "tanks": 3, "transports": 2, "artillery": 1, "aircraft": 1}
+	check(BattleSetup.unit_total(force) == 37, "the unit count is the sum of the sliders")
+	var roster := BattleSetup.roster_from_force(force)
+	var infantry_total := 0
+	for uid in roster.keys():
+		if str(DB.unit(str(uid)).get("class", "")) == "infantry":
+			infantry_total += int(roster[uid])
+	check(infantry_total == 30, "every requested soldier is placed (%d)" % infantry_total)
+	check(int(roster.get("inf_at", 0)) > 0, "the infantry mix always includes anti-tank")
+	check(int(roster.get("inf_recon", 0)) > 0, "the infantry mix always includes recon")
+	check(int(roster.get("veh_tank", 0)) == 3, "tanks come through as asked")
+	check(int(roster.get("veh_apc", 0)) == 2, "transports come through as asked")
+	check(roster.has("air_heli"), "air support is split into a gunship")
+	check(BattleSetup.tickets_for(force) > 30, "the reserve is larger than the first wave")
+
+	var small := BattleSetup.roster_from_force({"infantry": 3})
+	var small_total := 0
+	for uid in small.keys():
+		small_total += int(small[uid])
+	check(small_total == 3, "a tiny force is not padded out")
+
+	var cfg := BattleSetup.build({"map": "city", "season": "winter", "weather": "snow",
+		"victory_mode": "destroy", "difficulty": "hard", "minutes": 10.0,
+		"player_force": force, "enemy_force": force})
+	check(str(cfg["map"]) == "city", "the chosen map reaches the config")
+	check(str(cfg["victory_mode"]) == "destroy", "the chosen victory mode reaches the config")
+	check(float(cfg["duration"]) == 600.0, "minutes are converted to seconds")
+	check(cfg["teams"].size() == 2, "both sides are built")
+	check(not bool(cfg["teams"][0]["ai"]), "the player side is not AI")
+	check(bool(cfg["teams"][1]["ai"]), "the enemy side is AI")
+
+	var sb := BattleSetup.sandbox({"map": "desert", "player_force": force, "enemy_force": force})
+	check(bool(sb["sandbox"]), "sandbox is flagged")
+	check(float(sb["duration"]) == 0.0, "sandbox has no clock")
+
+func _test_campaign() -> void:
+	print("- campaign")
+	check(DB.missions.size() >= 6, "the campaign has missions")
+	var orders: Array = []
+	for m in DB.missions:
+		orders.append(int(m.get("order", 0)))
+	var sorted_orders: Array = orders.duplicate()
+	sorted_orders.sort()
+	check(orders == sorted_orders, "missions are in order")
+	var used_maps: Dictionary = {}
+	for m in DB.missions:
+		check(DB.battle_maps.has(str(m.get("map", ""))), "mission %s uses a real map" % str(m.get("id", "")))
+		check(DB.victory_modes.has(str(m.get("victory_mode", ""))),
+			"mission %s uses a real victory mode" % str(m.get("id", "")))
+		used_maps[str(m.get("map", ""))] = true
+	check(used_maps.size() >= 5, "the campaign visits most of the maps")
+
+	var first := str(DB.missions[0].get("id", ""))
+	var second := str(DB.missions[1].get("id", ""))
+	GameState.completed_missions = []
+	check(GameState.mission_unlocked(first), "the first mission is always open")
+	check(not GameState.mission_unlocked(second), "the second is locked until the first is won")
+	GameState.completed_missions = [first]
+	check(GameState.mission_unlocked(second), "winning one mission opens the next")
+	GameState.completed_missions = []
+
+	var cfg := BattleSetup.from_mission(DB.missions[0])
+	check(str(cfg["mission"]) == first, "the config remembers which mission it is")
+	check(not cfg["teams"][0]["roster"].is_empty(), "the mission fields a force")
+
+func _test_battle_stats() -> void:
+	print("- battle statistics")
+	var stats := BattleStats.new()
+	stats.setup({"teams": [{"name": "Blue"}, {"name": "Red"}]})
+	stats.on_spawn(0, "veh_tank")
+	stats.on_spawn(0, "inf_rifle")
+	stats.on_spawn(1, "inf_rifle")
+	stats.on_damage(0, "veh_tank", 300.0)
+	stats.on_kill(1, "inf_rifle", "infantry", 1, 0, "veh_tank")
+	stats.on_kill(1, "inf_rifle", "infantry", 1, 0, "veh_tank")
+	stats.on_kill(0, "inf_rifle", "infantry", 1, 1, "inf_rifle")
+	check(stats.kills[0] == 2, "kills are credited to the right side")
+	check(stats.losses[1] == 2, "losses are counted on the side that took them")
+	check(stats.losses[0] == 1, "both sides are tracked")
+	check(stats.damage_dealt[0] == 300.0, "damage is accumulated")
+	var best := stats.best_unit(0)
+	check(best != null and best.unit_id == "veh_tank", "the stand-out unit type is identified")
+	stats.on_kill(0, "veh_tank", "vehicle", 3, 1, "inf_at")
+	check(stats.vehicles_lost[0] == 1, "vehicle losses are counted separately")
+	check(stats.men_lost[0] == 4, "men lost adds up the crew too")
+	var d := stats.to_dict()
+	check(d.has("records") and not d["records"].is_empty(), "the report serializes per-unit rows")
+	check(str(d["best_unit"][0]) == "veh_tank", "the report names the best unit")
+
+func _test_victory_modes() -> void:
+	print("- victory conditions")
+	# Destroy: losing the command post ends it, whatever else is happening.
+	var fake := FakeBattle.new()
+	var post := FakePost.new()
+	post.team = 1
+	fake.posts = [null, post]
+	var d := BattleDirector.new()
+	d.battle = fake
+	d.setup(fake, {"victory_mode": "destroy", "duration": 600.0,
+		"teams": [{"tickets": 50}, {"tickets": 50}], "player_team": 0})
+	check(d.mode == "destroy", "the director took the mode")
+	d.on_objective_destroyed(post)
+	check(d.finished, "destroying the post ends the battle")
+	check(int(fake.finished_with.get("winner_team", -1)) == 0, "the other side wins")
+	d.free()
+
+	# Hold: the defender wins by surviving the clock.
+	var fake2 := FakeBattle.new()
+	var d2 := BattleDirector.new()
+	d2.battle = fake2
+	d2.setup(fake2, {"victory_mode": "hold", "duration": 2.0,
+		"teams": [{"tickets": 50, "is_defender": false}, {"tickets": 50, "is_defender": true}],
+		"player_team": 0})
+	check(d2.hold_defender == 1, "the defender is read from the setup")
+	for i in range(30):
+		d2.tick(0.2, [])
+	check(d2.finished, "the clock ends a hold match")
+	check(int(fake2.finished_with.get("winner_team", -1)) == 1, "surviving the clock wins it")
+	d2.free()
+
+	# Elimination: a side with nothing left loses.
+	var fake3 := FakeBattle.new()
+	var d3 := BattleDirector.new()
+	d3.battle = fake3
+	d3.setup(fake3, {"victory_mode": "elimination", "duration": 600.0,
+		"teams": [{"tickets": 40}, {"tickets": 0}], "player_team": 0})
+	d3.tick(0.1, [])
+	check(d3.finished, "an empty side ends an elimination match")
+	check(int(fake3.finished_with.get("winner_team", -1)) == 0, "the surviving side wins")
+	d3.free()
+
+	# Sandbox never ends.
+	var fake4 := FakeBattle.new()
+	var d4 := BattleDirector.new()
+	d4.battle = fake4
+	d4.setup(fake4, {"victory_mode": "elimination", "duration": 1.0, "sandbox": true,
+		"teams": [{"tickets": 0}, {"tickets": 0}], "player_team": 0})
+	for i in range(20):
+		d4.tick(0.2, [])
+	check(not d4.finished, "a sandbox never declares a winner")
+	check(d4.supply[0] > 1000.0, "a sandbox keeps the player supplied")
+	d4.free()
+
 func _test_seasons() -> void:
 	print("- seasons and weather")
 	check(SeasonCycle.season_for_day(0) == "spring", "the world starts in spring")
 	check(SeasonCycle.season_for_day(SeasonCycle.DAYS_PER_SEASON * 3) == "winter", "winter arrives on schedule")
 	check(SeasonCycle.snow_amount("winter", "snow") > 0.9, "winter snow covers the battlefield")
 	check(SeasonCycle.snow_amount("summer", "clear") == 0.0, "summer has no snow")
+	check(SeasonCycle.wetness("autumn", "rain") > SeasonCycle.wetness("summer", "clear"),
+		"autumn rain leaves the ground wetter than a dry summer")
 	var w := _new_world()
 	w.season = "winter"
 	w.weather = "snow"

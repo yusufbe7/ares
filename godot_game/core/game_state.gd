@@ -14,9 +14,42 @@ var local_role: int = Role.COMMANDER
 var local_player_id: int = 1
 var last_battle_result: Dictionary = {}
 var rng_seed: int = 0
+## Campaign progress: the ids of missions already won, kept in the profile.
+var completed_missions: Array = []
+
+const PROFILE_PATH := "user://profile.cfg"
 
 func _ready() -> void:
 	randomize()
+	load_profile()
+
+func load_profile() -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(PROFILE_PATH) != OK:
+		return
+	completed_missions = cfg.get_value("campaign", "completed", [])
+
+func save_profile() -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value("campaign", "completed", completed_missions)
+	cfg.save(PROFILE_PATH)
+
+func complete_mission(mission_id: String) -> void:
+	if mission_id == "" or completed_missions.has(mission_id):
+		return
+	completed_missions.append(mission_id)
+	save_profile()
+
+## A mission is open once the one before it is done; the first is always open.
+func mission_unlocked(mission_id: String) -> bool:
+	var list: Array = DB.missions
+	for i in range(list.size()):
+		if str(list[i].get("id", "")) != mission_id:
+			continue
+		if i == 0:
+			return true
+		return completed_missions.has(str(list[i - 1].get("id", "")))
+	return false
 
 func role_name(role: int) -> String:
 	match role:

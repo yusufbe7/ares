@@ -15,6 +15,8 @@ static func build_config(world, battle: Dictionary) -> Dictionary:
 		"province": pid,
 		"province_name": p.name if p != null else "?",
 		"map": str(battle.get("map", "village")),
+		"victory_mode": victory_mode_for(p),
+		"difficulty": "normal",
 		"season": str(battle.get("season", world.season)),
 		"weather": str(battle.get("weather", world.weather)),
 		"seed": world.seed_value + pid * 31 + int(battle.get("id", 0)),
@@ -58,6 +60,18 @@ static func _team_block(world, nid: String, team: int, is_defender: bool, p) -> 
 		"supply": supply,
 		"ai": n == null or n.is_ai or n.online_players().is_empty(),
 	}
+
+## What kind of fight this province produces. A capital is a command post worth
+## blowing up; a fortified province is ground to be held; everything else is a
+## straight contest for the points.
+static func victory_mode_for(p) -> String:
+	if p == null:
+		return "capture"
+	if p.is_capital:
+		return "destroy"
+	if p.fort_level >= 2 or p.level_of("fortline") > 0:
+		return "hold"
+	return "capture"
 
 ## Fast resolution, used for fights no human is present for. It runs the same
 ## shape of combat as the 3D battle — strength, terrain, supply, anti-tank

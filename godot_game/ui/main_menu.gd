@@ -135,34 +135,42 @@ func _build_ui() -> void:
 	col.add_child(UIKit.label("2041 — muqobil tarix", 12, UIKit.MUTED))
 	col.add_child(UIKit.spacer(20))
 
-	var global_btn := UIKit.button(Loc.t("menu.global_war"))
-	global_btn.pressed.connect(_start_global_war)
-	col.add_child(global_btn)
+	var entries := [
+		{"text": "CUSTOM BATTLE", "hint": "O'zing xohlagan ikkita armiyani tuzib jang qil.",
+		"action": func(): GameState.go("custom_battle", {})},
+		{"text": "CAMPAIGN", "hint": "Topshiriqlar va ketma-ket janglar.",
+		"action": func(): GameState.go("campaign", {})},
+		{"text": "MULTIPLAYER", "hint": "Do'stlar bilan onlayn jang va global urush.",
+		"action": func(): GameState.go("lobby", {})},
+		{"text": "SANDBOX", "hint": "Erkin tajriba: texnika va botlarni sina.",
+		"action": func(): GameState.go("custom_battle", {"sandbox": true})},
+		{"text": "GLOBAL WAR", "hint": "Dunyo xaritasi, diplomatiya, iqtisod va urushlar.",
+		"action": _start_global_war},
+	]
+	for e in entries:
+		var b := UIKit.button(str(e["text"]))
+		b.tooltip_text = str(e["hint"])
+		b.pressed.connect(e["action"])
+		col.add_child(b)
 
-	var arena_btn := UIKit.button(Loc.t("menu.battle_arena"))
-	arena_btn.pressed.connect(_start_arena)
-	col.add_child(arena_btn)
-
-	var mp_btn := UIKit.button(Loc.t("menu.multiplayer"))
-	mp_btn.pressed.connect(func(): GameState.go("lobby", {}))
-	col.add_child(mp_btn)
-
-	var load_btn := UIKit.button("DAVOM ETISH", 16)
+	col.add_child(UIKit.spacer(6))
+	var load_btn := UIKit.button("DAVOM ETISH", 15)
 	load_btn.pressed.connect(_continue_game)
 	col.add_child(load_btn)
 
-	var set_btn := UIKit.button(Loc.t("menu.settings"), 16)
+	var set_btn := UIKit.button(Loc.t("menu.settings"), 15)
 	set_btn.pressed.connect(func(): GameState.go("settings", {}))
 	col.add_child(set_btn)
 
-	var exit_btn := UIKit.button(Loc.t("menu.exit"), 16)
+	var exit_btn := UIKit.button(Loc.t("menu.exit"), 15)
 	exit_btn.pressed.connect(func(): get_tree().quit())
 	col.add_child(exit_btn)
 
-	var hint := UIKit.label("GLOBAL URUSH — dunyo xaritasi, diplomatiya, iqtisod va urushlar.\n"
-		+ "JANG ARENASI — to'g'ridan-to'g'ri 3D jang, 15-30 daqiqa.", 13, UIKit.MUTED)
+	col.add_child(UIKit.spacer(14))
+	var hint := UIKit.label(
+		"CUSTOM BATTLE — xarita, fasl, ob-havo, ikkala armiya va g'alaba shartini o'zing tanlaysan.\n"
+		+ "GLOBAL WAR — davlat tanlab, dunyo xaritasida urush olib borasan.", 13, UIKit.MUTED)
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	col.add_child(UIKit.spacer(16))
 	col.add_child(hint)
 
 func _process(delta: float) -> void:
@@ -177,30 +185,6 @@ func _start_global_war() -> void:
 	GameState.mode = GameState.Mode.GLOBAL_WAR
 	GameState.start_new_world(0)
 	GameState.go("nation_select", {})
-
-func _start_arena() -> void:
-	Net.start_offline()
-	GameState.mode = GameState.Mode.BATTLE_ARENA
-	GameState.go("battle", _arena_config())
-
-## A balanced, self-contained skirmish: equal rosters, one map, no world state.
-func _arena_config() -> Dictionary:
-	var maps: Array = DB.battle_maps.keys()
-	var map_id: String = str(maps[randi() % maps.size()])
-	var roster := {"inf_rifle": 10, "inf_at": 3, "inf_mg": 2, "inf_recon": 2,
-		"veh_tank": 3, "veh_apc": 2, "veh_spg": 1, "air_drone": 1}
-	return {
-		"battle_id": 0, "province": -1, "province_name": "Arena",
-		"map": map_id, "season": DB.seasons[randi() % maxi(DB.seasons.size(), 1)],
-		"weather": "clear", "seed": randi(), "duration": 1200.0,
-		"arena": true,
-		"teams": [
-			{"team": 0, "nation": "BLUE", "name": "Ko'k kuchlar", "color": "3fa7d6",
-			"is_defender": false, "roster": roster.duplicate(), "tickets": 150, "supply": 1.0, "ai": false},
-			{"team": 1, "nation": "RED", "name": "Qizil kuchlar", "color": "e05c5c",
-			"is_defender": true, "roster": roster.duplicate(), "tickets": 150, "supply": 1.0, "ai": true},
-		],
-	}
 
 func _continue_game() -> void:
 	if GameState.load_world():

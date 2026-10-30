@@ -8,6 +8,9 @@ var map_id: String = "village"
 var map_size: float = 600.0
 var resolution: int = 128
 var snow: float = 0.0
+var wet: float = 0.0
+var season_id: String = "summer"
+var relief: float = 1.0
 
 var _noise: FastNoiseLite
 var _detail: FastNoiseLite
@@ -16,10 +19,13 @@ var _trenches: Array = []         # [{a: Vector2, b: Vector2, width: float, dept
 var _mesh_instance: MeshInstance3D
 var _body: StaticBody3D
 
-func build(cfg: Dictionary, seed_value: int, snow_amount: float) -> void:
+func build(cfg: Dictionary, seed_value: int, p_season: String, p_weather: String) -> void:
 	map_id = str(cfg.get("id", "village"))
 	map_size = float(cfg.get("size", 600))
-	snow = snow_amount
+	relief = float(cfg.get("relief", 1.0))
+	season_id = p_season
+	snow = SeasonCycle.snow_amount(p_season, p_weather)
+	wet = SeasonCycle.wetness(p_season, p_weather)
 	_noise = FastNoiseLite.new()
 	_noise.seed = seed_value
 	_noise.frequency = 0.0035
@@ -27,6 +33,9 @@ func build(cfg: Dictionary, seed_value: int, snow_amount: float) -> void:
 	_detail = FastNoiseLite.new()
 	_detail.seed = seed_value + 7
 	_detail.frequency = 0.02
+	if map_id == "mountain":
+		_noise.fractal_octaves = 5
+		_noise.frequency = 0.0028
 	_build_mesh(cfg)
 
 func _build_mesh(cfg: Dictionary) -> void:
@@ -72,24 +81,41 @@ func _add_tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3) -> void:
 	st.set_uv(Vector2(c.x, c.z) * uv_scale)
 	st.add_vertex(c)
 
-func _make_material(cfg: Dictionary) -> StandardMaterial3D:
+## The ground colour comes from the season, not the map: the same village is
+## green in spring, bleached in summer, brown in autumn and white in winter.
+func _make_material(_cfg: Dictionary) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
-	var ground := Color.from_string(str(cfg.get("ground", "#6c7a52")), Color(0.42, 0.48, 0.32))
-	var snow_col := Color.from_string(str(cfg.get("snow_ground", "#e8eef2")), Color(0.9, 0.93, 0.95))
-	m.albedo_color = ground.lerp(snow_col, snow)
-	m.roughness = lerpf(0.95, 0.7, snow)
+	var ground := DB.season_color(season_id, "ground", Color(0.42, 0.48, 0.32))
+	var alt := DB.season_color(season_id, "ground_alt", ground.darkened(0.15))
+	var base := ground.lerp(alt, 0.35)
+	match map_id:
+		"desert":
+			base = base.lerp(Color(0.78, 0.68, 0.45), 0.55)
+		"city":
+			base = base.lerp(Color(0.34, 0.33, 0.32), 0.5)
+		"military_base":
+			base = base.lerp(Color(0.40, 0.40, 0.38), 0.35)
+		"mountain":
+			base = base.lerp(DB.season_color(season_id, "rock", Color(0.42, 0.42, 0.4)), 0.35)
+		_:
+			pass
+	m.albedo_color = base
+	# Wet ground is darker and shinier; snow is bright and flat.
+	m.albedo_color = m.albedo_color.darkened(wet * 0.22)
+	m.roughness = clampf(1.0 - wet * 0.45, 0.35, 1.0)
 	m.metallic = 0.0
+	m.metallic_specular = lerpf(0.3, 0.6, wet)
 	return m
 
 ## Ground height, including every crater and trench dug so far. Units, props and
 ## the camera all read the world through this one function.
 func height_at(x: float, z: float) -> float:
-	var base: float = _noise.get_noise_2d(x, z) * 14.0
-	base += _detail.get_noise_2d(x, z) * 1.6
-	if map_id == "desert":
-		base *= 1.5
-	elif map_id == "forest":
-		base *= 0.8
+	var base: float = _noise.get_noise_2d(x, z) * 14.0 * relief
+	base += _detail.get_noise_2d(x, z) * 1.6 * clampf(relief, 0.3, 1.5)
+	if map_id == "mountain":
+		# Ridges: squaring the noise turns rolling hills into real spines.
+		var ridge: float = 1.0 - absf(_noise.get_noise_2d(x * 0.6, z * 0.6))
+		base += ridge * ridge * 26.0
 	var p := Vector2(x, z)
 	for c in _craters:
 		var d: float = p.distance_to(c["pos"])

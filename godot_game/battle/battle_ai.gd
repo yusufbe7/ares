@@ -7,15 +7,20 @@ extends Node
 var battle = null
 var team: int = 1
 var think_timer: float = 2.0
-var aggression: float = 0.5
+var aggression: float = 0.55
+var reaction: float = 4.0          # seconds between decisions
+var support_mult: float = 1.0      # how freely it spends supply
 var _rng := RandomNumberGenerator.new()
 var _groups: Array = []
 
-func setup(ctx, p_team: int, seed_value: int, p_aggression: float = 0.5) -> void:
+func setup(ctx, p_team: int, seed_value: int, difficulty: Dictionary) -> void:
 	battle = ctx
 	team = p_team
-	aggression = p_aggression
+	aggression = float(difficulty.get("aggression", 0.55))
+	reaction = float(difficulty.get("reaction", 4.0))
+	support_mult = float(difficulty.get("support", 1.0))
 	_rng.seed = seed_value + p_team * 977
+	think_timer = reaction * 0.5
 
 func tick(delta: float) -> void:
 	if battle == null or battle.director.finished:
@@ -23,7 +28,7 @@ func tick(delta: float) -> void:
 	think_timer -= delta
 	if think_timer > 0.0:
 		return
-	think_timer = _rng.randf_range(3.0, 6.0)
+	think_timer = reaction * _rng.randf_range(0.8, 1.3)
 	_organise()
 	_assign_objectives()
 	_use_support()
@@ -44,6 +49,15 @@ func _organise() -> void:
 				_groups[0].append(u)
 
 func _assign_objectives() -> void:
+	match battle.victory_mode:
+		"destroy":
+			_push_command_post()
+			return
+		"hold":
+			_contest_hold_zone()
+			return
+		_:
+			pass
 	var targets := _priority_points()
 	if targets.is_empty():
 		return
@@ -66,6 +80,45 @@ func _assign_objectives() -> void:
 			if not u.has_move_target:
 				var offset := Vector3(_rng.randf_range(-14, 14), 0, _rng.randf_range(-14, 14))
 				u.order_move(battle.terrain.clamp_to_map(spearhead.position + offset))
+
+## Destroy mode: armour goes for the enemy post, infantry screens our own.
+func _push_command_post() -> void:
+	var enemy_post = battle.objective_for(1 - team)
+	var own_post = battle.objective_for(team)
+	if enemy_post == null:
+		return
+	for u in _groups[1]:
+		if not u.has_move_target:
+			u.order_attack_building(enemy_post)
+	var defenders: int = maxi(1, int(float(_groups[0].size()) * (1.0 - aggression)))
+	for i in range(_groups[0].size()):
+		var u: BattleUnit = _groups[0][i]
+		if u.has_move_target:
+			continue
+		if i < defenders and own_post != null:
+			var ring := Vector3(_rng.randf_range(-20, 20), 0, _rng.randf_range(-20, 20))
+			u.order_move(battle.terrain.clamp_to_map(own_post.global_position + ring))
+		else:
+			u.order_attack_building(enemy_post)
+
+## Hold mode: the defender digs in on the zone, the attacker walks into it.
+func _contest_hold_zone() -> void:
+	var zone = battle.director.hold_zone
+	if zone == null:
+		return
+	var defending: bool = team == battle.director.hold_defender
+	var radius: float = zone.radius * (0.7 if defending else 1.0)
+	for group in _groups:
+		for u in group:
+			if u.has_move_target:
+				continue
+			var ang := _rng.randf_range(0.0, TAU)
+			var dist: float = radius * (_rng.randf_range(0.3, 1.0) if defending else 0.5)
+			var spot := zone.position + Vector3(cos(ang), 0, sin(ang)) * dist
+			if defending:
+				u.order_move(battle.terrain.clamp_to_map(spot))
+			else:
+				u.order_capture(zone)
 
 func _priority_points() -> Array:
 	var list: Array = []
@@ -95,7 +148,8 @@ func _use_support() -> void:
 	var dir := battle.director
 	# Shell whatever the enemy has stacked up.
 	var cluster := _find_enemy_cluster()
-	if cluster["count"] >= 4 and dir.can_pay(team, 40.0):
+	var cluster_threshold: int = 6 - int(aggression * 4.0)
+	if int(cluster["count"]) >= cluster_threshold and dir.can_pay(team, 40.0):
 		dir.pay(team, 40.0)
 		battle.call_artillery_strike(_center_of_mass(), cluster["pos"], team, null)
 	# Reinforce when the reserve allows it.
@@ -104,15 +158,15 @@ func _use_support() -> void:
 		dir.start_reinforce_cooldown(team)
 		battle.spawn_reinforcement_squad(team)
 	# Armour, when the enemy has armour or the line has stalled.
-	if dir.can_pay(team, 120.0) and _rng.randf() < 0.35 + aggression * 0.3:
+	if dir.can_pay(team, 120.0) and _rng.randf() < (0.2 + aggression * 0.4) * support_mult:
 		dir.pay(team, 120.0)
 		battle.spawn_support_vehicle(team, "veh_tank")
 	# Eyes.
-	if dir.can_pay(team, 25.0) and _rng.randf() < 0.2:
+	if dir.can_pay(team, 25.0) and _rng.randf() < 0.2 * support_mult:
 		dir.pay(team, 25.0)
 		battle.spawn_support_vehicle(team, "air_drone")
 	# A cheap FPV drone against anything armoured that got close.
-	if dir.can_pay(team, 15.0) and _rng.randf() < 0.3:
+	if dir.can_pay(team, 15.0) and _rng.randf() < 0.3 * support_mult:
 		for u in battle.enemies_of(team):
 			if u.is_alive() and u.unit_class() == "vehicle":
 				dir.pay(team, 15.0)
