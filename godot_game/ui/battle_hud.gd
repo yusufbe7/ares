@@ -15,6 +15,9 @@ var _cover_label: Label
 var _selection_box: VBoxContainer
 var _group_bar: HBoxContainer
 var _selection_rect: Control
+var _objective_label: Label
+var _objective_bar: ProgressBar
+var _sandbox_panel: PanelContainer
 var _rect: Rect2 = Rect2()
 var _rect_active: bool = false
 var _build_panel: PanelContainer
@@ -57,6 +60,25 @@ func _build() -> void:
 	quit.custom_minimum_size = Vector2(100, 30)
 	quit.pressed.connect(_leave)
 	row.add_child(quit)
+
+	# What this side has to do to win, and how close it is to doing it.
+	var obj_panel := UIKit.make_panel(UIKit.PANEL)
+	obj_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	obj_panel.offset_left = -280
+	obj_panel.offset_right = 280
+	obj_panel.offset_top = 58
+	obj_panel.offset_bottom = 116
+	add_child(obj_panel)
+	var obj_col := UIKit.vbox(3)
+	obj_panel.add_child(obj_col)
+	_objective_label = UIKit.label(battle.director.objective_text(battle.player_team), 13, UIKit.WARN)
+	_objective_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	obj_col.add_child(_objective_label)
+	_objective_bar = UIKit.bar(0.0, 1.0, UIKit.ACCENT)
+	obj_col.add_child(_objective_bar)
+
+	if battle.sandbox:
+		_build_sandbox_panel()
 
 	# Bottom left: what is selected and what it is doing.
 	var bottom := UIKit.make_panel(UIKit.PANEL)
@@ -127,6 +149,38 @@ func _build_build_menu() -> void:
 	close.pressed.connect(func(): _build_panel.visible = false)
 	col.add_child(close)
 
+## Sandbox only: a panel that drops any unit in the game onto the map so the
+## player can try matchups without setting up a whole battle.
+func _build_sandbox_panel() -> void:
+	_sandbox_panel = UIKit.make_panel(UIKit.PANEL)
+	_sandbox_panel.set_anchors_preset(Control.PRESET_CENTER_LEFT)
+	_sandbox_panel.offset_left = 8
+	_sandbox_panel.offset_right = 250
+	_sandbox_panel.offset_top = -230
+	_sandbox_panel.offset_bottom = 230
+	add_child(_sandbox_panel)
+	var col := UIKit.vbox(3)
+	_sandbox_panel.add_child(col)
+	col.add_child(UIKit.label("SANDBOX", 16, UIKit.ACCENT))
+	col.add_child(UIKit.label("Bosing — bo'linma qo'shiladi.", 11, UIKit.MUTED))
+	for team in range(2):
+		col.add_child(UIKit.label("Jamoa %d" % (team + 1), 13, battle.team_color(team)))
+		var grid := GridContainer.new()
+		grid.columns = 2
+		col.add_child(grid)
+		for uid in DB.units.keys():
+			var b := UIKit.button(DB.local_name(DB.unit(str(uid)).get("name", {}), str(uid)), 11)
+			b.custom_minimum_size = Vector2(0, 26)
+			b.pressed.connect(_sandbox_spawn.bind(team, str(uid)))
+			grid.add_child(b)
+
+func _sandbox_spawn(team: int, unit_id: String) -> void:
+	var base := battle.spawn_point_for(team)
+	var offset := Vector3(randf_range(-20, 20), 0, randf_range(-20, 20))
+	var u := battle.spawn_unit(team, unit_id, battle.terrain.clamp_to_map(base + offset))
+	if u != null:
+		GameState.notify("%s qo'shildi." % DB.local_name(DB.unit(unit_id).get("name", {}), unit_id), "good")
+
 func _toggle_build_menu(_open: bool) -> void:
 	_build_panel.visible = not _build_panel.visible
 
@@ -146,7 +200,12 @@ func _process(_delta: float) -> void:
 			l.add_theme_color_override("font_color", UIKit.WARN)
 		_points_box.add_child(l)
 	var left := d.time_left()
-	_time_label.text = "%02d:%02d" % [int(left / 60.0), int(left) % 60]
+	_time_label.text = "∞" if is_inf(left) else "%02d:%02d" % [int(left / 60.0), int(left) % 60]
+	if _objective_bar != null:
+		var progress := d.objective_progress(battle.player_team)
+		_objective_bar.visible = progress >= 0.0
+		if progress >= 0.0:
+			_objective_bar.value = progress
 	_supply_label.text = "%s %d" % [Loc.t("battle.supply"), int(d.supply[battle.player_team])]
 	var cd := d.reinforce_cooldown(battle.player_team)
 	if cd > 0.0:

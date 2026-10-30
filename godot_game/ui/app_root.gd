@@ -46,6 +46,8 @@ func show_screen(screen_id: String, payload: Dictionary) -> void:
 	match screen_id:
 		"main_menu": node = preload("res://ui/main_menu.gd").new()
 		"lobby": node = preload("res://ui/lobby_screen.gd").new()
+		"custom_battle": node = preload("res://ui/custom_battle.gd").new()
+		"campaign": node = preload("res://ui/campaign_screen.gd").new()
 		"nation_select": node = preload("res://ui/nation_select.gd").new()
 		"world": node = preload("res://ui/world_screen.gd").new()
 		"battle": node = preload("res://ui/battle_screen.gd").new()

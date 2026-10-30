@@ -3,6 +3,10 @@ extends Node3D
 ## The 3D battlefield. Builds the map from the battle config, spawns both
 ## armies, runs combat, and reports the result back to the global map.
 
+## Hard ceiling on live units per side, so a huge custom roster cannot drag
+## the frame rate down to nothing.
+const MAX_UNITS_PER_TEAM := 160
+
 var cfg: Dictionary = {}
 var terrain: BattleTerrain
 var cover: CoverSystem
@@ -11,12 +15,20 @@ var ai_commanders: Array = []
 
 var units: Array = []
 var buildings: Array = []
-var trees: Array = []            # [{node, pos, felled}]
+var trees: Array = []            # [{pos, index, felled, mm, canopy}]
+var roads: Array = []            # [{horizontal, offset, width}]
+var hard_points: Array = []      # bunkers and other prepared positions
+var nav_obstacles: Array = []    # [{pos, radius}] props that block movement
+var objectives: Array = []       # per team: the thing a "destroy" match targets
+var stats: BattleStats = null
 var squads: Array = []           # Squad, index 0..4 for keys 1..5
 var player_team: int = 0
 
 var season: String = "summer"
 var weather: String = "clear"
+var victory_mode: String = "capture"
+var difficulty: String = "normal"
+var sandbox: bool = false
 var snow: float = 0.0
 
 var _rng := RandomNumberGenerator.new()
@@ -27,8 +39,11 @@ var _reveal_timer: float = 0.0
 var _fog_timer: float = 0.0
 var _snapshot_timer: float = 0.0
 var _team_colors: Array = [Color(0.35, 0.62, 0.9), Color(0.85, 0.35, 0.3)]
+## Difficulty shows up as how well the AI side shoots, not as free damage.
+var _team_accuracy: Array = [1.0, 1.0]
 var _sun: DirectionalLight3D
 var _fog_env: WorldEnvironment
+var _weather_particles: GPUParticles3D = null
 var _is_sim_authority: bool = true
 
 # ---------------------------------------------------------------------------
@@ -38,9 +53,13 @@ var _is_sim_authority: bool = true
 func start(config: Dictionary, local_team: int = 0) -> void:
 	cfg = config
 	player_team = local_team
+	cfg["player_team"] = local_team
 	_is_sim_authority = Net.is_authority()
 	season = str(cfg.get("season", "summer"))
 	weather = str(cfg.get("weather", "clear"))
+	victory_mode = str(cfg.get("victory_mode", "capture"))
+	difficulty = str(cfg.get("difficulty", "normal"))
+	sandbox = bool(cfg.get("sandbox", false))
 	snow = SeasonCycle.snow_amount(season, weather)
 	_rng.seed = int(cfg.get("seed", 12345))
 
@@ -54,16 +73,22 @@ func start(config: Dictionary, local_team: int = 0) -> void:
 	terrain = BattleTerrain.new()
 	add_child(terrain)
 	var map_cfg: Dictionary = DB.battle_map(str(cfg.get("map", "village")))
-	terrain.build(map_cfg, _rng.seed, snow)
+	terrain.build(map_cfg, _rng.seed, season, weather)
 
 	_build_environment()
-	_build_props(map_cfg)
+	var builder := MapBuilder.new()
+	builder.build(self, map_cfg, season, weather, _rng.seed)
 	_build_navigation()
+
+	stats = BattleStats.new()
+	stats.setup(cfg)
 
 	director = BattleDirector.new()
 	add_child(director)
 	director.setup(self, cfg)
 	_place_objectives()
+	if victory_mode == "destroy":
+		_place_destroy_targets()
 
 	for i in range(5):
 		var s := Squad.new()
@@ -76,14 +101,17 @@ func start(config: Dictionary, local_team: int = 0) -> void:
 
 	EventBus.battle_started.emit(cfg)
 
+## Sky, sun and fog all come out of the season palette, with the weather
+## layered on top. Nothing here is per-map, which is why one map reskins.
 func _build_environment() -> void:
+	var w: Dictionary = DB.weather(weather)
+	var light_mod := float(w.get("light", 1.0))
+
 	_sun = DirectionalLight3D.new()
 	_sun.rotation_degrees = Vector3(-48, 35, 0)
-	_sun.light_energy = 1.1 if weather == "clear" else 0.55
-	_sun.light_color = Color(1.0, 0.96, 0.9)
-	if season == "winter":
-		_sun.light_color = Color(0.88, 0.93, 1.0)
-	_sun.shadow_enabled = Settings.graphics_quality > 0
+	_sun.light_color = DB.season_color(season, "sun", Color(1.0, 0.96, 0.9))
+	_sun.light_energy = float(DB.season(season).get("sun_energy", 1.1)) * light_mod
+	_sun.shadow_enabled = Settings.graphics_quality > 0 and light_mod > 0.5
 	add_child(_sun)
 
 	_fog_env = WorldEnvironment.new()
@@ -91,144 +119,77 @@ func _build_environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	var sky := Sky.new()
 	var sky_mat := ProceduralSkyMaterial.new()
-	if season == "winter":
-		sky_mat.sky_top_color = Color(0.55, 0.62, 0.72)
-		sky_mat.sky_horizon_color = Color(0.78, 0.82, 0.86)
-	elif weather == "storm":
-		sky_mat.sky_top_color = Color(0.2, 0.22, 0.26)
-		sky_mat.sky_horizon_color = Color(0.4, 0.42, 0.45)
-	else:
-		sky_mat.sky_top_color = Color(0.35, 0.52, 0.78)
-		sky_mat.sky_horizon_color = Color(0.72, 0.78, 0.84)
+	sky_mat.sky_top_color = DB.season_color(season, "sky_top", Color(0.35, 0.52, 0.78))
+	sky_mat.sky_horizon_color = DB.season_color(season, "sky_horizon", Color(0.72, 0.78, 0.84))
+	sky_mat.ground_bottom_color = DB.season_color(season, "ground_alt", Color(0.2, 0.2, 0.18))
+	sky_mat.ground_horizon_color = DB.season_color(season, "ground", Color(0.3, 0.3, 0.26))
+	if light_mod < 0.6:
+		sky_mat.sky_top_color = sky_mat.sky_top_color.darkened(0.45)
+		sky_mat.sky_horizon_color = sky_mat.sky_horizon_color.darkened(0.3)
 	sky.sky_material = sky_mat
 	env.sky = sky
-	env.fog_enabled = weather == "fog" or weather == "snow" or weather == "storm"
-	env.fog_density = 0.012 if weather == "fog" else 0.004
-	env.fog_light_color = Color(0.8, 0.83, 0.86)
+
+	var fog_density := float(DB.season(season).get("fog", 0.0)) + float(w.get("fog_add", 0.0))
+	env.fog_enabled = fog_density > 0.0005
+	env.fog_density = fog_density
+	env.fog_light_color = DB.season_color(season, "sky_horizon", Color(0.8, 0.83, 0.86))
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	env.ambient_light_energy = clampf(light_mod, 0.4, 1.2)
 	_fog_env.environment = env
 	add_child(_fog_env)
 
-func _build_props(map_cfg: Dictionary) -> void:
-	_build_roads(int(map_cfg.get("roads", 3)))
-	_build_houses(int(map_cfg.get("houses", 20)))
-	_build_trees(int(map_cfg.get("trees", 300)))
-	_build_rocks(int(map_cfg.get("rocks", 60)))
+	_build_weather_particles(str(w.get("particles", "none")))
 
-func _build_roads(count: int) -> void:
-	# Roads are flat strips: they read as a village and they tell the player
-	# where vehicles will move fastest.
-	for i in range(count):
-		var horizontal: bool = i % 2 == 0
-		var offset: float = _rng.randf_range(-0.35, 0.35) * terrain.map_size
-		var strip := MeshInstance3D.new()
-		var pm := PlaneMesh.new()
-		pm.size = Vector2(terrain.map_size, 7.0) if horizontal else Vector2(7.0, terrain.map_size)
-		strip.mesh = pm
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = Color(0.3, 0.29, 0.27).lerp(Color(0.85, 0.87, 0.9), snow * 0.7)
-		mat.roughness = 1.0
-		strip.material_override = mat
-		var x: float = 0.0 if horizontal else offset
-		var z: float = offset if horizontal else 0.0
-		strip.position = Vector3(x, terrain.height_at(x, z) + 0.12, z)
-		add_child(strip)
+## Rain, snow and blowing dust follow the camera so a single emitter covers the
+## whole map without a particle in sight being wasted.
+func _build_weather_particles(kind: String) -> void:
+	if kind == "none" or Settings.graphics_quality == 0:
+		return
+	var p := GPUParticles3D.new()
+	var mat := ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(120, 1, 120)
+	mat.direction = Vector3(0, -1, 0)
+	mat.spread = 4.0
+	mat.gravity = Vector3(0, -9.8, 0)
+	var quad := QuadMesh.new()
+	var qmat := StandardMaterial3D.new()
+	qmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	qmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	qmat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	match kind:
+		"rain":
+			mat.initial_velocity_min = 16.0
+			mat.initial_velocity_max = 22.0
+			quad.size = Vector2(0.03, 0.9)
+			qmat.albedo_color = Color(0.68, 0.76, 0.86, 0.5)
+			p.amount = 1400
+			p.lifetime = 1.6
+		"snow":
+			mat.initial_velocity_min = 1.6
+			mat.initial_velocity_max = 3.2
+			mat.gravity = Vector3(1.5, -2.2, 0.8)
+			quad.size = Vector2(0.16, 0.16)
+			qmat.albedo_color = Color(1, 1, 1, 0.85)
+			p.amount = 1200
+			p.lifetime = 7.0
+		"storm":
+			mat.initial_velocity_min = 10.0
+			mat.initial_velocity_max = 26.0
+			mat.gravity = Vector3(-14.0, -9.0, 4.0)
+			quad.size = Vector2(0.05, 0.7)
+			qmat.albedo_color = Color(0.7, 0.72, 0.68, 0.45)
+			p.amount = 1800
+			p.lifetime = 1.4
+	quad.material = qmat
+	p.draw_pass_1 = quad
+	p.position = Vector3(0, 60, 0)
+	p.local_coords = false
+	add_child(p)
+	_weather_particles = p
 
-func _build_houses(count: int) -> void:
-	var wall_colors := [Color(0.86, 0.84, 0.78), Color(0.78, 0.74, 0.66), Color(0.9, 0.88, 0.8)]
-	var roof_colors := [Color(0.45, 0.17, 0.15), Color(0.2, 0.32, 0.24), Color(0.25, 0.28, 0.34)]
-	var placed: Array = []
-	var attempts := 0
-	while placed.size() < count and attempts < count * 30:
-		attempts += 1
-		var p := terrain.random_point(_rng, 60.0)
-		var too_close := false
-		for other in placed:
-			if p.distance_to(other) < 24.0:
-				too_close = true
-				break
-		if too_close:
-			continue
-		placed.append(p)
-		var h := DestructibleBuilding.new()
-		h.cover = cover
-		h.terrain = terrain
-		add_child(h)
-		h.position = p
-		h.rotation.y = _rng.randf_range(0, TAU)
-		var size := Vector3(_rng.randf_range(8, 13), _rng.randf_range(3.6, 5.2), _rng.randf_range(7, 11))
-		h.build(size, _rng.randi(), snow,
-			wall_colors[_rng.randi_range(0, wall_colors.size() - 1)],
-			roof_colors[_rng.randi_range(0, roof_colors.size() - 1)])
-		cover.add_building(p, size, h.rotation.y)
-		buildings.append(h)
-
-func _build_trees(count: int) -> void:
-	# One multimesh for the whole forest: thousands of trunks at one draw call.
-	var mm := MultiMesh.new()
-	mm.transform_format = MultiMesh.TRANSFORM_3D
-	var trunk := CylinderMesh.new()
-	trunk.top_radius = 0.22
-	trunk.bottom_radius = 0.34
-	trunk.height = 6.0
-	mm.mesh = trunk
-	mm.instance_count = count
-	var mmi := MultiMeshInstance3D.new()
-	mmi.multimesh = mm
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.26, 0.2, 0.14)
-	mmi.material_override = mat
-	add_child(mmi)
-
-	var canopy_mm := MultiMesh.new()
-	canopy_mm.transform_format = MultiMesh.TRANSFORM_3D
-	var leaf := SphereMesh.new()
-	leaf.radius = 2.6
-	leaf.height = 5.0
-	canopy_mm.mesh = leaf
-	canopy_mm.instance_count = count
-	var canopy := MultiMeshInstance3D.new()
-	canopy.multimesh = canopy_mm
-	var cmat := StandardMaterial3D.new()
-	if season == "winter":
-		cmat.albedo_color = Color(0.72, 0.76, 0.78)
-	elif season == "autumn":
-		cmat.albedo_color = Color(0.6, 0.42, 0.18)
-	else:
-		cmat.albedo_color = Color(0.18, 0.36, 0.16)
-	canopy.material_override = cmat
-	add_child(canopy)
-
-	for i in range(count):
-		var p := terrain.random_point(_rng, 15.0)
-		var t := Transform3D(Basis(Vector3.UP, _rng.randf_range(0, TAU)).scaled(
-			Vector3.ONE * _rng.randf_range(0.8, 1.3)), p + Vector3(0, 3.0, 0))
-		mm.set_instance_transform(i, t)
-		canopy_mm.set_instance_transform(i, Transform3D(t.basis, p + Vector3(0, 6.2, 0)))
-		cover.add_tree(p)
-		trees.append({"pos": p, "index": i, "felled": false, "mm": mm, "canopy": canopy_mm})
-
-func _build_rocks(count: int) -> void:
-	var mm := MultiMesh.new()
-	mm.transform_format = MultiMesh.TRANSFORM_3D
-	var rock := SphereMesh.new()
-	rock.radius = 1.2
-	rock.height = 1.8
-	mm.mesh = rock
-	mm.instance_count = count
-	var mmi := MultiMeshInstance3D.new()
-	mmi.multimesh = mm
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.42, 0.41, 0.4).lerp(Color(0.9, 0.92, 0.95), snow * 0.5)
-	mmi.material_override = mat
-	add_child(mmi)
-	for i in range(count):
-		var p := terrain.random_point(_rng, 20.0)
-		var s := _rng.randf_range(0.7, 2.0)
-		mm.set_instance_transform(i, Transform3D(
-			Basis(Vector3.UP, _rng.randf_range(0, TAU)).scaled(Vector3.ONE * s), p))
-		cover.add_rock(p, 1.2 * s)
-
+## A coarse grid over the map. Units path on it, which keeps routing cheap
+## enough to run a few hundred of them at once.
 ## A coarse grid over the map. Units path on it, which keeps routing cheap
 ## enough to run a few hundred of them at once.
 func _build_navigation() -> void:
@@ -240,14 +201,24 @@ func _build_navigation() -> void:
 	_astar.default_compute_heuristic = AStarGrid2D.HEURISTIC_EUCLIDEAN
 	_astar.update()
 	for h in buildings:
-		var half := Vector2(h.dims.x, h.dims.z) * 0.5
-		var c := _world_to_cell(h.global_position)
-		var r := int(ceil(maxf(half.x, half.y) / _grid_step))
-		for dx in range(-r, r + 1):
-			for dz in range(-r, r + 1):
-				var cell := Vector2i(c.x + dx, c.y + dz)
-				if _astar.is_in_boundsv(cell):
-					_astar.set_point_solid(cell, true)
+		mark_solid(h.global_position, maxf(h.dims.x, h.dims.z) * 0.5)
+	# Rocks, bunkers, ridges and crates block movement too, even though they
+	# are not buildings.
+	for o in nav_obstacles:
+		mark_solid(o["pos"], float(o["radius"]))
+
+## Blocks a patch of the navigation grid. Safe to call after the grid is built,
+## which is how a command post placed late still turns into an obstacle.
+func mark_solid(world_pos: Vector3, radius: float) -> void:
+	if _astar == null:
+		return
+	var c := _world_to_cell(world_pos)
+	var r := int(ceil(radius / _grid_step))
+	for dx in range(-r, r + 1):
+		for dz in range(-r, r + 1):
+			var cell := Vector2i(c.x + dx, c.y + dz)
+			if _astar.is_in_boundsv(cell):
+				_astar.set_point_solid(cell, true)
 
 func _world_to_cell(pos: Vector3) -> Vector2i:
 	var half := terrain.map_size * 0.5
@@ -291,27 +262,85 @@ func _nearest_free(cell: Vector2i) -> Vector2i:
 # Objectives and spawning
 # ---------------------------------------------------------------------------
 
+## What the battle is fought over depends on the mode: three points to take,
+## one zone to hold, or a command post on each side to blow up.
 func _place_objectives() -> void:
 	var half := terrain.map_size * 0.3
-	director.add_point("A", "Chorrraha", terrain.ground_point(-half, 0.0), 0)
-	director.add_point("B", "Qishloq", terrain.ground_point(0.0, 0.0), -1)
-	director.add_point("C", "Sharqiy ferma", terrain.ground_point(half, 0.0), 1)
-	for p in director.points:
-		var marker := MeshInstance3D.new()
-		var cm := CylinderMesh.new()
-		cm.top_radius = p.radius
-		cm.bottom_radius = p.radius
-		cm.height = 0.2
-		marker.mesh = cm
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = p.color_for_owner(_team_colors)
-		mat.albedo_color.a = 0.22
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		marker.material_override = mat
-		marker.position = p.position + Vector3(0, 0.3, 0)
-		add_child(marker)
-		p.marker = marker
+	match victory_mode:
+		"hold":
+			var defender := director.hold_defender
+			var zone := ObjectivePoint.new()
+			zone.id = "HOLD"
+			zone.display_name = "Mudofaa hududi"
+			zone.position = terrain.ground_point(0.0, 0.0)
+			zone.radius = 42.0
+			zone.owner_team = defender
+			zone.progress = -1.0 if defender == 0 else 1.0
+			director.hold_zone = zone
+			_add_point_marker(zone)
+		"destroy":
+			# One point in the middle, so there is still ground worth taking on
+			# the way to the enemy post.
+			director.add_point("B", "Markaz", terrain.ground_point(0.0, 0.0), -1)
+			_add_point_marker(director.points[0])
+		_:
+			director.add_point("A", "Chorraha", terrain.ground_point(-half, 0.0), 0)
+			director.add_point("B", "Markaz", terrain.ground_point(0.0, 0.0), -1)
+			director.add_point("C", "Sharqiy ferma", terrain.ground_point(half, 0.0), 1)
+			for p in director.points:
+				_add_point_marker(p)
+
+func _add_point_marker(p: ObjectivePoint) -> void:
+	var marker := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = p.radius
+	cm.bottom_radius = p.radius
+	cm.height = 0.2
+	marker.mesh = cm
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = p.color_for_owner(_team_colors)
+	mat.albedo_color.a = 0.22
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	marker.material_override = mat
+	add_child(marker)
+	marker.position = p.position + Vector3(0, 0.3, 0)
+	p.marker = marker
+
+## Each side gets a command post behind its own spawn. It is registered as a
+## building so shells, sight lines and attack orders all already handle it.
+func _place_destroy_targets() -> void:
+	objectives = [null, null]
+	for team in range(2):
+		var base := spawn_point_for(team)
+		var inward: float = -1.0 if team == 0 else 1.0
+		var pos := terrain.clamp_to_map(base + Vector3(0, 0, inward * -22.0))
+		pos = terrain.ground_point(pos.x, pos.z)
+		var t := ObjectiveTarget.new()
+		add_child(t)
+		t.setup(self, team, pos, team_color(team))
+		objectives[team] = t
+		buildings.append(t)
+		mark_solid(pos, t.dims.x * 0.5)
+
+## Returns the building if it is still a live target, else null. Used by units
+## that must re-assert an attack order after a move order cleared it.
+func objective_or_building(b):
+	if b == null or not is_instance_valid(b) or b.is_passable():
+		return null
+	return b
+
+func objective_for(team: int):
+	if objectives.size() <= team:
+		return null
+	return objectives[team]
+
+func on_objective_destroyed(target: ObjectiveTarget) -> void:
+	buildings.erase(target)
+	var mine: bool = target.team == player_team
+	GameState.notify("Shtab yo'q qilindi: %s" % ("sizniki" if mine else "dushmanniki"),
+		"bad" if mine else "good")
+	director.on_objective_destroyed(target)
 
 func spawn_point_for(team: int) -> Vector3:
 	var half := terrain.map_size * 0.42
@@ -326,12 +355,14 @@ func _spawn_armies() -> void:
 		var base := spawn_point_for(i)
 		var n := 0
 		for uid in roster.keys():
+			if n >= MAX_UNITS_PER_TEAM:
+				break
 			for k in range(int(roster[uid])):
+				if n >= MAX_UNITS_PER_TEAM:
+					break
 				var offset := Vector3(_rng.randf_range(-40, 40), 0, _rng.randf_range(-20, 20))
 				spawn_unit(i, str(uid), terrain.clamp_to_map(base + offset))
 				n += 1
-				if n > 120:
-					break      # keep the live unit count sane on big stacks
 	_auto_group_player_units()
 
 func _auto_group_player_units() -> void:
@@ -358,6 +389,8 @@ func spawn_unit(team: int, uid: String, pos: Vector3) -> BattleUnit:
 	u.setup(self, team, uid, pos)
 	u.position.y = terrain.height_at(pos.x, pos.z) + u.ground_offset()
 	units.append(u)
+	if stats != null:
+		stats.on_spawn(team, uid)
 	EventBus.unit_spawned.emit(u)
 	return u
 
@@ -406,9 +439,11 @@ func _setup_ai() -> void:
 			continue
 		if not bool(teams[i].get("ai", true)):
 			continue
+		var diff: Dictionary = DB.difficulty(difficulty)
+		_team_accuracy[i] = float(diff.get("accuracy", 1.0))
 		var ai := BattleAI.new()
 		add_child(ai)
-		ai.setup(self, i, int(cfg.get("seed", 1)), 0.5 + 0.1 * float(i))
+		ai.setup(self, i, int(cfg.get("seed", 1)), diff)
 		ai_commanders.append(ai)
 
 # ---------------------------------------------------------------------------
@@ -441,6 +476,9 @@ func speed_modifier() -> float:
 
 func accuracy_modifier() -> float:
 	return float(DB.weather(weather).get("accuracy", 1.0))
+
+func team_accuracy(team: int) -> float:
+	return float(_team_accuracy[clampi(team, 0, 1)])
 
 ## Sight is blocked by the ground itself and by any building still standing in
 ## the way — which is what makes a village fight different from a desert one.
@@ -685,6 +723,9 @@ func _physics_process(delta: float) -> void:
 			ai.tick(delta)
 		director.tick(delta, units)
 		_check_mines()
+	if stats != null:
+		stats.elapsed = director.elapsed
+	_follow_camera_with_weather()
 	_tick_reveal(delta)
 	_update_point_markers()
 	_fog_timer -= delta
@@ -697,6 +738,17 @@ func _physics_process(delta: float) -> void:
 			_snapshot_timer = 0.1
 			_send_snapshot()
 
+## One emitter box kept over the camera covers the visible map; emitting over
+## the whole battlefield would spend thousands of particles nobody can see.
+func _follow_camera_with_weather() -> void:
+	if _weather_particles == null:
+		return
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	_weather_particles.global_position = Vector3(cam.global_position.x, cam.global_position.y + 40.0,
+		cam.global_position.z)
+
 func _tick_reveal(delta: float) -> void:
 	for key in _revealed.keys().duplicate():
 		var left: float = float(_revealed[key]) - delta
@@ -706,12 +758,18 @@ func _tick_reveal(delta: float) -> void:
 			_revealed[key] = left
 
 func _update_point_markers() -> void:
+	if director.hold_zone != null:
+		_refresh_marker(director.hold_zone)
 	for p in director.points:
-		if p.marker != null and is_instance_valid(p.marker):
-			var mat: StandardMaterial3D = p.marker.material_override
-			var c := p.color_for_owner(_team_colors)
-			c.a = 0.4 if p.contested else 0.22
-			mat.albedo_color = c
+		_refresh_marker(p)
+
+func _refresh_marker(p: ObjectivePoint) -> void:
+	if p.marker == null or not is_instance_valid(p.marker):
+		return
+	var mat: StandardMaterial3D = p.marker.material_override
+	var c := p.color_for_owner(_team_colors)
+	c.a = 0.4 if p.contested else 0.22
+	mat.albedo_color = c
 
 ## Recon matters because enemies you have not seen are simply not drawn.
 func _update_fog_of_war() -> void:
@@ -730,11 +788,16 @@ func _update_fog_of_war() -> void:
 		u.visible = seen
 
 func on_point_captured(p: ObjectivePoint) -> void:
+	if stats != null:
+		stats.on_point_captured(p.owner_team)
 	var who := "Siz" if p.owner_team == player_team else "Dushman"
 	GameState.notify("%s %s nuqtasini egalladi." % [who, p.id], "good" if p.owner_team == player_team else "warn")
 
 func on_unit_died(u: BattleUnit) -> void:
 	director.on_unit_died(u)
+	if stats != null:
+		stats.on_kill(u.team, u.unit_id, u.unit_class(), u.men_count(),
+			u.last_attacker_team, u.last_attacker_unit)
 	for s in squads:
 		s.remove(u)
 
@@ -742,20 +805,35 @@ func on_battle_finished(res: Dictionary) -> void:
 	var teams: Array = cfg.get("teams", [])
 	var winner_team := int(res.get("winner_team", 0))
 	var losses: Array = res.get("losses", [0.3, 0.3])
+	if stats != null:
+		stats.elapsed = float(res.get("elapsed", director.elapsed))
 	var out := {
 		"battle_id": int(cfg.get("battle_id", 0)),
 		"province": int(cfg.get("province", -1)),
+		"province_name": str(cfg.get("province_name", "")),
+		"map": str(cfg.get("map", "")),
+		"season": season,
+		"weather": weather,
+		"victory_mode": victory_mode,
+		"reason": str(res.get("reason", "")),
+		"mission": str(cfg.get("mission", "")),
 		"winner_team": winner_team,
 		"winner": str(teams[winner_team].get("nation", "")) if teams.size() > winner_team else "",
 		"attacker": str(teams[0].get("nation", "")) if teams.size() > 0 else "",
 		"defender": str(teams[1].get("nation", "")) if teams.size() > 1 else "",
 		"attacker_losses": float(losses[0]),
 		"defender_losses": float(losses[1]),
+		"tickets": res.get("tickets", [0, 0]),
+		"points_held": res.get("points", [0, 0]),
+		"player_team": player_team,
 		"player_won": winner_team == player_team,
+		"stats": stats.to_dict() if stats != null else {},
 		"auto": false,
 	}
 	GameState.last_battle_result = out
-	Net.send_battle_result(out)
+	# Only a battle that belongs to a province feeds back into the world.
+	if int(cfg.get("battle_id", 0)) > 0 and GameState.world != null:
+		Net.send_battle_result(out)
 	EventBus.battle_ended.emit(out)
 
 # ---------------------------------------------------------------------------

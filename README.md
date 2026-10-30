@@ -37,18 +37,40 @@ godot --headless --path godot_game -s res://tests/sim_battle.gd
 
 ---
 
-## Rejimlar
+## Bosh menyu
 
-### GLOBAL WAR
-Doimiy dunyo xaritasi. Davlat tanlaysiz, uni rivojlantirasiz, ittifoq tuzasiz,
-urush e'lon qilasiz va hududlarni egallaysiz. Bitta davlatni bir nechta o'yinchi
-birga boshqarishi mumkin.
+| Rejim | Nima qiladi |
+|---|---|
+| **CUSTOM BATTLE** | O'zing xohlagan ikkita armiyani tuzib jang qilasan |
+| **CAMPAIGN** | Ketma-ket 6 ta missiya, har biri oldingisini yutgach ochiladi |
+| **MULTIPLAYER** | Do'stlar bilan onlayn jang va global urush |
+| **SANDBOX** | Erkin tajriba: vaqt chegarasiz, ta'minot cheksiz, istalgan texnikani chaqirasan |
+| **GLOBAL WAR** | Doimiy dunyo xaritasi, diplomatiya, iqtisod va urushlar |
 
-### BATTLE ARENA
-Alohida 3D jang: teng armiyalar, oldindan belgilangan ta'minot, 15–30 daqiqa.
-Dunyo holatiga ta'sir qilmaydi — tezkor PvP yoki AI'ga qarshi o'yin uchun.
+### CUSTOM BATTLE — jangni o'zing tashkil qilasan
 
----
+Bitta ekranda hammasi tanlanadi:
+
+- **Xarita** — oltitadan biri.
+- **Fasl** — bahor / yoz / kuz / qish.
+- **Ob-havo** — ochiq havo, yomg'ir, tuman, qor, kuchli bo'ron. Har birining
+  ko'rish, tezlik va aniqlikka ta'siri ro'yxatda ko'rinadi.
+- **G'alaba sharti** — to'rttadan biri.
+- **TEAM A va TEAM B** — piyoda, tank, transport, artilleriya va aviatsiya
+  sonini slayder bilan belgilaysan. Piyoda bloki ichida miltiqchi, tankka
+  qarshi, pulemyot va razvedka avtomatik taqsimlanadi — faqat miltiqchi
+  qo'shin bo'lmaydi.
+- **Bot qiyinligi** — Easy / Normal / Hard.
+- **Jang davomiyligi** — 10 / 15 / 30 daqiqa yoki cheksiz.
+
+Pastda jang statistikasi jonli yangilanadi: har jamoaning birliklari soni va
+tanlangan sozlamalar qatori.
+
+### CAMPAIGN
+
+Oltita missiya: qishloq, o'rmon, cho'l, tog' dovoni, shahar kvartallari va
+harbiy bazaga hujum. Har biri boshqa xarita, fasl, ob-havo va g'alaba shartida.
+Yutilgan missiya keyingisini ochadi, natija `user://profile.cfg` da saqlanadi.
 
 ## Global xarita
 
@@ -112,13 +134,63 @@ Hamma o'yinchi chiqib ketsa, davlatni vaqtincha AI boshqaradi.
 
 ## 3D jang maydoni
 
-Uch xil muhit (`data/battle_maps.json`), hudud yer turiga qarab tanlanadi:
+**Oltita xarita** (`data/battle_maps.json`). Hudud yer turiga qarab global
+urushda avtomatik tanlanadi, Custom Battle va Campaign'da esa qo'lda.
 
-| Xarita | Muhit | Jang xususiyati |
+| Xarita | Asosiy xususiyati |
+|---|---|
+| Village | Uylar, devorlar, tor ko'chalar |
+| Forest | Qalin daraxtlar, pistirma, ko'rish masofasi qisqa |
+| Desert | Keng ochiq maydon, uzoq masofa, pana kam |
+| City | Ko'p qavatli binolar, kvartallar, tor o'tish joylari |
+| Mountain | Baland-past yerlar, qoyalar, tor dovonlar |
+| Military Base | Angarlar, omborlar, bunkerlar, tekis maydon |
+
+### To'rt fasl — bitta geometriya
+
+Har bir xarita **bir marta** quriladi. Fasl faqat materiallar, o'simliklar,
+ob-havo va effektlarni almashtiradi — xarita geometriyasi o'zgarmaydi. Shuning
+uchun oltita xarita 24 xil ko'rinishda o'ynaladi.
+
+| Fasl | Nomi | Ko'rinishi |
 |---|---|---|
-| Village | Qishloq | Uylar, ko'chalar, zich pana |
-| Forest | O'rmon | Tuman, daraxtlar, pistirma, ko'rish masofasi qisqa |
-| Desert | Cho'l | Keng ochiq maydon, uzoq masofa, pana kam |
+| Bahor | **Green Valley** | Yashil o'tloqlar, nam tuproq, yorug' osmon |
+| Yoz | **Dustland** | Sarg'aygan quruq yer, changli yo'llar, qattiq quyosh |
+| Kuz | **Dead Autumn** | Jigarrang daraxtlar, to'kilgan barglar, loy, tuman |
+| Qish | **Frozen Front** | Qor qoplami, muzlagan yo'llar, sovuq ko'k yorug'lik |
+
+Fasl palitrasi yerni, o't va daraxt barglarini, daraxt po'stlog'ini, toshlarni,
+yo'llarni, osmonni, quyosh rangi va kuchini, tuman zichligini belgilaydi. Qishda
+daraxtlar yalang'ochlanadi va ustiga qor qo'nadi, kuzda yerga barg to'kiladi.
+Ob-havo esa ustiga qo'shiladi: yomg'ir va qor zarrachalari kamera ortidan
+yuradi, bo'ron yorug'likni pasaytiradi.
+
+### G'alaba shartlari
+
+| Shart | Qanday yutiladi |
+|---|---|
+| **Elimination** | Raqib jamoasini butunlay yo'q qilish |
+| **Capture Point** | A / B / C nazorat nuqtalarini egallab turish |
+| **Hold Position** | Belgilangan hududni vaqt tugaguncha himoya qilish |
+| **Destroy Target** | Raqibning shtabini yo'q qilish, o'zingiznikini saqlash |
+
+HUD'da har doim shu jangda nima qilish kerakligi va unga qancha qolgani
+ko'rinib turadi. Global urushda shart hududning o'ziga qarab tanlanadi:
+poytaxt — Destroy, mustahkamlangan hudud — Hold, qolgani — Capture.
+
+### Bot qiyinligi
+
+| Daraja | O'ylash vaqti | Bosim | Ta'minot | Aniqlik |
+|---|---|---|---|---|
+| Easy | 6.0 s | past | 0.7x | 0.8x |
+| Normal | 4.0 s | o'rta | 1.0x | 1.0x |
+| Hard | 2.2 s | yuqori | 1.35x | 1.15x |
+
+Qiyinlik botga bepul zarar bermaydi — u tezroq qaror qabul qiladi, ko'proq
+ta'minot oladi va aniqroq otadi. Bot g'alaba shartiga qarab o'ynaydi: Destroy'da
+tanklarni shtabga yuborib, piyodaning bir qismini o'z shtabini qo'riqlashga
+qoldiradi; Hold'da mudofaachi hududga joylashadi, hujumchi esa unga bostirib
+kiradi.
 
 ### Bo'linmalar
 Piyodalar, tankka qarshi guruh, razvedka, pulemyotchilar, zirhli transport,
@@ -184,6 +256,19 @@ yon tomondan aylanib o'tish haqiqiy javob bo'ladi.
   guruh tuzadi, nuqtalarga yuboradi, to'plangan askarlarga artilleriya otadi,
   tank va FPV dron chaqiradi.
 
+### Jang tugagandan keyin
+
+Natija ekranida to'liq hisobot chiqadi:
+
+- Kim yutdi va qanday shart bilan.
+- Har jamoa nechta dushmanni yo'q qildi va nechta bo'linma yo'qotdi.
+- Yo'qotilgan jonli kuch, texnika va aviatsiya alohida.
+- Yetkazilgan zarar va qolgan zaxira.
+- **Eng samarali texnika** — har jamoada qaysi tur eng ko'p natija ko'rsatgani,
+  yo'q qilish, zarar va yo'qotish bo'yicha.
+- Barcha bo'linma turlari bo'yicha jadval: nechtasi chiqdi, nechtasini yo'q
+  qildi, nechtasi yo'qoldi.
+
 ---
 
 ## Boshqaruv
@@ -228,12 +313,17 @@ dunyo ko'rishining oldini oladi.
 ```
 godot_game/
   core/        autoload: EventBus, Settings, Loc, DB, GameState, Net
-  data/        countries.json, units.json, buildings.json, battle_maps.json
+  data/        countries.json, units.json, buildings.json,
+               battle_maps.json (xaritalar, fasllar, ob-havo, g'alaba
+               shartlari, qiyinlik), missions.json (kampaniya)
   world/       global xarita: hudud, davlat, armiya, iqtisod, ta'minot,
                diplomatiya, kengash, AI, fasl, jang ko'prigi
-  battle/      3D jang: relyef, pana tizimi, parchalanadigan uy, bo'linmalar,
-               snaryad, direktor, AI qo'mondon, kamera, boshqaruv
-  ui/          ekranlar: menyu, lobby, davlat tanlash, dunyo, jang, sozlamalar
+  battle/      3D jang: relyef, xarita quruvchi (6 xarita), pana tizimi,
+               parchalanadigan uy, shtab nishoni, bo'linmalar, snaryad,
+               direktor (4 g'alaba sharti), statistika, AI qo'mondon,
+               jang sozlagich, kamera, boshqaruv
+  ui/          ekranlar: menyu, custom battle, kampaniya, lobby,
+               davlat tanlash, dunyo, jang, natija, sozlamalar
   tests/       headless sinovlar va jang simulyatsiyasi
 ```
 
@@ -247,4 +337,5 @@ godot_game/
 | 2. Onlayn — server/mijoz, lobby, 2–8 o'yinchi, birgalikda boshqarish | Bajarildi |
 | 3. Dunyo xaritasi — davlat tanlash, chegaralar, iqtisod, ittifoq, diplomatiya | Bajarildi |
 | 4. Global urush — hudud egallash, ta'minot, shahar rivoji, kengash ovozi | Bajarildi |
-| 5. Katta yangilanish — yangi texnika, dengiz va aviatsiya qatlami, reyting, turnirlar | Keyingi |
+| 5. Oltita xarita, to'rt fasl, 4 g'alaba sharti, kampaniya, sandbox, statistika | Bajarildi |
+| 6. Katta yangilanish — dengiz qatlami, yangi texnika, reyting, turnirlar | Keyingi |

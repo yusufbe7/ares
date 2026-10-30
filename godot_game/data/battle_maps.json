@@ -1,24 +1,100 @@
 {
+  "_note": "One geometry per map. Seasons only swap materials, vegetation and weather, so a map is authored once and plays four ways.",
   "maps": [
     {"id":"village","name":{"uz":"Qishloq","en":"Village","ru":"Деревня"},
-     "size":600,"ground":"#6c7a52","snow_ground":"#e8eef2",
-     "houses":26,"trees":320,"rocks":60,"roads":4,
-     "cover_density":1.0,"vision_mod":1.0,"desc":{"uz":"Uylar, ko'chalar, ko'p pana.","en":"Houses, streets, dense cover.","ru":"Дома, улицы, много укрытий."}},
+     "size":600,"relief":1.0,"vision_mod":1.0,"cover_density":1.0,
+     "props":{"houses":26,"trees":320,"rocks":60,"roads":4,"fences":40},
+     "desc":{"uz":"Uylar, devorlar, tor ko'chalar.","en":"Houses, walls, narrow streets.","ru":"Дома, стены, узкие улицы."}},
+
     {"id":"forest","name":{"uz":"O'rmon","en":"Forest","ru":"Лес"},
-     "size":620,"ground":"#4e5c3c","snow_ground":"#dfe8ec",
-     "houses":6,"trees":1200,"rocks":120,"roads":2,
-     "cover_density":1.3,"vision_mod":0.6,"desc":{"uz":"Tuman, daraxtlar, pistirma.","en":"Fog, trees, ambushes.","ru":"Туман, деревья, засады."}},
+     "size":620,"relief":0.8,"vision_mod":0.6,"cover_density":1.3,
+     "props":{"houses":6,"trees":1200,"rocks":120,"roads":2,"logs":60},
+     "desc":{"uz":"Qalin daraxtlar, pistirma, qisqa masofa.","en":"Thick trees, ambushes, short sightlines.","ru":"Густой лес, засады, короткие дистанции."}},
+
     {"id":"desert","name":{"uz":"Cho'l","en":"Desert","ru":"Пустыня"},
-     "size":700,"ground":"#b9a176","snow_ground":"#cdbd9a",
-     "houses":12,"trees":40,"rocks":180,"roads":3,
-     "cover_density":0.55,"vision_mod":1.35,"desc":{"uz":"Keng ochiq maydon, uzoq masofa.","en":"Wide open ground, long sightlines.","ru":"Открытая местность, дальние дистанции."}}
+     "size":720,"relief":1.6,"vision_mod":1.35,"cover_density":0.55,
+     "props":{"houses":12,"trees":40,"rocks":180,"roads":3,"dunes":24},
+     "desc":{"uz":"Keng ochiq maydon, uzoq masofa.","en":"Wide open ground, long sightlines.","ru":"Открытая местность, дальние дистанции."}},
+
+    {"id":"city","name":{"uz":"Shahar","en":"City","ru":"Город"},
+     "size":560,"relief":0.25,"vision_mod":0.8,"cover_density":1.5,
+     "props":{"blocks":34,"houses":0,"trees":70,"rocks":16,"roads":7,"wrecks":12},
+     "desc":{"uz":"Ko'p qavatli binolar, kvartallar, tor o'tish joylari.","en":"High-rises, blocks, tight approaches.","ru":"Многоэтажки, кварталы, узкие подходы."}},
+
+    {"id":"mountain","name":{"uz":"Tog'","en":"Mountain","ru":"Горы"},
+     "size":640,"relief":3.4,"vision_mod":1.1,"cover_density":1.1,
+     "props":{"houses":8,"trees":240,"rocks":320,"roads":2,"ridges":10},
+     "desc":{"uz":"Baland-past yerlar, qoyalar, tor yo'llar.","en":"Steep ground, crags, narrow passes.","ru":"Перепады высот, скалы, узкие проходы."}},
+
+    {"id":"military_base","name":{"uz":"Harbiy baza","en":"Military Base","ru":"Военная база"},
+     "size":600,"relief":0.35,"vision_mod":1.05,"cover_density":1.2,
+     "props":{"hangars":10,"bunkers":7,"depots":16,"houses":4,"trees":90,"rocks":40,"roads":4},
+     "desc":{"uz":"Angarlar, omborlar, bunkerlar, tekis maydon.","en":"Hangars, depots, bunkers, open apron.","ru":"Ангары, склады, бункеры, открытый плац."}}
   ],
-  "seasons": ["spring","summer","autumn","winter"],
+
+  "seasons": [
+    {"id":"spring","title":{"uz":"Bahor — Green Valley","en":"Spring — Green Valley","ru":"Весна — Green Valley"},
+     "ground":"#5f7a3e","ground_alt":"#4b6334","grass":"#4e8a3a","canopy":"#2f7a2a","bark":"#3a2c1e",
+     "rock":"#55564f","road":"#4a4036","sky_top":"#4a7ec8","sky_horizon":"#9fc4de",
+     "sun":"#fff4e2","sun_energy":1.15,"fog":0.0,"snow":0.0,"wet":0.35,"leaves":0.0,
+     "weather_bias":{"clear":45,"rain":30,"fog":20,"storm":5}},
+
+    {"id":"summer","title":{"uz":"Yoz — Dustland","en":"Summer — Dustland","ru":"Лето — Dustland"},
+     "ground":"#a4985c","ground_alt":"#8d8149","grass":"#9a9148","canopy":"#6f7c33","bark":"#4a3826",
+     "rock":"#6a6558","road":"#8a7a5e","sky_top":"#5a8fd0","sky_horizon":"#d6d6bc",
+     "sun":"#fff0cf","sun_energy":1.4,"fog":0.0015,"snow":0.0,"wet":0.0,"leaves":0.0,
+     "weather_bias":{"clear":70,"rain":12,"fog":8,"storm":10}},
+
+    {"id":"autumn","title":{"uz":"Kuz — Dead Autumn","en":"Autumn — Dead Autumn","ru":"Осень — Dead Autumn"},
+     "ground":"#6e5c3c","ground_alt":"#59472c","grass":"#8a6a32","canopy":"#b5702a","bark":"#33261a",
+     "rock":"#5b574e","road":"#4b3c2c","sky_top":"#5e6a78","sky_horizon":"#a9a08c",
+     "sun":"#ffe4c0","sun_energy":0.85,"fog":0.005,"snow":0.0,"wet":0.7,"leaves":0.8,
+     "weather_bias":{"clear":30,"rain":35,"fog":25,"storm":10}},
+
+    {"id":"winter","title":{"uz":"Qish — Frozen Front","en":"Winter — Frozen Front","ru":"Зима — Frozen Front"},
+     "ground":"#e3eaf0","ground_alt":"#cdd8e0","grass":"#cfdbe2","canopy":"#8fa3ad","bark":"#2c2622",
+     "rock":"#aab4bd","road":"#b9c4cc","sky_top":"#64748a","sky_horizon":"#c2cdd8",
+     "sun":"#dbe7ff","sun_energy":0.75,"fog":0.004,"snow":1.0,"wet":0.0,"leaves":0.0,
+     "weather_bias":{"clear":28,"rain":0,"fog":22,"snow":40,"storm":10}}
+  ],
+
   "weather": [
-    {"id":"clear","vision":1.0,"speed":1.0,"accuracy":1.0},
-    {"id":"rain","vision":0.75,"speed":0.88,"accuracy":0.9},
-    {"id":"fog","vision":0.45,"speed":0.95,"accuracy":0.82},
-    {"id":"snow","vision":0.7,"speed":0.78,"accuracy":0.86},
-    {"id":"storm","vision":0.55,"speed":0.8,"accuracy":0.75}
+    {"id":"clear","name":{"uz":"Ochiq havo","en":"Clear","ru":"Ясно"},
+     "vision":1.0,"speed":1.0,"accuracy":1.0,"particles":"none","fog_add":0.0,"light":1.0},
+    {"id":"rain","name":{"uz":"Yomg'ir","en":"Rain","ru":"Дождь"},
+     "vision":0.75,"speed":0.88,"accuracy":0.9,"particles":"rain","fog_add":0.002,"light":0.6},
+    {"id":"fog","name":{"uz":"Tuman","en":"Fog","ru":"Туман"},
+     "vision":0.45,"speed":0.95,"accuracy":0.82,"particles":"none","fog_add":0.012,"light":0.7},
+    {"id":"snow","name":{"uz":"Qor","en":"Snow","ru":"Снег"},
+     "vision":0.7,"speed":0.78,"accuracy":0.86,"particles":"snow","fog_add":0.005,"light":0.75},
+    {"id":"storm","name":{"uz":"Kuchli bo'ron","en":"Storm","ru":"Буря"},
+     "vision":0.55,"speed":0.8,"accuracy":0.75,"particles":"storm","fog_add":0.006,"light":0.45}
+  ],
+
+  "victory_modes": [
+    {"id":"elimination","name":{"uz":"Yo'q qilish","en":"Elimination","ru":"Уничтожение"},
+     "desc":{"uz":"Raqib jamoasini butunlay mag'lub qiling.","en":"Destroy the enemy force.","ru":"Уничтожьте силы противника."}},
+    {"id":"capture","name":{"uz":"Nuqtalarni egallash","en":"Capture Points","ru":"Захват точек"},
+     "desc":{"uz":"Uchta nazorat nuqtasini egallab turing.","en":"Hold the three control points.","ru":"Удерживайте три точки."}},
+    {"id":"hold","name":{"uz":"Hududni himoya qilish","en":"Hold Position","ru":"Удержание"},
+     "desc":{"uz":"Belgilangan hududni vaqt tugaguncha himoya qiling.","en":"Defend the marked ground until time runs out.","ru":"Обороняйте участок до конца времени."}},
+    {"id":"destroy","name":{"uz":"Nishonni yo'q qilish","en":"Destroy Target","ru":"Уничтожить цель"},
+     "desc":{"uz":"Raqibning asosiy obyektini yo'q qiling.","en":"Destroy the enemy's main objective.","ru":"Уничтожьте главный объект противника."}}
+  ],
+
+  "difficulties": [
+    {"id":"easy","name":{"uz":"Oson","en":"Easy","ru":"Лёгкий"},
+     "aggression":0.3,"reaction":6.0,"accuracy":0.8,"supply":0.7,"support":0.6},
+    {"id":"normal","name":{"uz":"O'rta","en":"Normal","ru":"Средний"},
+     "aggression":0.55,"reaction":4.0,"accuracy":1.0,"supply":1.0,"support":1.0},
+    {"id":"hard","name":{"uz":"Qiyin","en":"Hard","ru":"Сложный"},
+     "aggression":0.85,"reaction":2.2,"accuracy":1.15,"supply":1.35,"support":1.5}
+  ],
+
+  "durations": [
+    {"id":"short","minutes":10},
+    {"id":"standard","minutes":15},
+    {"id":"long","minutes":30},
+    {"id":"endless","minutes":0}
   ]
 }

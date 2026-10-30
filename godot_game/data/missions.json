@@ -1,0 +1,54 @@
+{
+  "campaign": {
+    "name": {"uz": "Sharqiy yo'nalish", "en": "Eastern Approach", "ru": "Восточное направление"},
+    "missions": [
+      {"id":"m1","order":1,
+       "name":{"uz":"Qishloqqa kirish","en":"Into the Village","ru":"Вход в деревню"},
+       "brief":{"uz":"Qishloqdagi uchta nuqtani egallang. Dushman hali to'liq joylashmagan — tezlik sizning tomoningizda.","en":"Take the three points in the village before the enemy digs in.","ru":"Займите три точки в деревне, пока противник не закрепился."},
+       "map":"village","season":"spring","weather":"clear","victory_mode":"capture","duration":900,
+       "difficulty":"easy",
+       "player":{"infantry":24,"tanks":2,"transports":2,"artillery":0,"aircraft":0},
+       "enemy":{"infantry":20,"tanks":2,"transports":1,"artillery":0,"aircraft":0}},
+
+      {"id":"m2","order":2,
+       "name":{"uz":"O'rmondagi pistirma","en":"Ambush in the Woods","ru":"Засада в лесу"},
+       "brief":{"uz":"Tuman tushgan o'rmonda dushman kolonnasini to'xtating. Ko'rish masofasi qisqa — razvedkasiz yurmang.","en":"Stop the enemy column in fog-bound woods. Sight is short; do not move without recon.","ru":"Остановите колонну в туманном лесу. Видимость мала — не двигайтесь без разведки."},
+       "map":"forest","season":"autumn","weather":"fog","victory_mode":"elimination","duration":900,
+       "difficulty":"normal",
+       "player":{"infantry":22,"tanks":2,"transports":2,"artillery":1,"aircraft":1},
+       "enemy":{"infantry":26,"tanks":4,"transports":2,"artillery":1,"aircraft":0}},
+
+      {"id":"m3","order":3,
+       "name":{"uz":"Cho'l yo'li","en":"Desert Road","ru":"Пустынная дорога"},
+       "brief":{"uz":"Ochiq cho'lda tanklar jangi. Pana kam — masofa va zirh hal qiladi.","en":"An armoured fight in the open. Little cover; range and armour decide it.","ru":"Танковый бой на открытой местности. Укрытий мало — решают дистанция и броня."},
+       "map":"desert","season":"summer","weather":"clear","victory_mode":"capture","duration":1200,
+       "difficulty":"normal",
+       "player":{"infantry":18,"tanks":6,"transports":3,"artillery":2,"aircraft":1},
+       "enemy":{"infantry":20,"tanks":7,"transports":3,"artillery":2,"aircraft":1}},
+
+      {"id":"m4","order":4,
+       "name":{"uz":"Tog' dovoni","en":"Mountain Pass","ru":"Горный перевал"},
+       "brief":{"uz":"Dovonni ushlab turing. Dushman sizdan ko'p, lekin faqat tor yo'ldan kela oladi.","en":"Hold the pass. They outnumber you, but they can only come up the narrow road.","ru":"Удержите перевал. Их больше, но пройти они могут лишь по узкой дороге."},
+       "map":"mountain","season":"autumn","weather":"rain","victory_mode":"hold","duration":1200,
+       "difficulty":"normal","player_is_defender":true,
+       "player":{"infantry":22,"tanks":3,"transports":2,"artillery":2,"aircraft":0},
+       "enemy":{"infantry":34,"tanks":6,"transports":4,"artillery":2,"aircraft":1}},
+
+      {"id":"m5","order":5,
+       "name":{"uz":"Shahar kvartallari","en":"City Blocks","ru":"Городские кварталы"},
+       "brief":{"uz":"Binolar orasida yurish. Har kvartal alohida jang — guruhlarni ajrating.","en":"Block by block. Every street is its own fight; split your groups.","ru":"Квартал за кварталом. Каждая улица — отдельный бой."},
+       "map":"city","season":"winter","weather":"snow","victory_mode":"capture","duration":1500,
+       "difficulty":"hard",
+       "player":{"infantry":34,"tanks":4,"transports":4,"artillery":2,"aircraft":1},
+       "enemy":{"infantry":36,"tanks":5,"transports":3,"artillery":3,"aircraft":1}},
+
+      {"id":"m6","order":6,
+       "name":{"uz":"Bazani yo'q qilish","en":"Strike the Base","ru":"Удар по базе"},
+       "brief":{"uz":"Dushman shtabini yo'q qiling. Angarlar va bunkerlar ularning qo'lida — oldin yo'lni tozalang.","en":"Destroy their command post. The hangars and bunkers are theirs; clear the way first.","ru":"Уничтожьте их штаб. Ангары и бункеры у них — сначала расчистите путь."},
+       "map":"military_base","season":"winter","weather":"storm","victory_mode":"destroy","duration":1500,
+       "difficulty":"hard",
+       "player":{"infantry":30,"tanks":6,"transports":4,"artillery":3,"aircraft":2},
+       "enemy":{"infantry":32,"tanks":6,"transports":3,"artillery":3,"aircraft":2}}
+    ]
+  }
+}

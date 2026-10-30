@@ -41,6 +41,9 @@ var _facing: Vector3 = Vector3.FORWARD
 var _rng := RandomNumberGenerator.new()
 var _selected: bool = false
 var _marker: MeshInstance3D = null
+## Kill credit: whoever landed the last hit gets it in the after-action report.
+var last_attacker_team: int = -1
+var last_attacker_unit: String = ""
 
 func setup(ctx, p_team: int, p_unit_id: String, spawn_pos: Vector3) -> void:
 	battle = ctx
@@ -256,6 +259,7 @@ func look_at_direction(dir: Vector3) -> void:
 
 func _shoot(_delta: float) -> void:
 	if attack_target == null or not attack_target.is_alive():
+		_shoot_building()
 		return
 	if _fire_cooldown > 0.0:
 		return
@@ -274,6 +278,7 @@ func _shoot(_delta: float) -> void:
 func fire_at(target: BattleUnit, distance: float) -> void:
 	var acc: float = float(data.get("accuracy", 0.5))
 	acc *= battle.accuracy_modifier()
+	acc *= battle.team_accuracy(team)
 	acc *= 1.0 - suppression * 0.6
 	acc *= clampf(1.0 - distance / maxf(_range, 1.0) * 0.5, 0.25, 1.0)
 	match stance:
@@ -291,6 +296,42 @@ func fire_at(target: BattleUnit, distance: float) -> void:
 	dmg *= target.armor_multiplier(from_dir, float(data.get("at", 0.0)))
 	target.take_damage(dmg, self)
 
+## An order to attack a house or a command post is carried out by whatever the
+## unit actually has: armour and guns put rounds into the wall, infantry only
+## works on it at close range.
+func _shoot_building() -> void:
+	if target_building == null or not is_instance_valid(target_building):
+		target_building = null
+		return
+	if target_building.is_passable():
+		target_building = null          # nothing left worth shooting
+		return
+	if _fire_cooldown > 0.0 or suppression > 0.75:
+		return
+	var aim: Vector3 = target_building.global_position + Vector3(0, 1.5, 0)
+	var d: float = global_position.distance_to(aim)
+	var reach: float = _range if unit_class() != "infantry" else 22.0
+	if d > reach:
+		return
+	var rpm: float = maxf(float(data.get("rpm", 60)), 1.0)
+	_fire_cooldown = 60.0 / rpm
+	look_at_direction(aim - global_position)
+	var role := str(data.get("role", ""))
+	if role == "artillery":
+		battle.call_artillery_strike(global_position, target_building.global_position, team, self)
+		_fire_cooldown = maxf(_fire_cooldown, 12.0)
+		return
+	if unit_class() == "vehicle" or role == "gunship":
+		battle.spawn_shell(muzzle_position(), aim, team,
+			float(data.get("damage", 100)), float(data.get("at", 1.0)))
+		return
+	if float(data.get("at", 0.0)) > 0.5:
+		battle.spawn_shell(muzzle_position(), aim, team, float(data.get("damage", 10)) * 4.0, 0.8)
+		return
+	# Small arms chip at a wall rather than bring it down.
+	battle.spawn_tracer(muzzle_position(), aim, team)
+	target_building.damage(aim, 1.5, 0.35)
+
 func muzzle_position() -> Vector3:
 	return global_position + Vector3(0, 1.4, 0) + _facing * 0.8
 
@@ -307,13 +348,19 @@ func armor_multiplier(_from_dir: Vector3, _attacker_at: float) -> float:
 	return 1.0
 
 func take_damage(amount: float, source) -> void:
-	if not is_alive():
+	if not is_alive() or amount <= 0.0:
 		return
+	var applied: float = minf(amount, hp)
 	hp -= amount
 	morale = maxf(0.0, morale - amount / maxf(max_hp, 1.0) * 0.4)
 	take_suppression(amount / maxf(max_hp, 1.0) * 0.8)
-	if source != null and source is BattleUnit and attack_target == null:
-		attack_target = source
+	if source != null and source is BattleUnit:
+		last_attacker_team = source.team
+		last_attacker_unit = source.unit_id
+		if attack_target == null:
+			attack_target = source
+		if battle != null and battle.stats != null:
+			battle.stats.on_damage(source.team, source.unit_id, applied)
 	if hp <= 0.0:
 		die()
 

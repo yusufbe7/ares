@@ -66,6 +66,15 @@ func _build_visual() -> void:
 	add_child(tracks)
 
 func _think(delta: float) -> void:
+	# Ordered onto a building: drive into gun range of it and stay there.
+	if target_building != null and is_instance_valid(target_building) \
+			and not target_building.is_passable() and not has_move_target:
+		var wall = target_building          # order_move clears this; hold a reference
+		var to_wall: float = global_position.distance_to(wall.global_position)
+		if to_wall > _range * 0.8:
+			var toward := (wall.global_position - global_position).normalized()
+			order_move(battle.terrain.clamp_to_map(global_position + toward * (to_wall - _range * 0.7)))
+			target_building = wall
 	# Keep the standoff: armour fights at its own range, not in the street.
 	if attack_target != null and attack_target.is_alive() and not has_move_target:
 		var d := global_position.distance_to(attack_target.global_position)

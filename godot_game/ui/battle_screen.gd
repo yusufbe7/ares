@@ -40,8 +40,11 @@ func open(payload: Dictionary) -> void:
 	GameState.notify("%s — %s, %s"
 		% [str(cfg.get("province_name", "Arena")), str(cfg.get("map", "")), str(cfg.get("weather", ""))], "info")
 
-## Which side the local player is on: in a global war it is their own nation.
+## Which side the local player is on. A custom battle or mission says so
+## outright; in a global war it is whichever side is their own nation.
 func _local_team_for(cfg: Dictionary) -> int:
+	if cfg.has("player_team"):
+		return clampi(int(cfg["player_team"]), 0, 1)
 	var teams: Array = cfg.get("teams", [])
 	for i in range(teams.size()):
 		if str(teams[i].get("nation", "")) == GameState.local_nation:
