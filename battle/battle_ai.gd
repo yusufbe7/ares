@@ -116,9 +116,31 @@ func _contest_hold_zone() -> void:
 			var dist: float = radius * (_rng.randf_range(0.3, 1.0) if defending else 0.5)
 			var spot := zone.position + Vector3(cos(ang), 0, sin(ang)) * dist
 			if defending:
-				u.order_move(battle.terrain.clamp_to_map(spot))
+				# Put part of the line into whatever is standing on the zone.
+				var house = _nearest_free_building(u.global_position, zone.position)
+				if house != null and u.unit_class() == "infantry" and _rng.randf() < 0.6:
+					u.order_garrison(house)
+				else:
+					u.order_move(battle.terrain.clamp_to_map(spot))
 			else:
 				u.order_capture(zone)
+
+## A building near the ground we are holding that still has room in it.
+func _nearest_free_building(from: Vector3, near: Vector3):
+	var best = null
+	var best_d := 60.0
+	for h in battle.buildings:
+		if not is_instance_valid(h) or not h.has_method("can_garrison"):
+			continue
+		if not h.can_garrison(team):
+			continue
+		if h.global_position.distance_to(near) > 70.0:
+			continue
+		var d: float = from.distance_to(h.global_position)
+		if d < best_d:
+			best_d = d
+			best = h
+	return best
 
 func _priority_points() -> Array:
 	var list: Array = []
