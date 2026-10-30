@@ -63,6 +63,10 @@ var garrisoned_in = null                # the building this man is fighting from
 var garrison_slot: int = 0
 
 const BLEED_OUT_SECONDS := 55.0
+## How much a building shelters the men fighting from inside it. Kept here
+## rather than read off DestructibleBuilding, which would make the two scripts
+## depend on each other.
+const GARRISON_PROTECTION := 0.86
 const WOUND_CHANCE := 0.5
 
 func setup(ctx, p_team: int, p_unit_id: String, spawn_pos: Vector3) -> void:
@@ -433,7 +437,7 @@ func fire_at(target: BattleUnit, distance: float) -> void:
 	if battle.terrain.is_in_trench(target.global_position):
 		protection = maxf(protection, 0.75)
 	if target.is_garrisoned():
-		protection = maxf(protection, DestructibleBuilding.GARRISON_PROTECTION)
+		protection = maxf(protection, GARRISON_PROTECTION)
 	var dmg: float = float(data.get("damage", 10)) * (1.0 - protection)
 	dmg *= target.armor_multiplier(from_dir, float(data.get("at", 0.0)))
 	target.take_damage(dmg, self)

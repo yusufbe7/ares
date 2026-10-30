@@ -5,6 +5,8 @@ extends RefCounted
 ## materials, vegetation and litter on top of it. That is what makes four
 ## seasons cost one map instead of four.
 
+const BUILDING := preload("res://battle/destructible_building.gd")
+
 var battle                       # Battle
 var terrain: BattleTerrain
 var cover: CoverSystem
@@ -222,8 +224,8 @@ func _road_point(p: Vector2) -> Vector3:
 # ---------------------------------------------------------------------------
 
 func _make_building(pos: Vector3, size: Vector3, wall: Color, roof: Color,
-		yaw: float) -> DestructibleBuilding:
-	var h := DestructibleBuilding.new()
+		yaw: float):
+	var h := BUILDING.new()
 	h.cover = cover
 	h.terrain = terrain
 	battle.add_child(h)
