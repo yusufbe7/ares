@@ -256,11 +256,16 @@ tests/    headless sinovlar va jang simulyatsiyasi
 ## Sinovlar
 
 ```bash
-godot --headless --path . -s res://tests/run_tests.gd
+godot --headless --path . res://tests/run_tests.tscn
 ```
 
 ```bash
-godot --headless --path . -s res://tests/sim_battle.gd
+godot --headless --path . res://tests/sim_battle.tscn
 ```
 
-Ikkinchisi oltita xaritada jangni grafikasiz o'ynab, balansni chiqaradi.
+Birinchisi 125 ta tekshiruvni yuritadi. Ikkinchisi oltita xaritada jangni
+grafikasiz o'ynab, har biri uchun qurilgan bino va pana soni, o'ldirishlar,
+yo'qotishlar va eng samarali texnikani chiqaradi.
+
+Ikkalasi ham Godot 4.4.1 da yuritilib tekshirilgan: import toza, 125/125
+o'tadi, oltita xarita ham quriladi va jang boradi.
