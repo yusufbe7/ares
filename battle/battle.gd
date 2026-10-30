@@ -818,39 +818,54 @@ func call_artillery_strike(from: Vector3, target: Vector3, team: int, source) ->
 func call_air_strike(target: Vector3, team: int) -> void:
 	var dir := Vector3(0, 0, 1.0 if team == 0 else -1.0)
 	var entry := terrain.clamp_to_map(target - dir * terrain.map_size * 0.5)
-	var plane := MeshInstance3D.new()
-	var body := BoxMesh.new()
-	body.size = Vector3(1.6, 1.0, 9.0)
-	plane.mesh = body
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.22, 0.24, 0.26)
-	plane.material_override = mat
-	add_child(plane)
-	var wing := MeshInstance3D.new()
-	var wm := BoxMesh.new()
-	wm.size = Vector3(11.0, 0.4, 2.2)
-	wing.mesh = wm
-	wing.material_override = mat
-	plane.add_child(wing)
-	plane.global_position = entry + Vector3(0, 70.0, 0)
-	plane.look_at(plane.global_position + dir, Vector3.UP)
-
-	var run := create_tween()
-	run.tween_property(plane, "global_position",
-		terrain.clamp_to_map(target + dir * terrain.map_size * 0.5) + Vector3(0, 70.0, 0), 4.0)
-	run.tween_callback(plane.queue_free)
+	var side := Vector3(-dir.z, 0, dir.x)
+	# A flight of three in a shallow vee, which is what reads from above.
+	for i in range(3):
+		var lateral: float = (float(i) - 1.0) * 16.0
+		var trail: float = absf(float(i) - 1.0) * 14.0
+		_spawn_strike_aircraft(entry + side * lateral - dir * trail, dir)
 
 	Radio.say("SHTAB", Radio.Call.AIR_CALLED, 0.0)
 	GameState.notify("Aviatsiya yo'lda.", "good")
-	# Mark the run-in so everyone on the ground can clear the line.
 	for u: BattleUnit in units:
-		if is_instance_valid(u) and u.is_alive() and u.global_position.distance_to(target) < 26.0:
-			u.take_suppression(0.4)
-	for i in range(6):
-		var delay := 1.8 + float(i) * 0.18
-		var at := target + dir * (float(i) - 2.5) * 11.0
-		var t := get_tree().create_timer(delay)
-		t.timeout.connect(_drop_bomb.bind(at, team))
+		if is_instance_valid(u) and u.is_alive() and u.global_position.distance_to(target) < 30.0:
+			u.take_suppression(0.45)
+	# The stick walks through the target rather than landing on one spot.
+	for i in range(9):
+		var delay := 1.8 + float(i) * 0.16
+		var at := target + dir * (float(i) - 4.0) * 10.0
+		get_tree().create_timer(delay).timeout.connect(_drop_bomb.bind(at, team))
+
+func _spawn_strike_aircraft(from: Vector3, dir: Vector3) -> void:
+	var plane := MeshInstance3D.new()
+	var body := BoxMesh.new()
+	body.size = Vector3(1.8, 1.1, 11.0)
+	plane.mesh = body
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.74, 0.75, 0.77)
+	plane.material_override = mat
+	plane.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(plane)
+	var wing := MeshInstance3D.new()
+	var wm := BoxMesh.new()
+	wm.size = Vector3(15.0, 0.4, 2.6)
+	wing.mesh = wm
+	wing.material_override = mat
+	plane.add_child(wing)
+	var tail := MeshInstance3D.new()
+	var tm := BoxMesh.new()
+	tm.size = Vector3(5.0, 0.35, 1.4)
+	tail.mesh = tm
+	tail.material_override = mat
+	tail.position = Vector3(0, 0.8, 4.6)
+	plane.add_child(tail)
+
+	plane.global_position = from + Vector3(0, 72.0, 0)
+	plane.look_at(plane.global_position + dir, Vector3.UP)
+	var run := create_tween()
+	run.tween_property(plane, "global_position",
+		plane.global_position + dir * terrain.map_size * 1.2, 5.0)
+	run.tween_callback(plane.queue_free)
 
 func _drop_bomb(at: Vector3, team: int) -> void:
 	if not is_instance_valid(self) or terrain == null:
@@ -934,6 +949,8 @@ func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make
 	if make_crater:
 		terrain.add_crater(pos, radius * 0.9, radius * 0.25)
 		cover.add_crater(pos, radius * 0.9)
+	if radius >= 10.0:
+		_secondary_blasts(pos, radius)
 	for u: BattleUnit in units:
 		if not is_instance_valid(u) or not u.is_alive():
 			continue
@@ -953,6 +970,15 @@ func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make
 	_fell_trees_near(pos, radius * 1.6)
 
 ## Tanks knock trees down, and a felled trunk is cover for whoever gets there.
+## Cook-offs inside the smoke of a heavy hit, a beat behind the main blast.
+func _secondary_blasts(pos: Vector3, radius: float) -> void:
+	for i in range(2):
+		var offset := Vector3(_rng.randf_range(-radius, radius), 0.0,
+			_rng.randf_range(-radius, radius))
+		var at := terrain.ground_point(pos.x + offset.x, pos.z + offset.z)
+		get_tree().create_timer(_rng.randf_range(0.25, 0.8)).timeout.connect(
+			_spawn_fireball.bind(at, radius * 0.45))
+
 ## The orange ball of flame an impact actually makes, which is what the eye
 ## catches before the smoke.
 func _spawn_fireball(pos: Vector3, radius: float) -> void:

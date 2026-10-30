@@ -68,6 +68,8 @@ func build(ctx, map_cfg: Dictionary, p_season: String, p_weather: String, seed_v
 		_fallen_logs(int(props["logs"]))
 	if int(props.get("fences", 0)) > 0:
 		_fences(int(props["fences"]))
+	if int(props.get("industrial", 0)) > 0:
+		_industrial(int(props["industrial"]))
 	if int(props.get("wells", 0)) > 0:
 		_wells(int(props["wells"]))
 	if int(props.get("field_walls", 0)) > 0:
@@ -884,3 +886,34 @@ func _church() -> void:
 	spire.material_override = _material(roof)
 	battle.add_child(spire)
 	spire.position = terrain.ground_point(tower_pos.x, tower_pos.z) + Vector3(0, 18.0, 0)
+
+## A long pale warehouse with a saw-tooth roof line and a tank beside it: the
+## sort of structure a strike actually gets called on.
+func _industrial(count: int) -> void:
+	var walls := _weathered(Color(0.86, 0.86, 0.83), 0.2)
+	var roof := _weathered(Color(0.55, 0.56, 0.55), 0.4)
+	var placed: Array = []
+	for i in range(count):
+		var at := _scatter(80.0, 70.0, placed)
+		placed.append(at)
+		var size := Vector3(rng.randf_range(26, 34), rng.randf_range(8, 11),
+			rng.randf_range(16, 22))
+		var yaw := snappedf(rng.randf_range(0, TAU), PI * 0.5)
+		_make_building(at, size, walls, roof, yaw)
+		# Storage tanks alongside, which is what makes it read as industry.
+		for k in range(rng.randi_range(2, 4)):
+			var off := Vector3(rng.randf_range(-24, 24), 0, rng.randf_range(-20, 20))
+			var spot := terrain.ground_point(at.x + off.x, at.z + off.z)
+			if terrain.is_in_water(spot):
+				continue
+			var tank := MeshInstance3D.new()
+			var cm := CylinderMesh.new()
+			cm.top_radius = 3.2
+			cm.bottom_radius = 3.2
+			cm.height = 6.5
+			tank.mesh = cm
+			tank.material_override = _material(walls.darkened(0.08))
+			battle.add_child(tank)
+			tank.position = spot + Vector3(0, 3.25, 0)
+			cover.add_rock(spot, 3.6)
+			battle.nav_obstacles.append({"pos": spot, "radius": 3.6})
