@@ -227,8 +227,14 @@ func _make_building(pos: Vector3, size: Vector3, wall: Color, roof: Color,
 ## Low clay-and-stone farm buildings with a few outbuildings around them,
 ## rather than one uniform house repeated across the field.
 func _houses(count: int) -> void:
-	var walls := [Color(0.76, 0.66, 0.50), Color(0.70, 0.60, 0.45), Color(0.82, 0.74, 0.58)]
-	var roofs := [Color(0.46, 0.30, 0.20), Color(0.34, 0.30, 0.24), Color(0.52, 0.36, 0.24)]
+	var walls := [
+		Color(0.76, 0.66, 0.50), Color(0.70, 0.60, 0.45), Color(0.82, 0.74, 0.58),
+		Color(0.90, 0.88, 0.84), Color(0.86, 0.85, 0.80),
+	]
+	var roofs := [
+		Color(0.46, 0.18, 0.15), Color(0.20, 0.34, 0.24), Color(0.30, 0.32, 0.36),
+		Color(0.52, 0.36, 0.24), Color(0.38, 0.22, 0.18),
+	]
 	var placed: Array = []
 	for i in range(count):
 		var p := _scatter(60.0, 22.0, placed)
@@ -384,7 +390,7 @@ func _trees(count: int, map_id: String) -> void:
 		var t := Transform3D(Basis(Vector3.UP, rng.randf_range(0, TAU)).scaled(Vector3.ONE * scale),
 			p + Vector3(0, 3.0 * scale, 0))
 		trunk_mm.set_instance_transform(i, t)
-		var crown_scale := scale * (0.45 if is_bare else 1.0)
+		var crown_scale := scale * (0.7 if is_bare else 1.0)
 		canopy_mm.set_instance_transform(i, Transform3D(
 			Basis(Vector3.UP, 0.0).scaled(Vector3.ONE * crown_scale), p + Vector3(0, 6.2 * scale, 0)))
 		cover.add_tree(p)

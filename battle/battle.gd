@@ -113,10 +113,14 @@ func _build_environment() -> void:
 	var light_mod := float(w.get("light", 1.0))
 
 	_sun = DirectionalLight3D.new()
-	_sun.rotation_degrees = Vector3(-48, 35, 0)
+	# A low sun: the long shadows it throws are most of what gives the ground
+	# its shape from this far out.
+	_sun.rotation_degrees = Vector3(-26, 38, 0)
 	_sun.light_color = DB.season_color(season, "sun", Color(1.0, 0.96, 0.9))
 	_sun.light_energy = float(DB.season(season).get("sun_energy", 1.1)) * light_mod
 	_sun.shadow_enabled = Settings.graphics_quality > 0 and light_mod > 0.5
+	_sun.directional_shadow_max_distance = 420.0
+	_sun.shadow_bias = 0.04
 	add_child(_sun)
 
 	_fog_env = WorldEnvironment.new()
@@ -862,6 +866,7 @@ func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make
 	flash.omni_range = radius * 3.0
 	flash.position = pos + Vector3(0, 2, 0)
 	add_child(flash)
+	_spawn_fireball(pos, radius)
 	var t := get_tree().create_timer(0.25)
 	t.timeout.connect(func():
 		if is_instance_valid(flash):
@@ -888,6 +893,32 @@ func spawn_explosion(pos: Vector3, radius: float, damage: float, team: int, make
 	_fell_trees_near(pos, radius * 1.6)
 
 ## Tanks knock trees down, and a felled trunk is cover for whoever gets there.
+## The orange ball of flame an impact actually makes, which is what the eye
+## catches before the smoke.
+func _spawn_fireball(pos: Vector3, radius: float) -> void:
+	if Settings.graphics_quality == 0:
+		return
+	var ball := MeshInstance3D.new()
+	var qm := QuadMesh.new()
+	qm.size = Vector2(radius * 1.6, radius * 1.6)
+	ball.mesh = qm
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = Color(1.0, 0.72, 0.22, 0.95)
+	ball.material_override = mat
+	ball.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(ball)
+	ball.global_position = pos + Vector3(0, radius * 0.4, 0)
+
+	var t := create_tween()
+	t.set_parallel(true)
+	t.tween_property(ball, "scale", Vector3.ONE * 1.9, 0.45)
+	t.tween_property(ball, "global_position", ball.global_position + Vector3(0, radius * 0.5, 0), 0.45)
+	t.tween_property(mat, "albedo_color", Color(0.35, 0.18, 0.08, 0.0), 0.45)
+	t.chain().tween_callback(ball.queue_free)
+
 func crush_at(pos: Vector3, radius: float, _by) -> void:
 	_fell_trees_near(pos, radius)
 
