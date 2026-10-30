@@ -1,5 +1,0 @@
-[
- {"name": "rank.private", "xp": 0}, {"name": "rank.corporal", "xp": 100}, {"name": "rank.sergeant", "xp": 250},
- {"name": "rank.sergeant2", "xp": 450}, {"name": "rank.lieutenant", "xp": 750}, {"name": "rank.captain", "xp": 1150},
- {"name": "rank.major", "xp": 1700}, {"name": "rank.colonel", "xp": 2400}, {"name": "rank.general", "xp": 3400}
-]
