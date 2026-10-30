@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="OperationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/operation_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "defend"
+mode = "defend"
+name = "op.defend"
+description = "op.defend.desc"
+reward_credits = 20000
+reward_xp = 150
+battle_mode = "operation"
+available = true
+map_pos = Vector2(0.4, 0.38)

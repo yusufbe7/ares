@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaign/logic/mission_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "m05_end_of_line"
+order = 5
+title = "mission.end_of_line"
+briefing = "mission.end_of_line.brief"
+target_rule = ""
+objectives = Array[Dictionary]([{"type": "own_provinces_mult", "count": 1, "mult": 2.0, "text": "obj.own_mult"}])
+rewards = {"gold": 3000, "supply": 400, "xp": 1000}
+requires = "m04_capture_city"
+difficulty = 3

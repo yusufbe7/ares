@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaign/logic/mission_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "m02_secure_outpost"
+order = 2
+title = "mission.secure_outpost"
+briefing = "mission.secure_outpost.brief"
+target_rule = "richest_enemy_neighbor"
+objectives = Array[Dictionary]([{"type": "capture_target", "count": 1, "text": "obj.capture_target"}, {"type": "supply_target", "count": 1, "text": "obj.supply_target"}])
+rewards = {"gold": 600, "supply": 80, "xp": 250}
+requires = "m01_border_fire"
+difficulty = 1

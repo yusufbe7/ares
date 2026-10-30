@@ -1,0 +1,12 @@
+{
+ "_note": "Harbiy bloklar. Global Tension va ittifoqchilar shu yerdan. A'zolik 2026 holatiga ko'ra (NATO 32 a'zo; Armaniya CSTOdagi ishtirokini muzlatgan, lekin rasman a'zo).",
+ "blocs": [
+  {"id": "nato", "name": "NATO", "emblem": "res://data/emblems/nato.png", "color": "#3f7bd6",
+   "members": ["ALB","BEL","BGR","CAN","HRV","CZE","DNK","EST","FIN","FRA","DEU","GRC","HUN","ISL","ITA","LVA","LTU","LUX","MNE","NLD","MKD","NOR","POL","PRT","ROU","SVK","SVN","ESP","SWE","TUR","GBR","USA"]},
+  {"id": "csto", "name": "CSTO", "emblem": "res://data/emblems/csto.png", "color": "#c8343a",
+   "members": ["RUS","BLR","ARM","KAZ","KGZ","TJK"]},
+  {"id": "china", "name": "CHINA", "emblem": "res://data/emblems/china.png", "color": "#e07b2c",
+   "members": ["CHN"]}
+ ],
+ "others": {"id": "others", "name": "OTHERS", "color": "#8a8f98"}
+}

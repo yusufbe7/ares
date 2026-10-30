@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CosmeticItem" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/cosmetic_item.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "vest_plate_pouches"
+category = "vest"
+name = "Plate Carrier + Pouches"
+parts = PackedStringArray("Soldier_Plate_1", "Soldier_Pouches_1", "Soldier_Pouches_1_001", "Soldier_Pouches_1_002", "Soldier_Pouches_1_003", "Soldier_Pouches_1_004", "Soldier_Pouches_1_005", "Soldier_Pouches_1_006", "Soldier_Pouches_1_007", "Soldier_Pouches_1_008", "Soldier_Pouches_1_009", "Soldier_Pouches_1_010")
+tint = Color(1, 1, 1, 1)
+price = 0
+required_level = 1

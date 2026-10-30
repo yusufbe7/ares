@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AttachmentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/attachment_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "red_dot"
+slot = "optic"
+name = "Red Dot"
+stats = {"accuracy": 6, "mobility": -1}
+price = 4000
+required_level = 1

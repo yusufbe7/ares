@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaign/logic/mission_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "m01_border_fire"
+order = 1
+title = "mission.border_fire"
+briefing = "mission.border_fire.brief"
+target_rule = ""
+objectives = Array[Dictionary]([{"type": "declare_war", "count": 1, "text": "obj.declare_war"}, {"type": "win_battles", "count": 1, "text": "obj.win_battles"}])
+rewards = {"gold": 300, "supply": 40, "xp": 150}
+requires = ""
+difficulty = 1

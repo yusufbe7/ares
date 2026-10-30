@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VehicleData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/vehicle_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "humvee"
+name = "HMMWV"
+type = "jeep"
+firepower = 28
+armor = 30
+mobility = 86
+price = 90000
+required_level = 2
+model = "res://assets/humvee.glb"
+available = true
+description = "veh.humvee"

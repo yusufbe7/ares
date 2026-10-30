@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="OperationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/operation_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "assault"
+mode = "attack"
+name = "op.assault"
+description = "op.assault.desc"
+reward_credits = 18000
+reward_xp = 140
+battle_mode = "assault"
+available = true
+map_pos = Vector2(0.54, 0.27)

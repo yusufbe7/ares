@@ -1,0 +1,18 @@
+{
+ "_note": "tools/bake_ocean.py natijasi. Manba: Free Ocean simulation - Tiled, the9thearl, CC-BY-4.0.",
+ "frames": 125,
+ "cols": 12,
+ "grid": 144,
+ "fps": 12.0,
+ "tile_m": 50.0,
+ "disp_min": [
+  -0.42395591735839844,
+  -0.8783072829246521,
+  -0.4472191333770752
+ ],
+ "disp_max": [
+  0.5294895172119141,
+  1.045316457748413,
+  0.4688105583190918
+ ]
+}

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VehicleData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/vehicle_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "mi24"
+name = "Mi-24 Hind"
+type = "heli"
+firepower = 78
+armor = 55
+mobility = 92
+price = 680000
+required_level = 12
+model = "res://assets/mi24.glb"
+available = true
+description = "veh.mi24"

@@ -1,0 +1,37 @@
+{
+ "_note": "Kundalik va haftalik topshiriqlar. metric: GameSession hisoblaydi.",
+ "tasks": [
+  {
+   "id": "d_deploy",
+   "period": "daily",
+   "text": "task.deploy",
+   "metric": "deploys",
+   "goal": 2,
+   "reward": 5000
+  },
+  {
+   "id": "d_buy",
+   "period": "daily",
+   "text": "task.buy",
+   "metric": "purchases",
+   "goal": 1,
+   "reward": 3000
+  },
+  {
+   "id": "w_campaign",
+   "period": "weekly",
+   "text": "task.campaign",
+   "metric": "campaign_missions",
+   "goal": 3,
+   "reward": 25000
+  },
+  {
+   "id": "w_loadout",
+   "period": "weekly",
+   "text": "task.loadout",
+   "metric": "loadouts_saved",
+   "goal": 3,
+   "reward": 8000
+  }
+ ]
+}

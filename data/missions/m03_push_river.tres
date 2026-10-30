@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaign/logic/mission_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "m03_push_river"
+order = 3
+title = "mission.push_river"
+briefing = "mission.push_river.brief"
+target_rule = "weakest_neighbor_border"
+objectives = Array[Dictionary]([{"type": "capture_target", "count": 1, "text": "obj.capture_target"}, {"type": "own_provinces_plus", "count": 3, "text": "obj.own_plus"}])
+rewards = {"gold": 900, "supply": 120, "xp": 350}
+requires = "m02_secure_outpost"
+difficulty = 2

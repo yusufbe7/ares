@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VehicleData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/vehicle_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "btr80"
+name = "BTR-80"
+type = "apc"
+firepower = 45
+armor = 50
+mobility = 70
+price = 280000
+required_level = 4
+model = ""
+available = false
+description = "veh.btr80"

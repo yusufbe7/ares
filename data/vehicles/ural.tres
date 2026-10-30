@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VehicleData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/classes/vehicle_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "ural"
+name = "Ural-4320"
+type = "truck"
+firepower = 5
+armor = 20
+mobility = 62
+price = 120000
+required_level = 3
+model = ""
+available = false
+description = "veh.ural"

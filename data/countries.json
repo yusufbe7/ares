@@ -1,0 +1,3026 @@
+[
+ {
+  "id": 1,
+  "code": "AFG",
+  "iso2": "AF",
+  "name": "Afghanistan",
+  "color": "#92bc5a",
+  "controller": "bot",
+  "capital": 1091,
+  "population": 38041754,
+  "gdp_musd": 19291,
+  "resources": {
+   "gold": 577,
+   "supply": 190,
+   "manpower": 76083
+  }
+ },
+ {
+  "id": 2,
+  "code": "AGO",
+  "iso2": "AO",
+  "name": "Angola",
+  "color": "#71c7d6",
+  "controller": "bot",
+  "capital": 717,
+  "population": 31825295,
+  "gdp_musd": 88815,
+  "resources": {
+   "gold": 896,
+   "supply": 190,
+   "manpower": 63650
+  }
+ },
+ {
+  "id": 3,
+  "code": "ALB",
+  "iso2": "AL",
+  "name": "Albania",
+  "color": "#71d6d6",
+  "controller": "bot",
+  "capital": 123,
+  "population": 2854191,
+  "gdp_musd": 15279,
+  "resources": {
+   "gold": 547,
+   "supply": 50,
+   "manpower": 5708
+  }
+ },
+ {
+  "id": 4,
+  "code": "ARE",
+  "iso2": "AE",
+  "name": "United Arab Emirates",
+  "color": "#6a7cc9",
+  "controller": "bot",
+  "capital": 160,
+  "population": 9770529,
+  "gdp_musd": 421142,
+  "resources": {
+   "gold": 1597,
+   "supply": 50,
+   "manpower": 19541
+  }
+ },
+ {
+  "id": 5,
+  "code": "ARG",
+  "iso2": "AR",
+  "name": "Argentina",
+  "color": "#b274c9",
+  "controller": "bot",
+  "capital": 631,
+  "population": 44938712,
+  "gdp_musd": 445445,
+  "resources": {
+   "gold": 1634,
+   "supply": 290,
+   "manpower": 89877
+  }
+ },
+ {
+  "id": 6,
+  "code": "ARM",
+  "iso2": "AM",
+  "name": "Armenia",
+  "color": "#bc7e64",
+  "controller": "bot",
+  "capital": 114,
+  "population": 2957731,
+  "gdp_musd": 13672,
+  "resources": {
+   "gold": 533,
+   "supply": 50,
+   "manpower": 5915
+  }
+ },
+ {
+  "id": 7,
+  "code": "ATF",
+  "iso2": "TF",
+  "name": "French Southern and Antarctic Lands",
+  "color": "#bc5a7f",
+  "controller": "bot",
+  "capital": 840,
+  "population": 140,
+  "gdp_musd": 16,
+  "resources": {
+   "gold": 308,
+   "supply": 80,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 8,
+  "code": "AUS",
+  "iso2": "AU",
+  "name": "Australia",
+  "color": "#817cd6",
+  "controller": "bot",
+  "capital": 1487,
+  "population": 25364307,
+  "gdp_musd": 1396567,
+  "resources": {
+   "gold": 2663,
+   "supply": 660,
+   "manpower": 50728
+  }
+ },
+ {
+  "id": 9,
+  "code": "AUT",
+  "iso2": "AT",
+  "name": "Austria",
+  "color": "#6683d6",
+  "controller": "bot",
+  "capital": 146,
+  "population": 8877067,
+  "gdp_musd": 445075,
+  "resources": {
+   "gold": 1634,
+   "supply": 60,
+   "manpower": 17754
+  }
+ },
+ {
+  "id": 10,
+  "code": "AZE",
+  "iso2": "AZ",
+  "name": "Azerbaijan",
+  "color": "#947cd6",
+  "controller": "bot",
+  "capital": 1006,
+  "population": 10023318,
+  "gdp_musd": 48047,
+  "resources": {
+   "gold": 738,
+   "supply": 60,
+   "manpower": 20046
+  }
+ },
+ {
+  "id": 11,
+  "code": "BDI",
+  "iso2": "BI",
+  "name": "Burundi",
+  "color": "#d67181",
+  "controller": "bot",
+  "capital": 310,
+  "population": 11530580,
+  "gdp_musd": 3012,
+  "resources": {
+   "gold": 409,
+   "supply": 50,
+   "manpower": 23061
+  }
+ },
+ {
+  "id": 12,
+  "code": "BEL",
+  "iso2": "BE",
+  "name": "Belgium",
+  "color": "#d65cce",
+  "controller": "bot",
+  "capital": 92,
+  "population": 11484055,
+  "gdp_musd": 533097,
+  "resources": {
+   "gold": 1760,
+   "supply": 50,
+   "manpower": 22968
+  }
+ },
+ {
+  "id": 13,
+  "code": "BEN",
+  "iso2": "BJ",
+  "name": "Benin",
+  "color": "#bc7e6d",
+  "controller": "bot",
+  "capital": 171,
+  "population": 11801151,
+  "gdp_musd": 14390,
+  "resources": {
+   "gold": 539,
+   "supply": 60,
+   "manpower": 23602
+  }
+ },
+ {
+  "id": 14,
+  "code": "BFA",
+  "iso2": "BF",
+  "name": "Burkina Faso",
+  "color": "#60c9ad",
+  "controller": "bot",
+  "capital": 367,
+  "population": 20321378,
+  "gdp_musd": 15990,
+  "resources": {
+   "gold": 552,
+   "supply": 110,
+   "manpower": 40642
+  }
+ },
+ {
+  "id": 15,
+  "code": "BGD",
+  "iso2": "BD",
+  "name": "Bangladesh",
+  "color": "#bcb551",
+  "controller": "bot",
+  "capital": 379,
+  "population": 163046161,
+  "gdp_musd": 302571,
+  "resources": {
+   "gold": 1400,
+   "supply": 80,
+   "manpower": 326092
+  }
+ },
+ {
+  "id": 16,
+  "code": "BGR",
+  "iso2": "BG",
+  "name": "Bulgaria",
+  "color": "#bc736d",
+  "controller": "bot",
+  "capital": 227,
+  "population": 6975761,
+  "gdp_musd": 68558,
+  "resources": {
+   "gold": 823,
+   "supply": 60,
+   "manpower": 13951
+  }
+ },
+ {
+  "id": 17,
+  "code": "BHR",
+  "iso2": "BH",
+  "name": "Bahrain",
+  "color": "#947cd6",
+  "controller": "bot",
+  "capital": 927,
+  "population": 1641172,
+  "gdp_musd": 38574,
+  "resources": {
+   "gold": 692,
+   "supply": 50,
+   "manpower": 3282
+  }
+ },
+ {
+  "id": 18,
+  "code": "BHS",
+  "iso2": "BS",
+  "name": "The Bahamas",
+  "color": "#877cd6",
+  "controller": "bot",
+  "capital": 857,
+  "population": 389482,
+  "gdp_musd": 13578,
+  "resources": {
+   "gold": 533,
+   "supply": 230,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 19,
+  "code": "BIH",
+  "iso2": "BA",
+  "name": "Bosnia and Herzegovina",
+  "color": "#bc5a7f",
+  "controller": "bot",
+  "capital": 223,
+  "population": 3301000,
+  "gdp_musd": 20164,
+  "resources": {
+   "gold": 584,
+   "supply": 50,
+   "manpower": 6602
+  }
+ },
+ {
+  "id": 20,
+  "code": "BLR",
+  "iso2": "BY",
+  "name": "Belarus",
+  "color": "#667bd6",
+  "controller": "bot",
+  "capital": 1072,
+  "population": 9466856,
+  "gdp_musd": 63080,
+  "resources": {
+   "gold": 802,
+   "supply": 90,
+   "manpower": 18933
+  }
+ },
+ {
+  "id": 21,
+  "code": "BLZ",
+  "iso2": "BZ",
+  "name": "Belize",
+  "color": "#98c956",
+  "controller": "bot",
+  "capital": 413,
+  "population": 390353,
+  "gdp_musd": 1879,
+  "resources": {
+   "gold": 386,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 22,
+  "code": "BOL",
+  "iso2": "BO",
+  "name": "Bolivia",
+  "color": "#66abd6",
+  "controller": "bot",
+  "capital": 434,
+  "population": 11513100,
+  "gdp_musd": 40895,
+  "resources": {
+   "gold": 704,
+   "supply": 150,
+   "manpower": 23026
+  }
+ },
+ {
+  "id": 23,
+  "code": "BRA",
+  "iso2": "BR",
+  "name": "Brazil",
+  "color": "#60c99e",
+  "controller": "bot",
+  "capital": 1617,
+  "population": 211049527,
+  "gdp_musd": 1839758,
+  "resources": {
+   "gold": 3012,
+   "supply": 750,
+   "manpower": 422099
+  }
+ },
+ {
+  "id": 24,
+  "code": "BRN",
+  "iso2": "BN",
+  "name": "Brunei",
+  "color": "#90c956",
+  "controller": "bot",
+  "capital": 378,
+  "population": 433285,
+  "gdp_musd": 13469,
+  "resources": {
+   "gold": 532,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 25,
+  "code": "BTN",
+  "iso2": "BT",
+  "name": "Bhutan",
+  "color": "#9b7cd6",
+  "controller": "bot",
+  "capital": 183,
+  "population": 763092,
+  "gdp_musd": 2530,
+  "resources": {
+   "gold": 400,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 26,
+  "code": "BWA",
+  "iso2": "BW",
+  "name": "Botswana",
+  "color": "#7ac96a",
+  "controller": "bot",
+  "capital": 300,
+  "population": 2303697,
+  "gdp_musd": 18340,
+  "resources": {
+   "gold": 570,
+   "supply": 100,
+   "manpower": 4607
+  }
+ },
+ {
+  "id": 27,
+  "code": "CAF",
+  "iso2": "CF",
+  "name": "Central African Republic",
+  "color": "#bc5a78",
+  "controller": "bot",
+  "capital": 308,
+  "population": 4745185,
+  "gdp_musd": 2220,
+  "resources": {
+   "gold": 394,
+   "supply": 160,
+   "manpower": 9490
+  }
+ },
+ {
+  "id": 28,
+  "code": "CAN",
+  "iso2": "CA",
+  "name": "Canada",
+  "color": "#bcae51",
+  "controller": "bot",
+  "capital": 393,
+  "population": 37589262,
+  "gdp_musd": 1736425,
+  "resources": {
+   "gold": 2935,
+   "supply": 860,
+   "manpower": 75178
+  }
+ },
+ {
+  "id": 29,
+  "code": "CHE",
+  "iso2": "CH",
+  "name": "Switzerland",
+  "color": "#bc6d73",
+  "controller": "bot",
+  "capital": 956,
+  "population": 8574832,
+  "gdp_musd": 703082,
+  "resources": {
+   "gold": 1976,
+   "supply": 50,
+   "manpower": 17149
+  }
+ },
+ {
+  "id": 30,
+  "code": "CHL",
+  "iso2": "CL",
+  "name": "Chile",
+  "color": "#74c9c9",
+  "controller": "bot",
+  "capital": 447,
+  "population": 18952038,
+  "gdp_musd": 282318,
+  "resources": {
+   "gold": 1362,
+   "supply": 140,
+   "manpower": 37904
+  }
+ },
+ {
+  "id": 31,
+  "code": "CHN",
+  "iso2": "CN",
+  "name": "People's Republic of China",
+  "color": "#bc5a7f",
+  "controller": "bot",
+  "capital": 1046,
+  "population": 1397715000,
+  "gdp_musd": 14342903,
+  "resources": {
+   "gold": 7874,
+   "supply": 770,
+   "manpower": 2795430
+  }
+ },
+ {
+  "id": 32,
+  "code": "CIV",
+  "iso2": "CI",
+  "name": "Ivory Coast",
+  "color": "#6ac96f",
+  "controller": "bot",
+  "capital": 1026,
+  "population": 25716544,
+  "gdp_musd": 58539,
+  "resources": {
+   "gold": 783,
+   "supply": 110,
+   "manpower": 51433
+  }
+ },
+ {
+  "id": 33,
+  "code": "CMR",
+  "iso2": "CM",
+  "name": "Cameroon",
+  "color": "#d65cab",
+  "controller": "bot",
+  "capital": 1064,
+  "population": 25876380,
+  "gdp_musd": 39007,
+  "resources": {
+   "gold": 695,
+   "supply": 120,
+   "manpower": 51752
+  }
+ },
+ {
+  "id": 34,
+  "code": "COD",
+  "iso2": "CD",
+  "name": "Democratic Republic of the Congo",
+  "color": "#bc8751",
+  "controller": "bot",
+  "capital": 1047,
+  "population": 86790567,
+  "gdp_musd": 50400,
+  "resources": {
+   "gold": 748,
+   "supply": 250,
+   "manpower": 173581
+  }
+ },
+ {
+  "id": 35,
+  "code": "COG",
+  "iso2": "CG",
+  "name": "Republic of the Congo",
+  "color": "#c474c9",
+  "controller": "bot",
+  "capital": 46,
+  "population": 5380508,
+  "gdp_musd": 12267,
+  "resources": {
+   "gold": 521,
+   "supply": 120,
+   "manpower": 10761
+  }
+ },
+ {
+  "id": 36,
+  "code": "COL",
+  "iso2": "CO",
+  "name": "Colombia",
+  "color": "#71d6c7",
+  "controller": "bot",
+  "capital": 1045,
+  "population": 50339443,
+  "gdp_musd": 323615,
+  "resources": {
+   "gold": 1437,
+   "supply": 210,
+   "manpower": 100678
+  }
+ },
+ {
+  "id": 37,
+  "code": "COM",
+  "iso2": "KM",
+  "name": "Comoros",
+  "color": "#c974c8",
+  "controller": "bot",
+  "capital": 871,
+  "population": 850886,
+  "gdp_musd": 1165,
+  "resources": {
+   "gold": 368,
+   "supply": 70,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 38,
+  "code": "CPV",
+  "iso2": "CV",
+  "name": "Cape Verde",
+  "color": "#d65cc5",
+  "controller": "bot",
+  "capital": 1202,
+  "population": 549935,
+  "gdp_musd": 1981,
+  "resources": {
+   "gold": 389,
+   "supply": 130,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 39,
+  "code": "CRI",
+  "iso2": "CR",
+  "name": "Costa Rica",
+  "color": "#7ac96a",
+  "controller": "bot",
+  "capital": 420,
+  "population": 5047561,
+  "gdp_musd": 61801,
+  "resources": {
+   "gold": 797,
+   "supply": 50,
+   "manpower": 10095
+  }
+ },
+ {
+  "id": 40,
+  "code": "CUB",
+  "iso2": "CU",
+  "name": "Cuba",
+  "color": "#6ac976",
+  "controller": "bot",
+  "capital": 851,
+  "population": 11333483,
+  "gdp_musd": 100023,
+  "resources": {
+   "gold": 932,
+   "supply": 70,
+   "manpower": 22666
+  }
+ },
+ {
+  "id": 41,
+  "code": "CYN",
+  "iso2": "CY",
+  "name": "Turkish Republic of Northern Cyprus",
+  "color": "#6ac97d",
+  "controller": "bot",
+  "capital": 622,
+  "population": 326000,
+  "gdp_musd": 3600,
+  "resources": {
+   "gold": 420,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 42,
+  "code": "CYP",
+  "iso2": "CY",
+  "name": "Cyprus",
+  "color": "#90c956",
+  "controller": "bot",
+  "capital": 623,
+  "population": 1198575,
+  "gdp_musd": 24948,
+  "resources": {
+   "gold": 615,
+   "supply": 50,
+   "manpower": 2397
+  }
+ },
+ {
+  "id": 43,
+  "code": "CZE",
+  "iso2": "CZ",
+  "name": "Czech Republic",
+  "color": "#d6837c",
+  "controller": "bot",
+  "capital": 77,
+  "population": 10669709,
+  "gdp_musd": 250680,
+  "resources": {
+   "gold": 1301,
+   "supply": 60,
+   "manpower": 21339
+  }
+ },
+ {
+  "id": 44,
+  "code": "DEU",
+  "iso2": "DE",
+  "name": "Germany",
+  "color": "#bc8751",
+  "controller": "bot",
+  "capital": 224,
+  "population": 83132799,
+  "gdp_musd": 3861123,
+  "resources": {
+   "gold": 4229,
+   "supply": 120,
+   "manpower": 166265
+  }
+ },
+ {
+  "id": 45,
+  "code": "DJI",
+  "iso2": "DJ",
+  "name": "Djibouti",
+  "color": "#668bd6",
+  "controller": "bot",
+  "capital": 139,
+  "population": 973560,
+  "gdp_musd": 3324,
+  "resources": {
+   "gold": 415,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 46,
+  "code": "DNK",
+  "iso2": "DK",
+  "name": "Denmark",
+  "color": "#bc5a8d",
+  "controller": "bot",
+  "capital": 882,
+  "population": 5818553,
+  "gdp_musd": 350104,
+  "resources": {
+   "gold": 1483,
+   "supply": 60,
+   "manpower": 11637
+  }
+ },
+ {
+  "id": 47,
+  "code": "DOM",
+  "iso2": "DO",
+  "name": "Dominican Republic",
+  "color": "#71d6ce",
+  "controller": "bot",
+  "capital": 1039,
+  "population": 10738958,
+  "gdp_musd": 88941,
+  "resources": {
+   "gold": 896,
+   "supply": 50,
+   "manpower": 21477
+  }
+ },
+ {
+  "id": 48,
+  "code": "DZA",
+  "iso2": "DZ",
+  "name": "Algeria",
+  "color": "#bc6d7e",
+  "controller": "bot",
+  "capital": 1085,
+  "population": 43053054,
+  "gdp_musd": 171091,
+  "resources": {
+   "gold": 1127,
+   "supply": 270,
+   "manpower": 86106
+  }
+ },
+ {
+  "id": 49,
+  "code": "ECU",
+  "iso2": "EC",
+  "name": "Ecuador",
+  "color": "#92bc5a",
+  "controller": "bot",
+  "capital": 206,
+  "population": 17373662,
+  "gdp_musd": 107435,
+  "resources": {
+   "gold": 955,
+   "supply": 90,
+   "manpower": 34747
+  }
+ },
+ {
+  "id": 50,
+  "code": "EGY",
+  "iso2": "EG",
+  "name": "Egypt",
+  "color": "#71d6c7",
+  "controller": "bot",
+  "capital": 500,
+  "population": 100388073,
+  "gdp_musd": 303092,
+  "resources": {
+   "gold": 1401,
+   "supply": 140,
+   "manpower": 200776
+  }
+ },
+ {
+  "id": 51,
+  "code": "ERI",
+  "iso2": "ER",
+  "name": "Eritrea",
+  "color": "#92bc5a",
+  "controller": "bot",
+  "capital": 604,
+  "population": 6081196,
+  "gdp_musd": 2065,
+  "resources": {
+   "gold": 390,
+   "supply": 70,
+   "manpower": 12162
+  }
+ },
+ {
+  "id": 52,
+  "code": "ESP",
+  "iso2": "ES",
+  "name": "Spain",
+  "color": "#bc5a78",
+  "controller": "bot",
+  "capital": 992,
+  "population": 47076781,
+  "gdp_musd": 1393490,
+  "resources": {
+   "gold": 2660,
+   "supply": 150,
+   "manpower": 94153
+  }
+ },
+ {
+  "id": 53,
+  "code": "EST",
+  "iso2": "EE",
+  "name": "Estonia",
+  "color": "#bc8564",
+  "controller": "bot",
+  "capital": 804,
+  "population": 1326590,
+  "gdp_musd": 31471,
+  "resources": {
+   "gold": 654,
+   "supply": 50,
+   "manpower": 2653
+  }
+ },
+ {
+  "id": 54,
+  "code": "ETH",
+  "iso2": "ET",
+  "name": "Ethiopia",
+  "color": "#bc5a70",
+  "controller": "bot",
+  "capital": 1307,
+  "population": 112078730,
+  "gdp_musd": 95912,
+  "resources": {
+   "gold": 919,
+   "supply": 160,
+   "manpower": 224157
+  }
+ },
+ {
+  "id": 55,
+  "code": "FIN",
+  "iso2": "FI",
+  "name": "Finland",
+  "color": "#668bd6",
+  "controller": "bot",
+  "capital": 87,
+  "population": 5520314,
+  "gdp_musd": 269296,
+  "resources": {
+   "gold": 1337,
+   "supply": 100,
+   "manpower": 11040
+  }
+ },
+ {
+  "id": 56,
+  "code": "FJI",
+  "iso2": "FJ",
+  "name": "Fiji",
+  "color": "#669bd6",
+  "controller": "bot",
+  "capital": 919,
+  "population": 889953,
+  "gdp_musd": 5496,
+  "resources": {
+   "gold": 448,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 57,
+  "code": "FLK",
+  "iso2": "FK",
+  "name": "Falkland Islands",
+  "color": "#71c7d6",
+  "controller": "bot",
+  "capital": 914,
+  "population": 3398,
+  "gdp_musd": 282,
+  "resources": {
+   "gold": 333,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 58,
+  "code": "FRA",
+  "iso2": "FR",
+  "name": "France",
+  "color": "#7ac96a",
+  "controller": "bot",
+  "capital": 1210,
+  "population": 67059887,
+  "gdp_musd": 2715518,
+  "resources": {
+   "gold": 3595,
+   "supply": 180,
+   "manpower": 134119
+  }
+ },
+ {
+  "id": 59,
+  "code": "FRO",
+  "iso2": "FO",
+  "name": "Faroe Islands",
+  "color": "#7c7dd6",
+  "controller": "bot",
+  "capital": 883,
+  "population": 48678,
+  "gdp_musd": 3116,
+  "resources": {
+   "gold": 411,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 60,
+  "code": "FSM",
+  "iso2": "FM",
+  "name": "Federated States of Micronesia",
+  "color": "#947cd6",
+  "controller": "bot",
+  "capital": 926,
+  "population": 113815,
+  "gdp_musd": 401,
+  "resources": {
+   "gold": 340,
+   "supply": 90,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 61,
+  "code": "GAB",
+  "iso2": "GA",
+  "name": "Gabon",
+  "color": "#74c9c3",
+  "controller": "bot",
+  "capital": 716,
+  "population": 2172579,
+  "gdp_musd": 16874,
+  "resources": {
+   "gold": 559,
+   "supply": 110,
+   "manpower": 4345
+  }
+ },
+ {
+  "id": 62,
+  "code": "GBR",
+  "iso2": "GB",
+  "name": "United Kingdom",
+  "color": "#6693d6",
+  "controller": "bot",
+  "capital": 1099,
+  "population": 66834405,
+  "gdp_musd": 2829108,
+  "resources": {
+   "gold": 3663,
+   "supply": 100,
+   "manpower": 133668
+  }
+ },
+ {
+  "id": 63,
+  "code": "GEO",
+  "iso2": "GE",
+  "name": "Georgia",
+  "color": "#a0c956",
+  "controller": "bot",
+  "capital": 97,
+  "population": 3720382,
+  "gdp_musd": 17477,
+  "resources": {
+   "gold": 564,
+   "supply": 50,
+   "manpower": 7440
+  }
+ },
+ {
+  "id": 64,
+  "code": "GHA",
+  "iso2": "GH",
+  "name": "Ghana",
+  "color": "#d65cab",
+  "controller": "bot",
+  "capital": 359,
+  "population": 30417856,
+  "gdp_musd": 66983,
+  "resources": {
+   "gold": 817,
+   "supply": 80,
+   "manpower": 60835
+  }
+ },
+ {
+  "id": 65,
+  "code": "GIN",
+  "iso2": "GN",
+  "name": "Guinea",
+  "color": "#60c9a6",
+  "controller": "bot",
+  "capital": 128,
+  "population": 12771246,
+  "gdp_musd": 12296,
+  "resources": {
+   "gold": 521,
+   "supply": 90,
+   "manpower": 25542
+  }
+ },
+ {
+  "id": 66,
+  "code": "GMB",
+  "iso2": "GM",
+  "name": "The Gambia",
+  "color": "#60c98f",
+  "controller": "bot",
+  "capital": 586,
+  "population": 2347706,
+  "gdp_musd": 1826,
+  "resources": {
+   "gold": 385,
+   "supply": 50,
+   "manpower": 4695
+  }
+ },
+ {
+  "id": 67,
+  "code": "GNB",
+  "iso2": "GW",
+  "name": "Guinea-Bissau",
+  "color": "#bc6d7e",
+  "controller": "bot",
+  "capital": 549,
+  "population": 1920922,
+  "gdp_musd": 1339,
+  "resources": {
+   "gold": 373,
+   "supply": 50,
+   "manpower": 3841
+  }
+ },
+ {
+  "id": 68,
+  "code": "GNQ",
+  "iso2": "GQ",
+  "name": "Equatorial Guinea",
+  "color": "#bc7164",
+  "controller": "bot",
+  "capital": 556,
+  "population": 1355986,
+  "gdp_musd": 11026,
+  "resources": {
+   "gold": 510,
+   "supply": 50,
+   "manpower": 2711
+  }
+ },
+ {
+  "id": 69,
+  "code": "GRC",
+  "iso2": "GR",
+  "name": "Greece",
+  "color": "#a8c956",
+  "controller": "bot",
+  "capital": 122,
+  "population": 10716322,
+  "gdp_musd": 209852,
+  "resources": {
+   "gold": 1216,
+   "supply": 60,
+   "manpower": 21432
+  }
+ },
+ {
+  "id": 70,
+  "code": "GRL",
+  "iso2": "GL",
+  "name": "Greenland",
+  "color": "#77c956",
+  "controller": "bot",
+  "capital": 1581,
+  "population": 56225,
+  "gdp_musd": 3051,
+  "resources": {
+   "gold": 410,
+   "supply": 230,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 71,
+  "code": "GTM",
+  "iso2": "GT",
+  "name": "Guatemala",
+  "color": "#71d6c0",
+  "controller": "bot",
+  "capital": 418,
+  "population": 16604026,
+  "gdp_musd": 76710,
+  "resources": {
+   "gold": 853,
+   "supply": 60,
+   "manpower": 33208
+  }
+ },
+ {
+  "id": 72,
+  "code": "GUY",
+  "iso2": "GY",
+  "name": "Guyana",
+  "color": "#6cc96a",
+  "controller": "bot",
+  "capital": 700,
+  "population": 782766,
+  "gdp_musd": 5173,
+  "resources": {
+   "gold": 443,
+   "supply": 80,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 73,
+  "code": "HKG",
+  "iso2": "HK",
+  "name": "Hong Kong",
+  "color": "#60c9a6",
+  "controller": "bot",
+  "capital": 937,
+  "population": 7507400,
+  "gdp_musd": 365711,
+  "resources": {
+   "gold": 1509,
+   "supply": 50,
+   "manpower": 15014
+  }
+ },
+ {
+  "id": 74,
+  "code": "HND",
+  "iso2": "HN",
+  "name": "Honduras",
+  "color": "#bc5a7f",
+  "controller": "bot",
+  "capital": 205,
+  "population": 9746117,
+  "gdp_musd": 25095,
+  "resources": {
+   "gold": 616,
+   "supply": 70,
+   "manpower": 19492
+  }
+ },
+ {
+  "id": 75,
+  "code": "HRV",
+  "iso2": "HR",
+  "name": "Croatia",
+  "color": "#81c96a",
+  "controller": "bot",
+  "capital": 820,
+  "population": 4067500,
+  "gdp_musd": 60752,
+  "resources": {
+   "gold": 792,
+   "supply": 50,
+   "manpower": 8135
+  }
+ },
+ {
+  "id": 76,
+  "code": "HTI",
+  "iso2": "HT",
+  "name": "Haiti",
+  "color": "#60c997",
+  "controller": "bot",
+  "capital": 848,
+  "population": 11263077,
+  "gdp_musd": 14332,
+  "resources": {
+   "gold": 539,
+   "supply": 50,
+   "manpower": 22526
+  }
+ },
+ {
+  "id": 77,
+  "code": "HUN",
+  "iso2": "HU",
+  "name": "Hungary",
+  "color": "#bc8751",
+  "controller": "bot",
+  "capital": 1187,
+  "population": 9769949,
+  "gdp_musd": 163469,
+  "resources": {
+   "gold": 1108,
+   "supply": 60,
+   "manpower": 19539
+  }
+ },
+ {
+  "id": 78,
+  "code": "IDN",
+  "iso2": "ID",
+  "name": "Indonesia",
+  "color": "#60c988",
+  "controller": "bot",
+  "capital": 674,
+  "population": 270625568,
+  "gdp_musd": 1119190,
+  "resources": {
+   "gold": 2415,
+   "supply": 300,
+   "manpower": 541251
+  }
+ },
+ {
+  "id": 79,
+  "code": "IND",
+  "iso2": "IN",
+  "name": "India",
+  "color": "#90c956",
+  "controller": "bot",
+  "capital": 1184,
+  "population": 1366417754,
+  "gdp_musd": 2868929,
+  "resources": {
+   "gold": 3687,
+   "supply": 360,
+   "manpower": 2732835
+  }
+ },
+ {
+  "id": 80,
+  "code": "IRL",
+  "iso2": "IE",
+  "name": "Ireland",
+  "color": "#60c9ad",
+  "controller": "bot",
+  "capital": 1027,
+  "population": 4941444,
+  "gdp_musd": 388698,
+  "resources": {
+   "gold": 1546,
+   "supply": 50,
+   "manpower": 9882
+  }
+ },
+ {
+  "id": 81,
+  "code": "IRN",
+  "iso2": "IR",
+  "name": "Iran",
+  "color": "#bc8f51",
+  "controller": "bot",
+  "capital": 1182,
+  "population": 82913906,
+  "gdp_musd": 453996,
+  "resources": {
+   "gold": 1647,
+   "supply": 230,
+   "manpower": 165827
+  }
+ },
+ {
+  "id": 82,
+  "code": "IRQ",
+  "iso2": "IQ",
+  "name": "Iraq",
+  "color": "#bc5a8d",
+  "controller": "bot",
+  "capital": 503,
+  "population": 39309783,
+  "gdp_musd": 234094,
+  "resources": {
+   "gold": 1267,
+   "supply": 120,
+   "manpower": 78619
+  }
+ },
+ {
+  "id": 83,
+  "code": "ISL",
+  "iso2": "IS",
+  "name": "Iceland",
+  "color": "#a674c9",
+  "controller": "bot",
+  "capital": 799,
+  "population": 361313,
+  "gdp_musd": 24188,
+  "resources": {
+   "gold": 611,
+   "supply": 60,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 84,
+  "code": "ISR",
+  "iso2": "IL",
+  "name": "Israel",
+  "color": "#bc6b64",
+  "controller": "bot",
+  "capital": 14,
+  "population": 9053300,
+  "gdp_musd": 394652,
+  "resources": {
+   "gold": 1556,
+   "supply": 50,
+   "manpower": 18106
+  }
+ },
+ {
+  "id": 85,
+  "code": "ITA",
+  "iso2": "IT",
+  "name": "Italy",
+  "color": "#bc8564",
+  "controller": "bot",
+  "capital": 822,
+  "population": 60297396,
+  "gdp_musd": 2003576,
+  "resources": {
+   "gold": 3130,
+   "supply": 110,
+   "manpower": 120594
+  }
+ },
+ {
+  "id": 86,
+  "code": "JAM",
+  "iso2": "JM",
+  "name": "Jamaica",
+  "color": "#bc8b64",
+  "controller": "bot",
+  "capital": 847,
+  "population": 2948279,
+  "gdp_musd": 16458,
+  "resources": {
+   "gold": 556,
+   "supply": 50,
+   "manpower": 5896
+  }
+ },
+ {
+  "id": 87,
+  "code": "JOR",
+  "iso2": "JO",
+  "name": "Jordan",
+  "color": "#c960a4",
+  "controller": "bot",
+  "capital": 506,
+  "population": 10101694,
+  "gdp_musd": 44502,
+  "resources": {
+   "gold": 721,
+   "supply": 60,
+   "manpower": 20203
+  }
+ },
+ {
+  "id": 88,
+  "code": "JPN",
+  "iso2": "JP",
+  "name": "Japan",
+  "color": "#7fc956",
+  "controller": "bot",
+  "capital": 770,
+  "population": 126264931,
+  "gdp_musd": 5081769,
+  "resources": {
+   "gold": 4808,
+   "supply": 100,
+   "manpower": 252529
+  }
+ },
+ {
+  "id": 89,
+  "code": "KAZ",
+  "iso2": "KZ",
+  "name": "Kazakhstan",
+  "color": "#bc6d73",
+  "controller": "bot",
+  "capital": 1174,
+  "population": 18513930,
+  "gdp_musd": 181665,
+  "resources": {
+   "gold": 1152,
+   "supply": 250,
+   "manpower": 37027
+  }
+ },
+ {
+  "id": 90,
+  "code": "KEN",
+  "iso2": "KE",
+  "name": "Kenya",
+  "color": "#7fc956",
+  "controller": "bot",
+  "capital": 530,
+  "population": 52573973,
+  "gdp_musd": 95503,
+  "resources": {
+   "gold": 918,
+   "supply": 80,
+   "manpower": 105147
+  }
+ },
+ {
+  "id": 91,
+  "code": "KGZ",
+  "iso2": "KG",
+  "name": "Kyrgyzstan",
+  "color": "#c474c9",
+  "controller": "bot",
+  "capital": 104,
+  "population": 6456900,
+  "gdp_musd": 8454,
+  "resources": {
+   "gold": 483,
+   "supply": 90,
+   "manpower": 12913
+  }
+ },
+ {
+  "id": 92,
+  "code": "KHM",
+  "iso2": "KH",
+  "name": "Cambodia",
+  "color": "#95d671",
+  "controller": "bot",
+  "capital": 1066,
+  "population": 16486542,
+  "gdp_musd": 27089,
+  "resources": {
+   "gold": 629,
+   "supply": 70,
+   "manpower": 32973
+  }
+ },
+ {
+  "id": 93,
+  "code": "KIR",
+  "iso2": "KI",
+  "name": "Kiribati",
+  "color": "#81c96a",
+  "controller": "bot",
+  "capital": 842,
+  "population": 117606,
+  "gdp_musd": 194,
+  "resources": {
+   "gold": 327,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 94,
+  "code": "KOR",
+  "iso2": "KR",
+  "name": "South Korea",
+  "color": "#bcae51",
+  "controller": "bot",
+  "capital": 35,
+  "population": 51709098,
+  "gdp_musd": 1646739,
+  "resources": {
+   "gold": 2866,
+   "supply": 60,
+   "manpower": 103418
+  }
+ },
+ {
+  "id": 95,
+  "code": "KOS",
+  "iso2": "XK",
+  "name": "Kosovo",
+  "color": "#9b7cd6",
+  "controller": "bot",
+  "capital": 1217,
+  "population": 1794248,
+  "gdp_musd": 7926,
+  "resources": {
+   "gold": 478,
+   "supply": 50,
+   "manpower": 3588
+  }
+ },
+ {
+  "id": 96,
+  "code": "KWT",
+  "iso2": "KW",
+  "name": "Kuwait",
+  "color": "#d65ca2",
+  "controller": "bot",
+  "capital": 188,
+  "population": 4207083,
+  "gdp_musd": 134628,
+  "resources": {
+   "gold": 1033,
+   "supply": 50,
+   "manpower": 8414
+  }
+ },
+ {
+  "id": 97,
+  "code": "LAO",
+  "iso2": "LA",
+  "name": "Laos",
+  "color": "#71d6d6",
+  "controller": "bot",
+  "capital": 286,
+  "population": 7169455,
+  "gdp_musd": 18173,
+  "resources": {
+   "gold": 569,
+   "supply": 100,
+   "manpower": 14338
+  }
+ },
+ {
+  "id": 98,
+  "code": "LBN",
+  "iso2": "LB",
+  "name": "Lebanon",
+  "color": "#8e7cd6",
+  "controller": "bot",
+  "capital": 57,
+  "population": 6855713,
+  "gdp_musd": 51991,
+  "resources": {
+   "gold": 756,
+   "supply": 50,
+   "manpower": 13711
+  }
+ },
+ {
+  "id": 99,
+  "code": "LBR",
+  "iso2": "LR",
+  "name": "Liberia",
+  "color": "#6a83c9",
+  "controller": "bot",
+  "capital": 726,
+  "population": 4937374,
+  "gdp_musd": 3070,
+  "resources": {
+   "gold": 410,
+   "supply": 60,
+   "manpower": 9874
+  }
+ },
+ {
+  "id": 100,
+  "code": "LBY",
+  "iso2": "LY",
+  "name": "Libya",
+  "color": "#d65ca2",
+  "controller": "bot",
+  "capital": 719,
+  "population": 6777452,
+  "gdp_musd": 52091,
+  "resources": {
+   "gold": 756,
+   "supply": 220,
+   "manpower": 13554
+  }
+ },
+ {
+  "id": 101,
+  "code": "LKA",
+  "iso2": "LK",
+  "name": "Sri Lanka",
+  "color": "#7ac96a",
+  "controller": "bot",
+  "capital": 1116,
+  "population": 21803000,
+  "gdp_musd": 84008,
+  "resources": {
+   "gold": 879,
+   "supply": 60,
+   "manpower": 43606
+  }
+ },
+ {
+  "id": 102,
+  "code": "LSO",
+  "iso2": "LS",
+  "name": "Lesotho",
+  "color": "#d65cb4",
+  "controller": "bot",
+  "capital": 297,
+  "population": 2125268,
+  "gdp_musd": 2376,
+  "resources": {
+   "gold": 397,
+   "supply": 50,
+   "manpower": 4250
+  }
+ },
+ {
+  "id": 103,
+  "code": "LTU",
+  "iso2": "LT",
+  "name": "Lithuania",
+  "color": "#60c988",
+  "controller": "bot",
+  "capital": 1004,
+  "population": 2786844,
+  "gdp_musd": 54627,
+  "resources": {
+   "gold": 767,
+   "supply": 50,
+   "manpower": 5573
+  }
+ },
+ {
+  "id": 104,
+  "code": "LUX",
+  "iso2": "LU",
+  "name": "Luxembourg",
+  "color": "#a17cd6",
+  "controller": "bot",
+  "capital": 94,
+  "population": 619896,
+  "gdp_musd": 71104,
+  "resources": {
+   "gold": 833,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 105,
+  "code": "LVA",
+  "iso2": "LV",
+  "name": "Latvia",
+  "color": "#d65cab",
+  "controller": "bot",
+  "capital": 79,
+  "population": 1912789,
+  "gdp_musd": 34102,
+  "resources": {
+   "gold": 669,
+   "supply": 60,
+   "manpower": 3825
+  }
+ },
+ {
+  "id": 106,
+  "code": "MAR",
+  "iso2": "MA",
+  "name": "Morocco",
+  "color": "#87c956",
+  "controller": "bot",
+  "capital": 39,
+  "population": 36471769,
+  "gdp_musd": 119700,
+  "resources": {
+   "gold": 991,
+   "supply": 140,
+   "manpower": 72943
+  }
+ },
+ {
+  "id": 107,
+  "code": "MDA",
+  "iso2": "MD",
+  "name": "Moldova",
+  "color": "#6cc96a",
+  "controller": "bot",
+  "capital": 231,
+  "population": 2657637,
+  "gdp_musd": 11968,
+  "resources": {
+   "gold": 518,
+   "supply": 50,
+   "manpower": 5315
+  }
+ },
+ {
+  "id": 108,
+  "code": "MDG",
+  "iso2": "MG",
+  "name": "Madagascar",
+  "color": "#60c988",
+  "controller": "bot",
+  "capital": 1020,
+  "population": 26969307,
+  "gdp_musd": 14114,
+  "resources": {
+   "gold": 537,
+   "supply": 160,
+   "manpower": 53938
+  }
+ },
+ {
+  "id": 109,
+  "code": "MDV",
+  "iso2": "MV",
+  "name": "Maldives",
+  "color": "#60c980",
+  "controller": "bot",
+  "capital": 904,
+  "population": 530953,
+  "gdp_musd": 5642,
+  "resources": {
+   "gold": 450,
+   "supply": 180,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 110,
+  "code": "MEX",
+  "iso2": "MX",
+  "name": "Mexico",
+  "color": "#c474c9",
+  "controller": "bot",
+  "capital": 1162,
+  "population": 127575529,
+  "gdp_musd": 1268870,
+  "resources": {
+   "gold": 2552,
+   "supply": 310,
+   "manpower": 255151
+  }
+ },
+ {
+  "id": 111,
+  "code": "MKD",
+  "iso2": "MK",
+  "name": "North Macedonia",
+  "color": "#bc6b64",
+  "controller": "bot",
+  "capital": 1170,
+  "population": 2083459,
+  "gdp_musd": 12547,
+  "resources": {
+   "gold": 524,
+   "supply": 50,
+   "manpower": 4166
+  }
+ },
+ {
+  "id": 112,
+  "code": "MLI",
+  "iso2": "ML",
+  "name": "Mali",
+  "color": "#947cd6",
+  "controller": "bot",
+  "capital": 374,
+  "population": 19658031,
+  "gdp_musd": 17279,
+  "resources": {
+   "gold": 562,
+   "supply": 150,
+   "manpower": 39316
+  }
+ },
+ {
+  "id": 113,
+  "code": "MMR",
+  "iso2": "MM",
+  "name": "Myanmar",
+  "color": "#8e7cd6",
+  "controller": "bot",
+  "capital": 1193,
+  "population": 54045420,
+  "gdp_musd": 76085,
+  "resources": {
+   "gold": 851,
+   "supply": 150,
+   "manpower": 108090
+  }
+ },
+ {
+  "id": 114,
+  "code": "MNE",
+  "iso2": "ME",
+  "name": "Montenegro",
+  "color": "#66a3d6",
+  "controller": "bot",
+  "capital": 228,
+  "population": 622137,
+  "gdp_musd": 5542,
+  "resources": {
+   "gold": 448,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 115,
+  "code": "MNG",
+  "iso2": "MN",
+  "name": "Mongolia",
+  "color": "#c474c9",
+  "controller": "bot",
+  "capital": 1158,
+  "population": 3225167,
+  "gdp_musd": 13996,
+  "resources": {
+   "gold": 536,
+   "supply": 220,
+   "manpower": 6450
+  }
+ },
+ {
+  "id": 116,
+  "code": "MOZ",
+  "iso2": "MZ",
+  "name": "Mozambique",
+  "color": "#d65ca2",
+  "controller": "bot",
+  "capital": 575,
+  "population": 30366036,
+  "gdp_musd": 15291,
+  "resources": {
+   "gold": 547,
+   "supply": 130,
+   "manpower": 60732
+  }
+ },
+ {
+  "id": 117,
+  "code": "MRT",
+  "iso2": "MR",
+  "name": "Mauritania",
+  "color": "#bc5a7f",
+  "controller": "bot",
+  "capital": 558,
+  "population": 4525696,
+  "gdp_musd": 7600,
+  "resources": {
+   "gold": 474,
+   "supply": 140,
+   "manpower": 9051
+  }
+ },
+ {
+  "id": 118,
+  "code": "MUS",
+  "iso2": "MU",
+  "name": "Mauritius",
+  "color": "#d65cce",
+  "controller": "bot",
+  "capital": 1203,
+  "population": 1265711,
+  "gdp_musd": 14048,
+  "resources": {
+   "gold": 537,
+   "supply": 60,
+   "manpower": 2531
+  }
+ },
+ {
+  "id": 119,
+  "code": "MWI",
+  "iso2": "MW",
+  "name": "Malawi",
+  "color": "#bc6d78",
+  "controller": "bot",
+  "capital": 126,
+  "population": 18628747,
+  "gdp_musd": 7666,
+  "resources": {
+   "gold": 475,
+   "supply": 70,
+   "manpower": 37257
+  }
+ },
+ {
+  "id": 120,
+  "code": "MYS",
+  "iso2": "MY",
+  "name": "Malaysia",
+  "color": "#c960bb",
+  "controller": "bot",
+  "capital": 779,
+  "population": 31949777,
+  "gdp_musd": 364681,
+  "resources": {
+   "gold": 1507,
+   "supply": 100,
+   "manpower": 63899
+  }
+ },
+ {
+  "id": 121,
+  "code": "NAM",
+  "iso2": "NA",
+  "name": "Namibia",
+  "color": "#d69e66",
+  "controller": "bot",
+  "capital": 1156,
+  "population": 2494530,
+  "gdp_musd": 12366,
+  "resources": {
+   "gold": 522,
+   "supply": 140,
+   "manpower": 4989
+  }
+ },
+ {
+  "id": 122,
+  "code": "NCL",
+  "iso2": "NC",
+  "name": "New Caledonia",
+  "color": "#bc5a86",
+  "controller": "bot",
+  "capital": 644,
+  "population": 287800,
+  "gdp_musd": 10770,
+  "resources": {
+   "gold": 507,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 123,
+  "code": "NER",
+  "iso2": "NE",
+  "name": "Niger",
+  "color": "#77c956",
+  "controller": "bot",
+  "capital": 357,
+  "population": 23310715,
+  "gdp_musd": 12911,
+  "resources": {
+   "gold": 527,
+   "supply": 150,
+   "manpower": 46621
+  }
+ },
+ {
+  "id": 124,
+  "code": "NGA",
+  "iso2": "NG",
+  "name": "Nigeria",
+  "color": "#d6cf66",
+  "controller": "bot",
+  "capital": 1110,
+  "population": 200963599,
+  "gdp_musd": 448120,
+  "resources": {
+   "gold": 1638,
+   "supply": 220,
+   "manpower": 401927
+  }
+ },
+ {
+  "id": 125,
+  "code": "NIC",
+  "iso2": "NI",
+  "name": "Nicaragua",
+  "color": "#bc6d7e",
+  "controller": "bot",
+  "capital": 1018,
+  "population": 6545502,
+  "gdp_musd": 12520,
+  "resources": {
+   "gold": 523,
+   "supply": 70,
+   "manpower": 13091
+  }
+ },
+ {
+  "id": 126,
+  "code": "NLD",
+  "iso2": "NL",
+  "name": "Netherlands",
+  "color": "#9f51bc",
+  "controller": "bot",
+  "capital": 831,
+  "population": 17332850,
+  "gdp_musd": 907050,
+  "resources": {
+   "gold": 2204,
+   "supply": 50,
+   "manpower": 34665
+  }
+ },
+ {
+  "id": 127,
+  "code": "NOR",
+  "iso2": "NO",
+  "name": "Norway",
+  "color": "#60c997",
+  "controller": "bot",
+  "capital": 813,
+  "population": 5347896,
+  "gdp_musd": 403336,
+  "resources": {
+   "gold": 1570,
+   "supply": 120,
+   "manpower": 10695
+  }
+ },
+ {
+  "id": 128,
+  "code": "NPL",
+  "iso2": "NP",
+  "name": "Nepal",
+  "color": "#6ac96f",
+  "controller": "bot",
+  "capital": 626,
+  "population": 28608710,
+  "gdp_musd": 30641,
+  "resources": {
+   "gold": 650,
+   "supply": 70,
+   "manpower": 57217
+  }
+ },
+ {
+  "id": 129,
+  "code": "NZL",
+  "iso2": "NZ",
+  "name": "New Zealand",
+  "color": "#bc9e51",
+  "controller": "bot",
+  "capital": 943,
+  "population": 4917000,
+  "gdp_musd": 206928,
+  "resources": {
+   "gold": 1209,
+   "supply": 100,
+   "manpower": 9834
+  }
+ },
+ {
+  "id": 130,
+  "code": "OMN",
+  "iso2": "OM",
+  "name": "Oman",
+  "color": "#6ac97d",
+  "controller": "bot",
+  "capital": 161,
+  "population": 4974986,
+  "gdp_musd": 76331,
+  "resources": {
+   "gold": 852,
+   "supply": 90,
+   "manpower": 9949
+  }
+ },
+ {
+  "id": 131,
+  "code": "PAK",
+  "iso2": "PK",
+  "name": "Pakistan",
+  "color": "#8656c9",
+  "controller": "bot",
+  "capital": 480,
+  "population": 216565318,
+  "gdp_musd": 278221,
+  "resources": {
+   "gold": 1354,
+   "supply": 110,
+   "manpower": 433130
+  }
+ },
+ {
+  "id": 132,
+  "code": "PAN",
+  "iso2": "PA",
+  "name": "Panama",
+  "color": "#90c956",
+  "controller": "bot",
+  "capital": 693,
+  "population": 4246439,
+  "gdp_musd": 66800,
+  "resources": {
+   "gold": 816,
+   "supply": 60,
+   "manpower": 8492
+  }
+ },
+ {
+  "id": 133,
+  "code": "PER",
+  "iso2": "PE",
+  "name": "Peru",
+  "color": "#d671a5",
+  "controller": "bot",
+  "capital": 689,
+  "population": 32510453,
+  "gdp_musd": 226848,
+  "resources": {
+   "gold": 1252,
+   "supply": 240,
+   "manpower": 65020
+  }
+ },
+ {
+  "id": 134,
+  "code": "PHL",
+  "iso2": "PH",
+  "name": "Philippines",
+  "color": "#bc5a70",
+  "controller": "bot",
+  "capital": 1152,
+  "population": 108116615,
+  "gdp_musd": 376795,
+  "resources": {
+   "gold": 1527,
+   "supply": 110,
+   "manpower": 216233
+  }
+ },
+ {
+  "id": 135,
+  "code": "PNG",
+  "iso2": "PG",
+  "name": "Papua New Guinea",
+  "color": "#bc736d",
+  "controller": "bot",
+  "capital": 684,
+  "population": 8776109,
+  "gdp_musd": 24829,
+  "resources": {
+   "gold": 615,
+   "supply": 130,
+   "manpower": 17552
+  }
+ },
+ {
+  "id": 136,
+  "code": "POL",
+  "iso2": "PL",
+  "name": "Poland",
+  "color": "#8e7cd6",
+  "controller": "bot",
+  "capital": 1149,
+  "population": 37970874,
+  "gdp_musd": 595858,
+  "resources": {
+   "gold": 1843,
+   "supply": 100,
+   "manpower": 75941
+  }
+ },
+ {
+  "id": 137,
+  "code": "PRI",
+  "iso2": "PR",
+  "name": "Puerto Rico",
+  "color": "#98c956",
+  "controller": "bot",
+  "capital": 846,
+  "population": 3193694,
+  "gdp_musd": 104988,
+  "resources": {
+   "gold": 948,
+   "supply": 50,
+   "manpower": 6387
+  }
+ },
+ {
+  "id": 138,
+  "code": "PRK",
+  "iso2": "KP",
+  "name": "North Korea",
+  "color": "#a8c956",
+  "controller": "bot",
+  "capital": 36,
+  "population": 25666161,
+  "gdp_musd": 40000,
+  "resources": {
+   "gold": 700,
+   "supply": 70,
+   "manpower": 51332
+  }
+ },
+ {
+  "id": 139,
+  "code": "PRT",
+  "iso2": "PT",
+  "name": "Portugal",
+  "color": "#8e7cd6",
+  "controller": "bot",
+  "capital": 222,
+  "population": 10269417,
+  "gdp_musd": 238785,
+  "resources": {
+   "gold": 1277,
+   "supply": 60,
+   "manpower": 20538
+  }
+ },
+ {
+  "id": 140,
+  "code": "PRY",
+  "iso2": "PY",
+  "name": "Paraguay",
+  "color": "#bc7e64",
+  "controller": "bot",
+  "capital": 1017,
+  "population": 7044636,
+  "gdp_musd": 38145,
+  "resources": {
+   "gold": 690,
+   "supply": 100,
+   "manpower": 14089
+  }
+ },
+ {
+  "id": 141,
+  "code": "PSX",
+  "iso2": "PS",
+  "name": "Palestine",
+  "color": "#bc5a7f",
+  "controller": "bot",
+  "capital": 16,
+  "population": 4685306,
+  "gdp_musd": 16276,
+  "resources": {
+   "gold": 555,
+   "supply": 60,
+   "manpower": 9370
+  }
+ },
+ {
+  "id": 142,
+  "code": "PYF",
+  "iso2": "PF",
+  "name": "French Polynesia",
+  "color": "#ac74c9",
+  "controller": "bot",
+  "capital": 839,
+  "population": 279287,
+  "gdp_musd": 5490,
+  "resources": {
+   "gold": 448,
+   "supply": 80,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 143,
+  "code": "QAT",
+  "iso2": "QA",
+  "name": "Qatar",
+  "color": "#73c96a",
+  "controller": "bot",
+  "capital": 1008,
+  "population": 2832067,
+  "gdp_musd": 175837,
+  "resources": {
+   "gold": 1138,
+   "supply": 50,
+   "manpower": 5664
+  }
+ },
+ {
+  "id": 144,
+  "code": "ROU",
+  "iso2": "RO",
+  "name": "Romania",
+  "color": "#bc51ba",
+  "controller": "bot",
+  "capital": 226,
+  "population": 19356544,
+  "gdp_musd": 250077,
+  "resources": {
+   "gold": 1300,
+   "supply": 90,
+   "manpower": 38713
+  }
+ },
+ {
+  "id": 145,
+  "code": "RUS",
+  "iso2": "RU",
+  "name": "Russia",
+  "color": "#71ced6",
+  "controller": "bot",
+  "capital": 1132,
+  "population": 144373535,
+  "gdp_musd": 1699876,
+  "resources": {
+   "gold": 2907,
+   "supply": 1610,
+   "manpower": 288747
+  }
+ },
+ {
+  "id": 146,
+  "code": "RWA",
+  "iso2": "RW",
+  "name": "Rwanda",
+  "color": "#a674c9",
+  "controller": "bot",
+  "capital": 197,
+  "population": 12626950,
+  "gdp_musd": 10354,
+  "resources": {
+   "gold": 503,
+   "supply": 50,
+   "manpower": 25253
+  }
+ },
+ {
+  "id": 147,
+  "code": "SAH",
+  "iso2": "EH",
+  "name": "Western Sahara",
+  "color": "#c474c9",
+  "controller": "bot",
+  "capital": 38,
+  "population": 603253,
+  "gdp_musd": 907,
+  "resources": {
+   "gold": 360,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 148,
+  "code": "SAU",
+  "iso2": "SA",
+  "name": "Saudi Arabia",
+  "color": "#60c9a6",
+  "controller": "bot",
+  "capital": 1607,
+  "population": 34268528,
+  "gdp_musd": 792966,
+  "resources": {
+   "gold": 2080,
+   "supply": 210,
+   "manpower": 68537
+  }
+ },
+ {
+  "id": 149,
+  "code": "SDN",
+  "iso2": "SD",
+  "name": "Sudan",
+  "color": "#6ac96f",
+  "controller": "bot",
+  "capital": 988,
+  "population": 42813238,
+  "gdp_musd": 30513,
+  "resources": {
+   "gold": 649,
+   "supply": 250,
+   "manpower": 85626
+  }
+ },
+ {
+  "id": 150,
+  "code": "SDS",
+  "iso2": "SS",
+  "name": "South Sudan",
+  "color": "#bc7164",
+  "controller": "bot",
+  "capital": 321,
+  "population": 11062113,
+  "gdp_musd": 11998,
+  "resources": {
+   "gold": 519,
+   "supply": 140,
+   "manpower": 22124
+  }
+ },
+ {
+  "id": 151,
+  "code": "SEN",
+  "iso2": "SN",
+  "name": "Senegal",
+  "color": "#66abd6",
+  "controller": "bot",
+  "capital": 165,
+  "population": 16296364,
+  "gdp_musd": 23578,
+  "resources": {
+   "gold": 607,
+   "supply": 80,
+   "manpower": 32592
+  }
+ },
+ {
+  "id": 152,
+  "code": "SGS",
+  "iso2": "GS",
+  "name": "South Georgia and the South Sandwich Islands",
+  "color": "#6ac96f",
+  "controller": "bot",
+  "capital": 913,
+  "population": 30,
+  "gdp_musd": 0,
+  "resources": {
+   "gold": 300,
+   "supply": 50,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 153,
+  "code": "SLB",
+  "iso2": "SB",
+  "name": "Solomon Islands",
+  "color": "#bcae51",
+  "controller": "bot",
+  "capital": 894,
+  "population": 669823,
+  "gdp_musd": 1589,
+  "resources": {
+   "gold": 379,
+   "supply": 130,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 154,
+  "code": "SLE",
+  "iso2": "SL",
+  "name": "Sierra Leone",
+  "color": "#7c7dd6",
+  "controller": "bot",
+  "capital": 129,
+  "population": 7813215,
+  "gdp_musd": 4121,
+  "resources": {
+   "gold": 428,
+   "supply": 60,
+   "manpower": 15626
+  }
+ },
+ {
+  "id": 155,
+  "code": "SLV",
+  "iso2": "SV",
+  "name": "El Salvador",
+  "color": "#77c956",
+  "controller": "bot",
+  "capital": 1035,
+  "population": 6453553,
+  "gdp_musd": 27022,
+  "resources": {
+   "gold": 628,
+   "supply": 50,
+   "manpower": 12907
+  }
+ },
+ {
+  "id": 156,
+  "code": "SOL",
+  "iso2": "SO",
+  "name": "Somaliland",
+  "color": "#bc9651",
+  "controller": "bot",
+  "capital": 30,
+  "population": 5096159,
+  "gdp_musd": 17836,
+  "resources": {
+   "gold": 567,
+   "supply": 50,
+   "manpower": 10192
+  }
+ },
+ {
+  "id": 157,
+  "code": "SOM",
+  "iso2": "SO",
+  "name": "Somalia",
+  "color": "#605abc",
+  "controller": "bot",
+  "capital": 31,
+  "population": 10192317,
+  "gdp_musd": 4719,
+  "resources": {
+   "gold": 437,
+   "supply": 130,
+   "manpower": 20384
+  }
+ },
+ {
+  "id": 158,
+  "code": "SRB",
+  "iso2": "RS",
+  "name": "Serbia",
+  "color": "#77c956",
+  "controller": "bot",
+  "capital": 163,
+  "population": 6944975,
+  "gdp_musd": 51475,
+  "resources": {
+   "gold": 753,
+   "supply": 60,
+   "manpower": 13889
+  }
+ },
+ {
+  "id": 159,
+  "code": "SUR",
+  "iso2": "SR",
+  "name": "Suriname",
+  "color": "#667bd6",
+  "controller": "bot",
+  "capital": 987,
+  "population": 581363,
+  "gdp_musd": 3697,
+  "resources": {
+   "gold": 421,
+   "supply": 60,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 160,
+  "code": "SVK",
+  "iso2": "SK",
+  "name": "Slovakia",
+  "color": "#8f51bc",
+  "controller": "bot",
+  "capital": 117,
+  "population": 5454073,
+  "gdp_musd": 105079,
+  "resources": {
+   "gold": 948,
+   "supply": 50,
+   "manpower": 10908
+  }
+ },
+ {
+  "id": 161,
+  "code": "SVN",
+  "iso2": "SI",
+  "name": "Slovenia",
+  "color": "#7c7dd6",
+  "controller": "bot",
+  "capital": 997,
+  "population": 2087946,
+  "gdp_musd": 54174,
+  "resources": {
+   "gold": 765,
+   "supply": 50,
+   "manpower": 4175
+  }
+ },
+ {
+  "id": 162,
+  "code": "SWE",
+  "iso2": "SE",
+  "name": "Sweden",
+  "color": "#d6cf66",
+  "controller": "bot",
+  "capital": 81,
+  "population": 10285453,
+  "gdp_musd": 530883,
+  "resources": {
+   "gold": 1757,
+   "supply": 120,
+   "manpower": 20570
+  }
+ },
+ {
+  "id": 163,
+  "code": "SWZ",
+  "iso2": "SZ",
+  "name": "Eswatini",
+  "color": "#d6765c",
+  "controller": "bot",
+  "capital": 594,
+  "population": 1148130,
+  "gdp_musd": 4471,
+  "resources": {
+   "gold": 433,
+   "supply": 50,
+   "manpower": 2296
+  }
+ },
+ {
+  "id": 164,
+  "code": "SYR",
+  "iso2": "SY",
+  "name": "Syria",
+  "color": "#64bc92",
+  "controller": "bot",
+  "capital": 59,
+  "population": 17070135,
+  "gdp_musd": 98830,
+  "resources": {
+   "gold": 928,
+   "supply": 80,
+   "manpower": 34140
+  }
+ },
+ {
+  "id": 165,
+  "code": "TCA",
+  "iso2": "TC",
+  "name": "Turks and Caicos Islands",
+  "color": "#817cd6",
+  "controller": "bot",
+  "capital": 731,
+  "population": 38191,
+  "gdp_musd": 1197,
+  "resources": {
+   "gold": 369,
+   "supply": 60,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 166,
+  "code": "TCD",
+  "iso2": "TD",
+  "name": "Chad",
+  "color": "#66a3d6",
+  "controller": "bot",
+  "capital": 338,
+  "population": 15946876,
+  "gdp_musd": 11314,
+  "resources": {
+   "gold": 512,
+   "supply": 210,
+   "manpower": 31893
+  }
+ },
+ {
+  "id": 167,
+  "code": "TGO",
+  "iso2": "TG",
+  "name": "Togo",
+  "color": "#6dbc77",
+  "controller": "bot",
+  "capital": 360,
+  "population": 8082366,
+  "gdp_musd": 5490,
+  "resources": {
+   "gold": 448,
+   "supply": 50,
+   "manpower": 16164
+  }
+ },
+ {
+  "id": 168,
+  "code": "THA",
+  "iso2": "TH",
+  "name": "Thailand",
+  "color": "#d67181",
+  "controller": "bot",
+  "capital": 782,
+  "population": 69625582,
+  "gdp_musd": 543548,
+  "resources": {
+   "gold": 1774,
+   "supply": 160,
+   "manpower": 139251
+  }
+ },
+ {
+  "id": 169,
+  "code": "TJK",
+  "iso2": "TJ",
+  "name": "Tajikistan",
+  "color": "#5d56c9",
+  "controller": "bot",
+  "capital": 120,
+  "population": 9321018,
+  "gdp_musd": 8116,
+  "resources": {
+   "gold": 480,
+   "supply": 60,
+   "manpower": 18642
+  }
+ },
+ {
+  "id": 170,
+  "code": "TKM",
+  "iso2": "TM",
+  "name": "Turkmenistan",
+  "color": "#6693d6",
+  "controller": "bot",
+  "capital": 269,
+  "population": 5942089,
+  "gdp_musd": 40761,
+  "resources": {
+   "gold": 703,
+   "supply": 90,
+   "manpower": 11884
+  }
+ },
+ {
+  "id": 171,
+  "code": "TLS",
+  "iso2": "TL",
+  "name": "East Timor",
+  "color": "#bc6d6d",
+  "controller": "bot",
+  "capital": 898,
+  "population": 1293119,
+  "gdp_musd": 2017,
+  "resources": {
+   "gold": 389,
+   "supply": 50,
+   "manpower": 2586
+  }
+ },
+ {
+  "id": 172,
+  "code": "TTO",
+  "iso2": "TT",
+  "name": "Trinidad and Tobago",
+  "color": "#d65cbc",
+  "controller": "bot",
+  "capital": 843,
+  "population": 1394973,
+  "gdp_musd": 24269,
+  "resources": {
+   "gold": 611,
+   "supply": 70,
+   "manpower": 2789
+  }
+ },
+ {
+  "id": 173,
+  "code": "TUN",
+  "iso2": "TN",
+  "name": "Tunisia",
+  "color": "#bca651",
+  "controller": "bot",
+  "capital": 954,
+  "population": 11694719,
+  "gdp_musd": 38796,
+  "resources": {
+   "gold": 693,
+   "supply": 80,
+   "manpower": 23389
+  }
+ },
+ {
+  "id": 174,
+  "code": "TUR",
+  "iso2": "TR",
+  "name": "Turkey",
+  "color": "#d65cb4",
+  "controller": "bot",
+  "capital": 958,
+  "population": 83429615,
+  "gdp_musd": 761425,
+  "resources": {
+   "gold": 2045,
+   "supply": 200,
+   "manpower": 166859
+  }
+ },
+ {
+  "id": 175,
+  "code": "TWN",
+  "iso2": "TW",
+  "name": "Taiwan",
+  "color": "#bc9651",
+  "controller": "bot",
+  "capital": 743,
+  "population": 23568378,
+  "gdp_musd": 1127000,
+  "resources": {
+   "gold": 2423,
+   "supply": 50,
+   "manpower": 47136
+  }
+ },
+ {
+  "id": 176,
+  "code": "TZA",
+  "iso2": "TZ",
+  "name": "Tanzania",
+  "color": "#71d6c7",
+  "controller": "bot",
+  "capital": 982,
+  "population": 58005463,
+  "gdp_musd": 63177,
+  "resources": {
+   "gold": 802,
+   "supply": 220,
+   "manpower": 116010
+  }
+ },
+ {
+  "id": 177,
+  "code": "UGA",
+  "iso2": "UG",
+  "name": "Uganda",
+  "color": "#60c997",
+  "controller": "bot",
+  "capital": 1100,
+  "population": 44269594,
+  "gdp_musd": 35165,
+  "resources": {
+   "gold": 675,
+   "supply": 100,
+   "manpower": 88539
+  }
+ },
+ {
+  "id": 178,
+  "code": "UKR",
+  "iso2": "UA",
+  "name": "Ukraine",
+  "color": "#d65cbc",
+  "controller": "bot",
+  "capital": 54,
+  "population": 44385155,
+  "gdp_musd": 153781,
+  "resources": {
+   "gold": 1084,
+   "supply": 150,
+   "manpower": 88770
+  }
+ },
+ {
+  "id": 179,
+  "code": "URY",
+  "iso2": "UY",
+  "name": "Uruguay",
+  "color": "#71d6c7",
+  "controller": "bot",
+  "capital": 628,
+  "population": 3461734,
+  "gdp_musd": 56045,
+  "resources": {
+   "gold": 773,
+   "supply": 80,
+   "manpower": 6923
+  }
+ },
+ {
+  "id": 180,
+  "code": "USA",
+  "iso2": "US",
+  "name": "United States of America",
+  "color": "#74c9c9",
+  "controller": "bot",
+  "capital": 753,
+  "population": 328239523,
+  "gdp_musd": 21433226,
+  "resources": {
+   "gold": 9559,
+   "supply": 800,
+   "manpower": 656479
+  }
+ },
+ {
+  "id": 181,
+  "code": "UZB",
+  "iso2": "UZ",
+  "name": "Uzbekistan",
+  "color": "#6ac96f",
+  "controller": "bot",
+  "capital": 116,
+  "population": 33580650,
+  "gdp_musd": 57921,
+  "resources": {
+   "gold": 781,
+   "supply": 100,
+   "manpower": 67161
+  }
+ },
+ {
+  "id": 182,
+  "code": "VEN",
+  "iso2": "VE",
+  "name": "Venezuela",
+  "color": "#d65cc5",
+  "controller": "bot",
+  "capital": 949,
+  "population": 28515829,
+  "gdp_musd": 482359,
+  "resources": {
+   "gold": 1689,
+   "supply": 160,
+   "manpower": 57031
+  }
+ },
+ {
+  "id": 183,
+  "code": "VNM",
+  "iso2": "VN",
+  "name": "Vietnam",
+  "color": "#835abc",
+  "controller": "bot",
+  "capital": 946,
+  "population": 96462106,
+  "gdp_musd": 261921,
+  "resources": {
+   "gold": 1323,
+   "supply": 120,
+   "manpower": 192924
+  }
+ },
+ {
+  "id": 184,
+  "code": "VUT",
+  "iso2": "VU",
+  "name": "Vanuatu",
+  "color": "#bc7864",
+  "controller": "bot",
+  "capital": 921,
+  "population": 299882,
+  "gdp_musd": 934,
+  "resources": {
+   "gold": 361,
+   "supply": 90,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 185,
+  "code": "WSM",
+  "iso2": "WS",
+  "name": "Samoa",
+  "color": "#60c99e",
+  "controller": "bot",
+  "capital": 888,
+  "population": 197097,
+  "gdp_musd": 852,
+  "resources": {
+   "gold": 358,
+   "supply": 60,
+   "manpower": 2000
+  }
+ },
+ {
+  "id": 186,
+  "code": "YEM",
+  "iso2": "YE",
+  "name": "Yemen",
+  "color": "#bc6b64",
+  "controller": "bot",
+  "capital": 515,
+  "population": 29161922,
+  "gdp_musd": 22581,
+  "resources": {
+   "gold": 600,
+   "supply": 110,
+   "manpower": 58323
+  }
+ },
+ {
+  "id": 187,
+  "code": "ZAF",
+  "iso2": "ZA",
+  "name": "South Africa",
+  "color": "#a0c956",
+  "controller": "bot",
+  "capital": 295,
+  "population": 58558270,
+  "gdp_musd": 351431,
+  "resources": {
+   "gold": 1485,
+   "supply": 140,
+   "manpower": 117116
+  }
+ },
+ {
+  "id": 188,
+  "code": "ZMB",
+  "iso2": "ZM",
+  "name": "Zambia",
+  "color": "#668bd6",
+  "controller": "bot",
+  "capital": 125,
+  "population": 17861030,
+  "gdp_musd": 23309,
+  "resources": {
+   "gold": 605,
+   "supply": 130,
+   "manpower": 35722
+  }
+ },
+ {
+  "id": 189,
+  "code": "ZWE",
+  "iso2": "ZW",
+  "name": "Zimbabwe",
+  "color": "#cf66d6",
+  "controller": "bot",
+  "capital": 304,
+  "population": 14645468,
+  "gdp_musd": 21440,
+  "resources": {
+   "gold": 592,
+   "supply": 120,
+   "manpower": 29290
+  }
+ }
+]

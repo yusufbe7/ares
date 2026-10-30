@@ -1,0 +1,1170 @@
+[
+{
+"province": 1091,
+"type": "army"
+},
+{
+"province": 264,
+"type": "air"
+},
+{
+"province": 717,
+"type": "army"
+},
+{
+"province": 566,
+"type": "naval"
+},
+{
+"province": 564,
+"type": "air"
+},
+{
+"province": 123,
+"type": "army"
+},
+{
+"province": 160,
+"type": "army"
+},
+{
+"province": 631,
+"type": "army"
+},
+{
+"province": 451,
+"type": "naval"
+},
+{
+"province": 1078,
+"type": "air"
+},
+{
+"province": 114,
+"type": "army"
+},
+{
+"province": 840,
+"type": "army"
+},
+{
+"province": 1487,
+"type": "army"
+},
+{
+"province": 659,
+"type": "naval"
+},
+{
+"province": 1490,
+"type": "air"
+},
+{
+"province": 146,
+"type": "army"
+},
+{
+"province": 1006,
+"type": "army"
+},
+{
+"province": 310,
+"type": "army"
+},
+{
+"province": 92,
+"type": "army"
+},
+{
+"province": 171,
+"type": "army"
+},
+{
+"province": 367,
+"type": "army"
+},
+{
+"province": 379,
+"type": "army"
+},
+{
+"province": 227,
+"type": "army"
+},
+{
+"province": 927,
+"type": "army"
+},
+{
+"province": 857,
+"type": "army"
+},
+{
+"province": 864,
+"type": "naval"
+},
+{
+"province": 729,
+"type": "air"
+},
+{
+"province": 223,
+"type": "army"
+},
+{
+"province": 1072,
+"type": "army"
+},
+{
+"province": 413,
+"type": "army"
+},
+{
+"province": 434,
+"type": "army"
+},
+{
+"province": 4,
+"type": "naval"
+},
+{
+"province": 1617,
+"type": "army"
+},
+{
+"province": 1437,
+"type": "naval"
+},
+{
+"province": 641,
+"type": "air"
+},
+{
+"province": 378,
+"type": "army"
+},
+{
+"province": 183,
+"type": "army"
+},
+{
+"province": 300,
+"type": "army"
+},
+{
+"province": 308,
+"type": "army"
+},
+{
+"province": 393,
+"type": "army"
+},
+{
+"province": 1339,
+"type": "naval"
+},
+{
+"province": 1313,
+"type": "air"
+},
+{
+"province": 956,
+"type": "army"
+},
+{
+"province": 447,
+"type": "army"
+},
+{
+"province": 450,
+"type": "naval"
+},
+{
+"province": 1046,
+"type": "army"
+},
+{
+"province": 763,
+"type": "naval"
+},
+{
+"province": 617,
+"type": "air"
+},
+{
+"province": 1026,
+"type": "army"
+},
+{
+"province": 1025,
+"type": "naval"
+},
+{
+"province": 1064,
+"type": "army"
+},
+{
+"province": 715,
+"type": "naval"
+},
+{
+"province": 1047,
+"type": "army"
+},
+{
+"province": 1276,
+"type": "naval"
+},
+{
+"province": 578,
+"type": "air"
+},
+{
+"province": 46,
+"type": "army"
+},
+{
+"province": 48,
+"type": "naval"
+},
+{
+"province": 1045,
+"type": "army"
+},
+{
+"province": 459,
+"type": "naval"
+},
+{
+"province": 707,
+"type": "air"
+},
+{
+"province": 871,
+"type": "army"
+},
+{
+"province": 1202,
+"type": "army"
+},
+{
+"province": 878,
+"type": "naval"
+},
+{
+"province": 420,
+"type": "army"
+},
+{
+"province": 851,
+"type": "army"
+},
+{
+"province": 622,
+"type": "army"
+},
+{
+"province": 623,
+"type": "army"
+},
+{
+"province": 77,
+"type": "army"
+},
+{
+"province": 224,
+"type": "army"
+},
+{
+"province": 225,
+"type": "naval"
+},
+{
+"province": 139,
+"type": "army"
+},
+{
+"province": 882,
+"type": "army"
+},
+{
+"province": 1039,
+"type": "army"
+},
+{
+"province": 1085,
+"type": "army"
+},
+{
+"province": 1087,
+"type": "naval"
+},
+{
+"province": 539,
+"type": "air"
+},
+{
+"province": 206,
+"type": "army"
+},
+{
+"province": 677,
+"type": "naval"
+},
+{
+"province": 500,
+"type": "army"
+},
+{
+"province": 528,
+"type": "naval"
+},
+{
+"province": 604,
+"type": "army"
+},
+{
+"province": 992,
+"type": "army"
+},
+{
+"province": 826,
+"type": "naval"
+},
+{
+"province": 804,
+"type": "army"
+},
+{
+"province": 1307,
+"type": "army"
+},
+{
+"province": 312,
+"type": "naval"
+},
+{
+"province": 87,
+"type": "army"
+},
+{
+"province": 1188,
+"type": "naval"
+},
+{
+"province": 919,
+"type": "army"
+},
+{
+"province": 914,
+"type": "army"
+},
+{
+"province": 1210,
+"type": "army"
+},
+{
+"province": 32,
+"type": "naval"
+},
+{
+"province": 883,
+"type": "army"
+},
+{
+"province": 926,
+"type": "army"
+},
+{
+"province": 909,
+"type": "naval"
+},
+{
+"province": 716,
+"type": "army"
+},
+{
+"province": 1034,
+"type": "naval"
+},
+{
+"province": 1099,
+"type": "army"
+},
+{
+"province": 1098,
+"type": "naval"
+},
+{
+"province": 97,
+"type": "army"
+},
+{
+"province": 359,
+"type": "army"
+},
+{
+"province": 128,
+"type": "army"
+},
+{
+"province": 586,
+"type": "army"
+},
+{
+"province": 549,
+"type": "army"
+},
+{
+"province": 556,
+"type": "army"
+},
+{
+"province": 122,
+"type": "army"
+},
+{
+"province": 1581,
+"type": "army"
+},
+{
+"province": 836,
+"type": "naval"
+},
+{
+"province": 837,
+"type": "air"
+},
+{
+"province": 418,
+"type": "army"
+},
+{
+"province": 700,
+"type": "army"
+},
+{
+"province": 937,
+"type": "army"
+},
+{
+"province": 205,
+"type": "army"
+},
+{
+"province": 820,
+"type": "army"
+},
+{
+"province": 848,
+"type": "army"
+},
+{
+"province": 1187,
+"type": "army"
+},
+{
+"province": 674,
+"type": "army"
+},
+{
+"province": 2,
+"type": "naval"
+},
+{
+"province": 193,
+"type": "air"
+},
+{
+"province": 1184,
+"type": "army"
+},
+{
+"province": 611,
+"type": "naval"
+},
+{
+"province": 789,
+"type": "air"
+},
+{
+"province": 1027,
+"type": "army"
+},
+{
+"province": 1182,
+"type": "army"
+},
+{
+"province": 478,
+"type": "naval"
+},
+{
+"province": 475,
+"type": "air"
+},
+{
+"province": 503,
+"type": "army"
+},
+{
+"province": 502,
+"type": "naval"
+},
+{
+"province": 799,
+"type": "army"
+},
+{
+"province": 14,
+"type": "army"
+},
+{
+"province": 822,
+"type": "army"
+},
+{
+"province": 823,
+"type": "naval"
+},
+{
+"province": 847,
+"type": "army"
+},
+{
+"province": 506,
+"type": "army"
+},
+{
+"province": 770,
+"type": "army"
+},
+{
+"province": 769,
+"type": "naval"
+},
+{
+"province": 1174,
+"type": "army"
+},
+{
+"province": 1248,
+"type": "naval"
+},
+{
+"province": 61,
+"type": "air"
+},
+{
+"province": 530,
+"type": "army"
+},
+{
+"province": 104,
+"type": "army"
+},
+{
+"province": 100,
+"type": "naval"
+},
+{
+"province": 1066,
+"type": "army"
+},
+{
+"province": 842,
+"type": "army"
+},
+{
+"province": 35,
+"type": "army"
+},
+{
+"province": 1217,
+"type": "army"
+},
+{
+"province": 188,
+"type": "army"
+},
+{
+"province": 286,
+"type": "army"
+},
+{
+"province": 57,
+"type": "army"
+},
+{
+"province": 726,
+"type": "army"
+},
+{
+"province": 719,
+"type": "army"
+},
+{
+"province": 547,
+"type": "naval"
+},
+{
+"province": 545,
+"type": "air"
+},
+{
+"province": 1116,
+"type": "army"
+},
+{
+"province": 297,
+"type": "army"
+},
+{
+"province": 1004,
+"type": "army"
+},
+{
+"province": 94,
+"type": "army"
+},
+{
+"province": 79,
+"type": "army"
+},
+{
+"province": 39,
+"type": "army"
+},
+{
+"province": 721,
+"type": "naval"
+},
+{
+"province": 231,
+"type": "army"
+},
+{
+"province": 1020,
+"type": "army"
+},
+{
+"province": 1216,
+"type": "naval"
+},
+{
+"province": 904,
+"type": "army"
+},
+{
+"province": 901,
+"type": "naval"
+},
+{
+"province": 1162,
+"type": "army"
+},
+{
+"province": 758,
+"type": "naval"
+},
+{
+"province": 403,
+"type": "air"
+},
+{
+"province": 1170,
+"type": "army"
+},
+{
+"province": 374,
+"type": "army"
+},
+{
+"province": 1193,
+"type": "army"
+},
+{
+"province": 778,
+"type": "naval"
+},
+{
+"province": 228,
+"type": "army"
+},
+{
+"province": 1158,
+"type": "army"
+},
+{
+"province": 245,
+"type": "naval"
+},
+{
+"province": 249,
+"type": "air"
+},
+{
+"province": 575,
+"type": "army"
+},
+{
+"province": 599,
+"type": "naval"
+},
+{
+"province": 558,
+"type": "army"
+},
+{
+"province": 723,
+"type": "naval"
+},
+{
+"province": 1203,
+"type": "army"
+},
+{
+"province": 126,
+"type": "army"
+},
+{
+"province": 779,
+"type": "army"
+},
+{
+"province": 186,
+"type": "naval"
+},
+{
+"province": 1156,
+"type": "army"
+},
+{
+"province": 55,
+"type": "naval"
+},
+{
+"province": 644,
+"type": "army"
+},
+{
+"province": 357,
+"type": "army"
+},
+{
+"province": 1110,
+"type": "army"
+},
+{
+"province": 170,
+"type": "naval"
+},
+{
+"province": 1155,
+"type": "air"
+},
+{
+"province": 1018,
+"type": "army"
+},
+{
+"province": 831,
+"type": "army"
+},
+{
+"province": 813,
+"type": "army"
+},
+{
+"province": 812,
+"type": "naval"
+},
+{
+"province": 626,
+"type": "army"
+},
+{
+"province": 943,
+"type": "army"
+},
+{
+"province": 942,
+"type": "naval"
+},
+{
+"province": 161,
+"type": "army"
+},
+{
+"province": 510,
+"type": "naval"
+},
+{
+"province": 480,
+"type": "army"
+},
+{
+"province": 610,
+"type": "naval"
+},
+{
+"province": 693,
+"type": "army"
+},
+{
+"province": 689,
+"type": "army"
+},
+{
+"province": 688,
+"type": "naval"
+},
+{
+"province": 428,
+"type": "air"
+},
+{
+"province": 1152,
+"type": "army"
+},
+{
+"province": 1009,
+"type": "naval"
+},
+{
+"province": 684,
+"type": "army"
+},
+{
+"province": 465,
+"type": "naval"
+},
+{
+"province": 1149,
+"type": "army"
+},
+{
+"province": 118,
+"type": "naval"
+},
+{
+"province": 846,
+"type": "army"
+},
+{
+"province": 36,
+"type": "army"
+},
+{
+"province": 222,
+"type": "army"
+},
+{
+"province": 1017,
+"type": "army"
+},
+{
+"province": 16,
+"type": "army"
+},
+{
+"province": 839,
+"type": "army"
+},
+{
+"province": 1008,
+"type": "army"
+},
+{
+"province": 226,
+"type": "army"
+},
+{
+"province": 1007,
+"type": "naval"
+},
+{
+"province": 1132,
+"type": "army"
+},
+{
+"province": 159,
+"type": "naval"
+},
+{
+"province": 1119,
+"type": "air"
+},
+{
+"province": 197,
+"type": "army"
+},
+{
+"province": 38,
+"type": "army"
+},
+{
+"province": 1607,
+"type": "army"
+},
+{
+"province": 739,
+"type": "naval"
+},
+{
+"province": 1278,
+"type": "air"
+},
+{
+"province": 988,
+"type": "army"
+},
+{
+"province": 603,
+"type": "naval"
+},
+{
+"province": 529,
+"type": "air"
+},
+{
+"province": 321,
+"type": "army"
+},
+{
+"province": 18,
+"type": "naval"
+},
+{
+"province": 165,
+"type": "army"
+},
+{
+"province": 913,
+"type": "army"
+},
+{
+"province": 894,
+"type": "army"
+},
+{
+"province": 893,
+"type": "naval"
+},
+{
+"province": 129,
+"type": "army"
+},
+{
+"province": 1035,
+"type": "army"
+},
+{
+"province": 30,
+"type": "army"
+},
+{
+"province": 31,
+"type": "army"
+},
+{
+"province": 1117,
+"type": "naval"
+},
+{
+"province": 163,
+"type": "army"
+},
+{
+"province": 987,
+"type": "army"
+},
+{
+"province": 117,
+"type": "army"
+},
+{
+"province": 997,
+"type": "army"
+},
+{
+"province": 81,
+"type": "army"
+},
+{
+"province": 810,
+"type": "naval"
+},
+{
+"province": 594,
+"type": "army"
+},
+{
+"province": 59,
+"type": "army"
+},
+{
+"province": 731,
+"type": "army"
+},
+{
+"province": 338,
+"type": "army"
+},
+{
+"province": 518,
+"type": "air"
+},
+{
+"province": 360,
+"type": "army"
+},
+{
+"province": 782,
+"type": "army"
+},
+{
+"province": 781,
+"type": "naval"
+},
+{
+"province": 120,
+"type": "army"
+},
+{
+"province": 269,
+"type": "army"
+},
+{
+"province": 466,
+"type": "naval"
+},
+{
+"province": 898,
+"type": "army"
+},
+{
+"province": 843,
+"type": "army"
+},
+{
+"province": 954,
+"type": "army"
+},
+{
+"province": 958,
+"type": "army"
+},
+{
+"province": 178,
+"type": "naval"
+},
+{
+"province": 979,
+"type": "air"
+},
+{
+"province": 743,
+"type": "army"
+},
+{
+"province": 982,
+"type": "army"
+},
+{
+"province": 668,
+"type": "naval"
+},
+{
+"province": 667,
+"type": "air"
+},
+{
+"province": 1100,
+"type": "army"
+},
+{
+"province": 54,
+"type": "army"
+},
+{
+"province": 242,
+"type": "naval"
+},
+{
+"province": 628,
+"type": "army"
+},
+{
+"province": 753,
+"type": "army"
+},
+{
+"province": 1352,
+"type": "naval"
+},
+{
+"province": 397,
+"type": "air"
+},
+{
+"province": 116,
+"type": "army"
+},
+{
+"province": 949,
+"type": "army"
+},
+{
+"province": 458,
+"type": "naval"
+},
+{
+"province": 946,
+"type": "army"
+},
+{
+"province": 90,
+"type": "naval"
+},
+{
+"province": 921,
+"type": "army"
+},
+{
+"province": 920,
+"type": "naval"
+},
+{
+"province": 888,
+"type": "army"
+},
+{
+"province": 515,
+"type": "army"
+},
+{
+"province": 509,
+"type": "naval"
+},
+{
+"province": 295,
+"type": "army"
+},
+{
+"province": 663,
+"type": "naval"
+},
+{
+"province": 125,
+"type": "army"
+},
+{
+"province": 595,
+"type": "naval"
+},
+{
+"province": 304,
+"type": "army"
+}
+]

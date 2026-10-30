@@ -1,0 +1,351 @@
+{
+ "_note": "Jang maydoni generatori (battle/battle_gen.gd) uchun biomlar. amp - relyef balandligi (m), freq - shovqin chastotasi, ridge - tog' tizmalari (0..1), trees/bushes/rocks/debris - soni, houses - uylar soni, town_r - shaharcha radiusi (m), splat - tuproq qatlamlari ulushi, tint/sand/rock - rang, snow_line - qor chizig'i (m, 9999 = qor yo'q), winter - qish, water - qirg'oq (dengiz g'arbda).",
+ "temperate": {
+  "amp": 6,
+  "freq": 0.006,
+  "ridge": 0.0,
+  "trees": 900,
+  "bushes": 1100,
+  "rocks": 70,
+  "debris": 90,
+  "houses": 10,
+  "town_r": 60,
+  "tree_types": [
+   "island_tree_01",
+   "island_tree_02",
+   "island_tree_03",
+   "tree_small_02",
+   "fir_sapling_medium_a_LOD1"
+  ],
+  "bush_types": [
+   "shrub_02_a_LOD1",
+   "shrub_02_b_LOD1",
+   "shrub_02_c_LOD1",
+   "shrub_02_d_LOD1",
+   "searsia_lucida_c_LOD1"
+  ],
+  "rock_types": [
+   "boulder_01_LOD2",
+   "rock_moss_set_01_rock02",
+   "rock_moss_set_01_rock05",
+   "stone_01_LOD2"
+  ],
+  "debris_types": [
+   "tree_stump_01",
+   "dead_tree_trunk",
+   "dry_branches_medium_01_a"
+  ],
+  "splat": {
+   "grass": 0.75,
+   "withered": 0.45,
+   "dry": 0.2,
+   "mud": 0.15
+  },
+  "tint": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "sand": 0.0,
+  "rock": 0.15,
+  "snow_line": 9999,
+  "winter": false,
+  "water": false
+ },
+ "forest": {
+  "amp": 9,
+  "freq": 0.007,
+  "ridge": 0.1,
+  "trees": 2600,
+  "bushes": 1600,
+  "rocks": 90,
+  "debris": 220,
+  "houses": 6,
+  "town_r": 45,
+  "tree_types": [
+   "island_tree_01",
+   "island_tree_02",
+   "island_tree_03",
+   "tree_small_02",
+   "fir_sapling_medium_a_LOD1",
+   "fir_sapling_medium_b_LOD1"
+  ],
+  "bush_types": [
+   "shrub_02_a_LOD1",
+   "shrub_02_b_LOD1",
+   "shrub_02_c_LOD1",
+   "shrub_02_d_LOD1"
+  ],
+  "rock_types": [
+   "boulder_01_LOD2",
+   "rock_moss_set_01_rock02",
+   "rock_moss_set_01_rock05"
+  ],
+  "debris_types": [
+   "tree_stump_01",
+   "dead_tree_trunk",
+   "dry_branches_medium_01_a"
+  ],
+  "splat": {
+   "grass": 0.85,
+   "withered": 0.3,
+   "dry": 0.1,
+   "mud": 0.25
+  },
+  "tint": [
+   0.92,
+   1.0,
+   0.9
+  ],
+  "sand": 0.0,
+  "rock": 0.1,
+  "snow_line": 9999,
+  "winter": false,
+  "water": false
+ },
+ "desert": {
+  "amp": 5,
+  "freq": 0.009,
+  "ridge": 0.55,
+  "trees": 0,
+  "bushes": 320,
+  "rocks": 170,
+  "debris": 70,
+  "houses": 9,
+  "town_r": 55,
+  "tree_types": [],
+  "bush_types": [
+   "searsia_lucida_c_LOD1",
+   "searsia_lucida_e_LOD1"
+  ],
+  "rock_types": [
+   "boulder_01_LOD2",
+   "rock_07_LOD1",
+   "stone_01_LOD2"
+  ],
+  "debris_types": [
+   "dead_tree_trunk",
+   "dry_branches_medium_01_a"
+  ],
+  "splat": {
+   "grass": 0.0,
+   "withered": 0.35,
+   "dry": 0.9,
+   "mud": 0.05
+  },
+  "tint": [
+   1.05,
+   0.93,
+   0.74
+  ],
+  "sand": 0.85,
+  "rock": 0.25,
+  "snow_line": 9999,
+  "winter": false,
+  "water": false
+ },
+ "mountain": {
+  "amp": 34,
+  "freq": 0.0045,
+  "ridge": 0.85,
+  "trees": 600,
+  "bushes": 500,
+  "rocks": 420,
+  "debris": 120,
+  "houses": 6,
+  "town_r": 45,
+  "tree_types": [
+   "fir_sapling_medium_a_LOD1",
+   "fir_sapling_medium_b_LOD1",
+   "tree_small_02"
+  ],
+  "bush_types": [
+   "shrub_02_c_LOD1",
+   "shrub_02_d_LOD1",
+   "searsia_lucida_e_LOD1"
+  ],
+  "rock_types": [
+   "boulder_01_LOD2",
+   "rock_07_LOD1",
+   "rock_moss_set_01_rock02",
+   "rock_moss_set_01_rock05",
+   "stone_01_LOD2"
+  ],
+  "debris_types": [
+   "tree_stump_01",
+   "dead_tree_trunk"
+  ],
+  "splat": {
+   "grass": 0.45,
+   "withered": 0.5,
+   "dry": 0.45,
+   "mud": 0.2
+  },
+  "tint": [
+   0.95,
+   0.95,
+   0.95
+  ],
+  "sand": 0.0,
+  "rock": 0.85,
+  "snow_line": 22,
+  "winter": false,
+  "water": false
+ },
+ "city": {
+  "amp": 2.5,
+  "freq": 0.004,
+  "ridge": 0.0,
+  "trees": 220,
+  "bushes": 300,
+  "rocks": 20,
+  "debris": 60,
+  "houses": 42,
+  "town_r": 170,
+  "grid": true,
+  "tree_types": [
+   "island_tree_01",
+   "island_tree_02",
+   "tree_small_02"
+  ],
+  "bush_types": [
+   "shrub_02_a_LOD1",
+   "shrub_02_b_LOD1"
+  ],
+  "rock_types": [
+   "stone_01_LOD2"
+  ],
+  "debris_types": [
+   "dry_branches_medium_01_a"
+  ],
+  "splat": {
+   "grass": 0.35,
+   "withered": 0.4,
+   "dry": 0.35,
+   "mud": 0.3
+  },
+  "tint": [
+   0.97,
+   0.97,
+   0.97
+  ],
+  "sand": 0.0,
+  "rock": 0.0,
+  "snow_line": 9999,
+  "winter": false,
+  "water": false
+ },
+ "coast": {
+  "amp": 5,
+  "freq": 0.006,
+  "ridge": 0.0,
+  "trees": 600,
+  "bushes": 900,
+  "rocks": 110,
+  "debris": 70,
+  "houses": 12,
+  "town_r": 60,
+  "tree_types": [
+   "island_tree_01",
+   "island_tree_02",
+   "tree_small_02"
+  ],
+  "bush_types": [
+   "shrub_02_a_LOD1",
+   "shrub_02_b_LOD1",
+   "searsia_lucida_c_LOD1",
+   "searsia_lucida_e_LOD1"
+  ],
+  "rock_types": [
+   "boulder_01_LOD2",
+   "rock_07_LOD1",
+   "stone_01_LOD2"
+  ],
+  "debris_types": [
+   "dead_tree_trunk",
+   "dry_branches_medium_01_a"
+  ],
+  "splat": {
+   "grass": 0.6,
+   "withered": 0.45,
+   "dry": 0.3,
+   "mud": 0.1
+  },
+  "tint": [
+   1.0,
+   0.98,
+   0.94
+  ],
+  "sand": 0.25,
+  "rock": 0.15,
+  "snow_line": 9999,
+  "winter": false,
+  "water": true
+ },
+ "winter": {
+  "amp": 7,
+  "freq": 0.006,
+  "ridge": 0.1,
+  "trees": 1100,
+  "bushes": 900,
+  "rocks": 70,
+  "debris": 110,
+  "houses": 10,
+  "town_r": 60,
+  "tree_types": [
+   "island_tree_01",
+   "island_tree_02",
+   "island_tree_03",
+   "tree_small_02",
+   "fir_sapling_medium_a_LOD1",
+   "fir_sapling_medium_b_LOD1"
+  ],
+  "bush_types": [
+   "shrub_02_a_LOD1",
+   "shrub_02_b_LOD1",
+   "shrub_02_c_LOD1"
+  ],
+  "rock_types": [
+   "boulder_01_LOD2",
+   "rock_moss_set_01_rock02",
+   "stone_01_LOD2"
+  ],
+  "debris_types": [
+   "tree_stump_01",
+   "dead_tree_trunk",
+   "dry_branches_medium_01_a"
+  ],
+  "splat": {
+   "grass": 0.6,
+   "withered": 0.5,
+   "dry": 0.2,
+   "mud": 0.2
+  },
+  "tint": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "sand": 0.0,
+  "rock": 0.15,
+  "snow_line": 9999,
+  "winter": true,
+  "water": false
+ },
+ "_select": {
+  "_note": "Hudud -> biom (war_ops.biome_for). Tartib: qish (kenglik), tog' (balandlik), shahar (zichlik yoki katta poytaxt), cho'l (kenglik oralig'i va siyrak aholi), qirg'oq, o'rmon (yog'och resursi), aks holda mo''tadil.",
+  "winter_lat": 56,
+  "mountain_m": 1100,
+  "city_density": 350,
+  "city_capital_pop": 2000000,
+  "desert_lat": [
+   14,
+   36
+  ],
+  "desert_density": 40,
+  "desert_lat_south": [
+   -34,
+   -16
+  ]
+ }
+}
