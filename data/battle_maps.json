@@ -89,12 +89,20 @@
     "hay": 0,
     "bushes": 90,
     "poles": 12,
-    "rail": 1
+    "rail": 1,
+    "palms": 120
    },
    "desc": {
     "uz": "Keng ochiq maydon, uzoq masofa.",
     "en": "Wide open ground, long sightlines.",
     "ru": "Открытая местность, дальние дистанции."
+   },
+   "river": {
+    "width": 11,
+    "depth": 4.5,
+    "bends": 0,
+    "bridges": 2,
+    "canal": true
    }
   },
   {

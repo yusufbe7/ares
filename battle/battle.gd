@@ -1095,6 +1095,12 @@ func on_unit_recovered(u: BattleUnit) -> void:
 
 func on_unit_died(u: BattleUnit, was_wounded: bool = false) -> void:
 	wounded_units.erase(u)
+	# Credit the man who did it, so he can earn his way up.
+	if u.last_attacker_team >= 0 and u.last_attacker_team != u.team:
+		for killer in units_of_team(u.last_attacker_team):
+			if killer.unit_id == u.last_attacker_unit and killer.is_fighting():
+				killer.credit_kill()
+				break
 	director.on_unit_died(u)
 	if stats != null:
 		stats.on_kill(u.team, u.unit_id, u.unit_class(), u.men_count(),

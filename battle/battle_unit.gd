@@ -51,6 +51,8 @@ var last_attacker_unit: String = ""
 ## Soldiers are individuals, not counters: each one carries a rank and a name,
 ## and the feed reports what happens to him by it.
 var soldier_name: String = ""
+var rank_index: int = 0
+var confirmed_kills: int = 0
 
 var wounded: bool = false
 var bleed_time: float = 0.0
@@ -79,19 +81,37 @@ func setup(ctx, p_team: int, p_unit_id: String, spawn_pos: Vector3) -> void:
 	_build_visual()
 	_build_marker()
 
-const RANKS := ["PVT", "PFC", "CPL", "SGT"]
+const RANKS := ["PVT", "PFC", "CPL", "SGT", "1LT"]
+## Kills needed to reach each rank above the one a man starts at.
+const PROMOTION_AT := [1, 3, 6, 10]
 const SURNAMES := [
 	"Alden", "Brant", "Corwin", "Dahl", "Ebert", "Falk", "Garrow", "Hale",
 	"Ivers", "Joss", "Kerrin", "Lund", "Marek", "Novak", "Orden", "Pryce",
 	"Quill", "Radek", "Sorel", "Tamm", "Ulrich", "Vance", "Wexler", "Yarrow",
 ]
 
+var _surname: String = ""
+
 func _make_name() -> String:
 	if unit_class() != "infantry":
 		return DB.local_name(data.get("name", {}), unit_id)
-	var rank := RANKS[_rng.randi_range(0, RANKS.size() - 1)]
-	var surname := SURNAMES[_rng.randi_range(0, SURNAMES.size() - 1)]
-	return "%s %s" % [rank, surname]
+	# Most men start at the bottom; a few come in already carrying a stripe.
+	rank_index = 0 if _rng.randf() < 0.7 else _rng.randi_range(1, 2)
+	_surname = SURNAMES[_rng.randi_range(0, SURNAMES.size() - 1)]
+	return "%s %s" % [RANKS[rank_index], _surname]
+
+## A kill that counts, and the promotion it may earn.
+func credit_kill() -> void:
+	if unit_class() != "infantry":
+		return
+	confirmed_kills += 1
+	if rank_index >= RANKS.size() - 1:
+		return
+	if confirmed_kills < PROMOTION_AT[rank_index]:
+		return
+	rank_index += 1
+	soldier_name = "%s %s" % [RANKS[rank_index], _surname]
+	_log("unvoni oshirildi", "good")
 
 ## Only the player's own men are worth a line in the feed.
 func _log(text: String, kind: String) -> void:

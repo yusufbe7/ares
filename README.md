@@ -41,7 +41,7 @@ o'ynaladi.
 |---|---|
 | **Village** | Loy va tosh uylar, omborlar, pichan g'aramlari, **daryo va tosh ko'prik**, temir yo'l, simyog'ochlar |
 | **Forest** | Qalin o'rmon, yiqilgan tanalar, tor daryo — ko'rish masofasi qisqa |
-| **Desert** | Keng ochiq maydon, qumtepalar, uzoq masofa, pana kam |
+| **Desert** | Keng ochiq maydon, qumtepalar, **palmalar qatori bilan sug'orish kanali**, uzoq masofa |
 | **City** | Yo'l to'ri bo'ylab ko'p qavatli kvartallar, yongan texnika |
 | **Mountain** | Qoya tizmalari, tor dovonlar, tog' daryosi |
 | **Military Base** | Angarlar, bunkerlar, ombor shtabellari, tekis maydon |
@@ -172,6 +172,11 @@ joylashadi.
 **Snaryad izlari.** Har bir snaryad va raketa ortidan tutun donalari qoladi va
 asta yo'qoladi. Artilleriya otganda osmonda egri yoylar chiziladi — kamera
 shu balandlikda bo'lganda zarba qayerdan qayerga ketayotgani shundan ko'rinadi.
+
+**Unvon oshadi.** Askar dushmanni yo'q qilgani sari unvoni ko'tariladi:
+PVT → PFC → CPL → SGT → 1LT. Har safar lentada ismi bilan e'lon qilinadi.
+Tirik qolgan askar shunchaki raqam emas — u sizning tajribali jangchingizga
+aylanadi, va uni yo'qotish og'irroq bo'ladi.
 
 **Askarlarning ismi bor.** Har bir piyodada unvon va familiya bor (masalan
 `SGT Vance`). Pastki chapdagi lentada kim yarador bo'lgani, kim qutqarilgani

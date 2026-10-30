@@ -33,6 +33,8 @@ func build(ctx, map_cfg: Dictionary, p_season: String, p_weather: String, seed_v
 	# Water and its crossings come first: the roads and everything else are
 	# placed knowing where the river runs.
 	_water_surface()
+	if bool(map_cfg.get("river", {}).get("canal", false)):
+		_canal_banks()
 	_bridges(int(map_cfg.get("river", {}).get("bridges", 0)))
 	_roads(int(props.get("roads", 3)), map_id)
 	match map_id:
@@ -58,6 +60,8 @@ func build(ctx, map_cfg: Dictionary, p_season: String, p_weather: String, seed_v
 	if int(props.get("rail", 0)) > 0:
 		_railway()
 	_power_line(int(props.get("poles", 0)))
+	if int(props.get("palms", 0)) > 0:
+		_palm_rows(int(props["palms"]))
 	if int(props.get("logs", 0)) > 0:
 		_fallen_logs(int(props["logs"]))
 	if int(props.get("fences", 0)) > 0:
@@ -705,3 +709,82 @@ func _wires(tops: Array) -> void:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		battle.add_child(mi)
 		mi.position = a
+
+## Concrete lips either side of a canal, which is what makes it read as dug
+## rather than eroded.
+func _canal_banks() -> void:
+	var concrete := _weathered(Color(0.72, 0.68, 0.60), 0.3)
+	for seg in terrain.river_segments():
+		var a: Vector2 = seg["a"]
+		var b: Vector2 = seg["b"]
+		var dir := (b - a).normalized()
+		var side := Vector2(-dir.y, dir.x)
+		var length := a.distance_to(b)
+		var steps := maxi(1, int(length / 10.0))
+		for k in range(steps):
+			var t := (float(k) + 0.5) / float(steps)
+			var at := a.lerp(b, t)
+			for edge: float in [-1.0, 1.0]:
+				var p := at + side * edge * (float(seg["width"]) * 0.92)
+				var ground := terrain.ground_point(p.x, p.y)
+				var mi := _box(ground + Vector3(0, 0.5, 0), Vector3(2.2, 1.0, 10.4),
+					concrete, atan2(dir.x, dir.y), false)
+				mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				cover.add_slot(ground, Vector3(side.x, 0, side.y) * edge, 0.55, "canal_bank")
+
+## Palms planted in rows along the water, the way irrigated land is planted.
+func _palm_rows(count: int) -> void:
+	var segments: Array = terrain.river_segments()
+	if segments.is_empty():
+		return
+	var trunk := _weathered(Color(0.40, 0.32, 0.22), 0.2)
+	var frond := _weathered(Color(0.26, 0.42, 0.20), 0.2)
+	var planted := 0
+	for seg in segments:
+		var a: Vector2 = seg["a"]
+		var b: Vector2 = seg["b"]
+		var dir := (b - a).normalized()
+		var side := Vector2(-dir.y, dir.x)
+		var length := a.distance_to(b)
+		var spacing := 9.0
+		var steps := int(length / spacing)
+		for k in range(steps):
+			if planted >= count:
+				return
+			var t := float(k) / float(maxi(steps, 1))
+			var at := a.lerp(b, t)
+			for edge: float in [-1.0, 1.0]:
+				if planted >= count:
+					return
+				var off := float(seg["width"]) * 1.35 + rng.randf_range(0.0, 5.0)
+				var p := at + side * edge * off
+				var ground := terrain.ground_point(p.x, p.y)
+				if terrain.is_in_water(ground):
+					continue
+				_palm(ground, trunk, frond)
+				planted += 1
+
+func _palm(at: Vector3, trunk_color: Color, frond_color: Color) -> void:
+	var h := rng.randf_range(6.0, 9.5)
+	var stem := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.18
+	cm.bottom_radius = 0.30
+	cm.height = h
+	stem.mesh = cm
+	stem.material_override = _material(trunk_color)
+	battle.add_child(stem)
+	stem.position = at + Vector3(0, h * 0.5, 0)
+	stem.rotation.z = rng.randf_range(-0.12, 0.12)
+	for i in range(6):
+		var frond := MeshInstance3D.new()
+		var bm := BoxMesh.new()
+		bm.size = Vector3(0.35, 0.07, 3.4)
+		frond.mesh = bm
+		frond.material_override = _material(frond_color)
+		frond.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		battle.add_child(frond)
+		var ang := TAU * float(i) / 6.0 + rng.randf_range(-0.2, 0.2)
+		frond.position = at + Vector3(cos(ang) * 1.5, h - 0.2, sin(ang) * 1.5)
+		frond.rotation = Vector3(-0.45, ang, 0.0)
+	cover.add_tree(at)
