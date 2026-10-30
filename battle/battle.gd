@@ -552,6 +552,8 @@ func is_revealed(pos: Vector3) -> bool:
 func spawn_tracer(from: Vector3, to: Vector3, team: int) -> void:
 	if Settings.graphics_quality == 0:
 		return
+	if _rng.randf() < 0.3:
+		spawn_muzzle_smoke(from, (to - from).normalized(), 0.35)
 	var line := MeshInstance3D.new()
 	var im := ImmediateMesh.new()
 	im.surface_begin(Mesh.PRIMITIVE_LINES)
@@ -571,12 +573,43 @@ func spawn_tracer(from: Vector3, to: Vector3, team: int) -> void:
 		if is_instance_valid(line):
 			line.queue_free())
 
+## The white cloud a gun throws when it fires. It is the single clearest sign
+## of where the shooting is coming from when the camera is this far out, so it
+## matters more than the round itself.
+func spawn_muzzle_smoke(at: Vector3, direction: Vector3, scale: float = 1.0) -> void:
+	if Settings.graphics_quality == 0:
+		return
+	var puff := MeshInstance3D.new()
+	var qm := QuadMesh.new()
+	qm.size = Vector2(2.2, 2.2) * scale
+	puff.mesh = qm
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = Color(0.92, 0.92, 0.90, 0.75)
+	puff.material_override = mat
+	puff.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(puff)
+	puff.global_position = at + direction.normalized() * 0.8
+
+	# It blooms forward and thins out, which is what reads from above.
+	var grow := create_tween()
+	grow.set_parallel(true)
+	grow.tween_property(puff, "scale", Vector3.ONE * (3.4 * scale), 0.9)
+	grow.tween_property(puff, "global_position",
+		puff.global_position + direction.normalized() * 3.5 * scale + Vector3(0, 1.2, 0), 0.9)
+	grow.tween_property(mat, "albedo_color", Color(0.92, 0.92, 0.90, 0.0), 0.9)
+	grow.chain().tween_callback(puff.queue_free)
+
 func spawn_shell(from: Vector3, to: Vector3, team: int, damage: float, at_value: float) -> void:
+	spawn_muzzle_smoke(from, (to - from).normalized(), 1.6)
 	var shell := Projectile.new()
 	add_child(shell)
 	shell.launch(self, from, to, team, damage, at_value, 120.0, 3.0)
 
 func spawn_rocket(from: Vector3, target: BattleUnit, team: int, damage: float) -> void:
+	spawn_muzzle_smoke(from, (target.global_position - from).normalized(), 1.3)
 	var rocket := Projectile.new()
 	add_child(rocket)
 	rocket.launch_guided(self, from, target, team, damage, 0.95, 45.0)

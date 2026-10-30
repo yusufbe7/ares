@@ -11,6 +11,8 @@ var _air_label: Label
 var _nuke_label: Label
 var _air_pill: PanelContainer
 var _nuke_pill: PanelContainer
+var _air_icon: HudIcon
+var _nuke_icon: HudIcon
 var _top_label: Label
 var _objective_label: Label
 var _objective_bar: ProgressBar
@@ -93,6 +95,7 @@ func _build_bottom_bar() -> void:
 	var men_pill := UIKit.make_panel(UIKit.PANEL)
 	var men_row := UIKit.hbox(6)
 	men_pill.add_child(men_row)
+	men_row.add_child(HudIcon.make(HudIcon.Kind.MEN, UIKit.TEXT))
 	men_row.add_child(UIKit.label("MEN", 13, UIKit.MUTED))
 	_men_label = UIKit.label("0", 17, UIKit.TEXT)
 	men_row.add_child(_men_label)
@@ -101,6 +104,8 @@ func _build_bottom_bar() -> void:
 	_air_pill = UIKit.make_panel(UIKit.PANEL)
 	var air_row := UIKit.hbox(6)
 	_air_pill.add_child(air_row)
+	_air_icon = HudIcon.make(HudIcon.Kind.PLANE, UIKit.ACCENT)
+	air_row.add_child(_air_icon)
 	air_row.add_child(UIKit.label("AIR STRIKE", 13, UIKit.MUTED))
 	_air_label = UIKit.label(Settings.key_name("bf_air_strike"), 13, UIKit.ACCENT)
 	air_row.add_child(_air_label)
@@ -109,6 +114,8 @@ func _build_bottom_bar() -> void:
 	_nuke_pill = UIKit.make_panel(UIKit.PANEL)
 	var nuke_row := UIKit.hbox(6)
 	_nuke_pill.add_child(nuke_row)
+	_nuke_icon = HudIcon.make(HudIcon.Kind.NUKE, UIKit.BAD)
+	nuke_row.add_child(_nuke_icon)
 	nuke_row.add_child(UIKit.label("NUKE", 13, UIKit.MUTED))
 	_nuke_label = UIKit.label(Settings.key_name("bf_nuke"), 13, UIKit.BAD)
 	nuke_row.add_child(_nuke_label)
@@ -184,9 +191,13 @@ func _process(_delta: float) -> void:
 	_air_label.text = Settings.key_name("bf_air_strike") if air_ready \
 		else "%ds" % int(d.air_strike_cd[battle.player_team])
 	_air_label.add_theme_color_override("font_color", UIKit.ACCENT if air_ready else UIKit.MUTED)
+	_air_icon.color = UIKit.ACCENT if air_ready else UIKit.MUTED
+	_air_icon.queue_redraw()
 	var nuke_ready := d.nuke_ready(battle.player_team)
 	_nuke_label.text = Settings.key_name("bf_nuke") if nuke_ready else "—"
 	_nuke_label.add_theme_color_override("font_color", UIKit.BAD if nuke_ready else UIKit.MUTED)
+	_nuke_icon.color = UIKit.BAD if nuke_ready else UIKit.MUTED
+	_nuke_icon.queue_redraw()
 
 	var left := d.time_left()
 	var clock := "∞" if is_inf(left) else "%02d:%02d" % [int(left / 60.0), int(left) % 60]

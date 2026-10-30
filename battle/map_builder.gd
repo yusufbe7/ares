@@ -122,6 +122,10 @@ func _scatter(margin: float, min_gap: float, placed: Array, tries: int = 40) -> 
 # Roads
 # ---------------------------------------------------------------------------
 
+## Dirt tracks that wind. A ruler-straight strip across a field reads as a
+## placeholder; a track that bends around the ground reads as a road people
+## actually wore into it. Only a city gets a straight grid, because a city is
+## laid out rather than worn.
 func _roads(count: int, map_id: String) -> void:
 	var road_color := _weathered(_season_color("road", Color(0.3, 0.29, 0.27)), 0.7)
 	var width := 7.0
@@ -129,24 +133,79 @@ func _roads(count: int, map_id: String) -> void:
 		width = 12.0
 	elif map_id == "military_base":
 		width = 14.0
+	var half := terrain.map_size * 0.5
 	for i in range(count):
 		var horizontal: bool = i % 2 == 0
-		var offset: float = rng.randf_range(-0.38, 0.38) * terrain.map_size
-		if map_id == "city":
-			# A grid, not random lanes: this is what makes a city read as blocks.
-			var lanes := maxi(2, count / 2)
+		if map_id == "city" or map_id == "military_base":
+			var lanes := maxi(2, count)
 			var step := terrain.map_size / float(lanes + 1)
-			offset = -terrain.map_size * 0.5 + step * float(i / 2 + 1)
-		var strip := MeshInstance3D.new()
-		var pm := PlaneMesh.new()
-		pm.size = Vector2(terrain.map_size, width) if horizontal else Vector2(width, terrain.map_size)
-		strip.mesh = pm
-		strip.material_override = _material(road_color, 1.0)
-		var x: float = 0.0 if horizontal else offset
-		var z: float = offset if horizontal else 0.0
-		battle.add_child(strip)
-		strip.position = Vector3(x, terrain.height_at(x, z) + 0.14, z)
-		battle.roads.append({"horizontal": horizontal, "offset": offset, "width": width})
+			var offset := -half + step * float(i + 1)
+			_straight_road(horizontal, offset, width, road_color)
+			continue
+		_winding_road(horizontal, rng.randf_range(-0.34, 0.34) * terrain.map_size,
+			width, road_color)
+
+func _straight_road(horizontal: bool, offset: float, width: float, color: Color) -> void:
+	var half := terrain.map_size * 0.5
+	var a := Vector2(-half, offset) if horizontal else Vector2(offset, -half)
+	var b := Vector2(half, offset) if horizontal else Vector2(offset, half)
+	_road_ribbon(PackedVector2Array([a, b]), width, color)
+	battle.roads.append({"horizontal": horizontal, "offset": offset, "width": width})
+
+func _winding_road(horizontal: bool, offset: float, width: float, color: Color) -> void:
+	var half := terrain.map_size * 0.5
+	var points := PackedVector2Array()
+	var steps := 9
+	for i in range(steps + 1):
+		var t := float(i) / float(steps)
+		var along := lerpf(-half - 10.0, half + 10.0, t)
+		# A slow sine plus noise: the track drifts instead of zig-zagging.
+		var drift := sin(t * PI * rng.randf_range(1.2, 2.4) + rng.randf_range(0.0, TAU)) * 42.0
+		drift += (rng.randf() - 0.5) * 14.0
+		var across := clampf(offset + drift, -half + width, half - width)
+		points.append(Vector2(along, across) if horizontal else Vector2(across, along))
+	_road_ribbon(points, width, color)
+	battle.roads.append({"horizontal": horizontal, "offset": offset, "width": width})
+
+## Lays a ribbon of quads that follows the ground, so the track climbs and dips
+## with the terrain instead of floating over it.
+func _road_ribbon(points: PackedVector2Array, width: float, color: Color) -> void:
+	if points.size() < 2:
+		return
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var half_w := width * 0.5
+	for i in range(points.size() - 1):
+		var a: Vector2 = points[i]
+		var b: Vector2 = points[i + 1]
+		var dir := (b - a)
+		if dir.length() < 0.01:
+			continue
+		dir = dir.normalized()
+		var side := Vector2(-dir.y, dir.x) * half_w
+		# Split each span so the ribbon bends over hills rather than cutting in.
+		var spans := maxi(1, int(a.distance_to(b) / 8.0))
+		for k in range(spans):
+			var t0 := float(k) / float(spans)
+			var t1 := float(k + 1) / float(spans)
+			var p0 := a.lerp(b, t0)
+			var p1 := a.lerp(b, t1)
+			var v0 := _road_point(p0 + side)
+			var v1 := _road_point(p0 - side)
+			var v2 := _road_point(p1 - side)
+			var v3 := _road_point(p1 + side)
+			for v in [v0, v1, v2, v0, v2, v3]:
+				st.set_uv(Vector2(v.x, v.z) * 0.06)
+				st.add_vertex(v)
+	st.generate_normals()
+	var mi := MeshInstance3D.new()
+	mi.mesh = st.commit()
+	mi.material_override = _material(color, 1.0)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	battle.add_child(mi)
+
+func _road_point(p: Vector2) -> Vector3:
+	return Vector3(p.x, terrain.height_at(p.x, p.y) + 0.14, p.y)
 
 # ---------------------------------------------------------------------------
 # Buildings
