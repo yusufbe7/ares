@@ -20,6 +20,7 @@ var _objective_label: Label
 var _objective_bar: ProgressBar
 var _selection_box: VBoxContainer
 var _feed_box: VBoxContainer
+var _minimap: Minimap
 var _group_bar: HBoxContainer
 var _selection_rect: Control
 var _sandbox_panel: PanelContainer
@@ -41,6 +42,7 @@ func _build() -> void:
 	_build_bottom_bar()
 	_build_feed()
 	_build_selection_panel()
+	_build_minimap()
 	_build_group_bar()
 
 	_selection_rect = Control.new()
@@ -133,6 +135,24 @@ func _build_bottom_bar() -> void:
 	_nuke_label = UIKit.label(Settings.key_name("bf_nuke"), 13, UIKit.BAD)
 	nuke_row.add_child(_nuke_label)
 	bar.add_child(_nuke_pill)
+
+## The sector radar, bottom right, with the group readouts stacked beside it.
+func _build_minimap() -> void:
+	var panel := UIKit.make_panel(UIKit.PANEL)
+	panel.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	panel.offset_left = -236
+	panel.offset_top = -236
+	panel.offset_right = -10
+	panel.offset_bottom = -10
+	add_child(panel)
+	var col := UIKit.vbox(4)
+	panel.add_child(col)
+	col.add_child(UIKit.label("SECTOR RADAR", 11, UIKit.MUTED))
+	_minimap = Minimap.new()
+	_minimap.custom_minimum_size = Vector2(206, 182)
+	_minimap.setup(battle, controls.rig)
+	_minimap.jump_requested.connect(func(world_pos: Vector3): controls.rig.focus_on(world_pos))
+	col.add_child(_minimap)
 
 ## A short feed of what is happening to the player's own soldiers, by name.
 func _build_feed() -> void:
@@ -265,15 +285,46 @@ func _refresh_groups() -> void:
 		for c in _group_bar.get_children():
 			c.queue_free()
 		for i in range(battle.squads.size()):
-			var b := UIKit.button("", 11)
-			b.custom_minimum_size = Vector2(78, 26)
+			var b := UIKit.button("", 10)
+			b.custom_minimum_size = Vector2(0, 24)
+			b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			b.pressed.connect(func(): controls.select_squad(i))
 			_group_bar.add_child(b)
 		return
 	for i in range(battle.squads.size()):
 		var btn: Button = _group_bar.get_child(i)
-		btn.text = "%d  %d" % [i + 1, battle.squads[i].size()]
-		btn.tooltip_text = battle.squads[i].auto_label()
+		var squad: Squad = battle.squads[i]
+		var fit := squad.fighting_units().size()
+		var down := squad.size() - fit
+		var line := "SECTION %d  %d MEN" % [i + 1, fit]
+		if down > 0:
+			line += "  +%d DOWN" % down
+		btn.text = line
+		btn.tooltip_text = "%s — %s" % [squad.auto_label(), _squad_status(squad)]
+		btn.visible = squad.size() > 0 or i < 3
+
+## One word for what a section is doing, read off the men rather than stored.
+func _squad_status(squad: Squad) -> String:
+	var fighting := squad.fighting_units()
+	if fighting.is_empty():
+		return "YO'Q"
+	var engaged := 0
+	var moving := 0
+	var rescuing := 0
+	for u in fighting:
+		if u.rescuing != null:
+			rescuing += 1
+		elif u.attack_target != null:
+			engaged += 1
+		elif u.has_move_target:
+			moving += 1
+	if rescuing > 0:
+		return "QUTQARMOQDA"
+	if engaged > fighting.size() / 3:
+		return "JANGDA"
+	if moving > 0:
+		return "YURMOQDA"
+	return "USHLAB TURIBDI"
 
 func _on_selection(units: Array) -> void:
 	for c in _selection_box.get_children():

@@ -80,6 +80,19 @@ ko'rinib turadi.
 
 ---
 
+## Ekrandagi narsalar
+
+Pastki o'ngda **sektor radari**: butun maydon bir qarashda. O'z askarlaringiz,
+ayni paytda ko'rinayotgan dushman, nuqtalar va kameraning qayerga qaraganini
+ko'rsatadi. Dushman faqat razvedka ochgan paytda chiqadi, shuning uchun radar
+aldamchi ro'yxat emas, haqiqiy ma'lumot bo'ladi. Bosilsa kamera o'sha joyga
+uchadi.
+
+Uning yonida **SECTIONS** paneli: har bir guruh nechta jangovar askari
+borligini va nechtasi yiqilganini ko'rsatadi (`SECTION 1  6 MEN  +2 DOWN`),
+ustiga olib borilsa holati yoziladi — ushlab turibdi, yurmoqda, jangda yoki
+qutqarmoqda.
+
 ## Boshqaruv
 
 Pastki chapda — videodagi kabi uchta narsa: **MEN** (qancha odam tirik),
