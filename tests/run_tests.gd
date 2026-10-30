@@ -1,13 +1,13 @@
-extends SceneTree
+extends Node
 ## Headless test suite.
-##   godot --headless --path . -s res://tests/run_tests.gd
+##   godot --headless --path . res://tests/run_tests.tscn
 ## Exits with code 1 if anything fails, so it works in CI.
 
 var passed: int = 0
 var failed: int = 0
 var failures: Array = []
 
-func _initialize() -> void:
+func _ready() -> void:
 	print("=== Frontline tests ===")
 	_test_data()
 	_test_maps_and_seasons()
@@ -22,7 +22,7 @@ func _initialize() -> void:
 	print("PASS: %d   FAIL: %d" % [passed, failed])
 	for f in failures:
 		print("  FAILED: %s" % f)
-	quit(1 if failed > 0 else 0)
+	get_tree().quit(1 if failed > 0 else 0)
 
 func check(condition: bool, label: String) -> void:
 	if condition:
